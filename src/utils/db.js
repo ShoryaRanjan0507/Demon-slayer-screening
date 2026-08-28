@@ -153,13 +153,32 @@ export const saveNeonBooking = async (b) => {
       )
       ON CONFLICT (booking_id) DO UPDATE SET
         status = EXCLUDED.status,
+        payment_screenshot = COALESCE(EXCLUDED.payment_screenshot, bookings.payment_screenshot),
         checked_in = EXCLUDED.checked_in,
         check_in_time = EXCLUDED.check_in_time;
     `;
     return true;
   } catch (err) {
-    console.error("Save Neon Booking Error:", err);
-    return false;
+    console.error("Save Neon Booking Warning (Retrying fallback without heavy payload):", err);
+    try {
+      await sql`
+        INSERT INTO bookings (
+          booking_id, user_email, user_name, user_roll_no, auditorium, 
+          seats, total_amount, utr_number, payment_screenshot, status, checked_in, timestamp
+        ) VALUES (
+          ${b.bookingId}, ${b.user.email}, ${b.user.name}, ${b.user.rollNo || ''}, ${b.auditorium || 'AB02 — Audi 1'},
+          ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${b.utrNumber}, null,
+          ${b.status || 'PENDING_VERIFICATION'}, ${b.checkedIn || false}, ${b.timestamp}
+        )
+        ON CONFLICT (booking_id) DO UPDATE SET
+          status = EXCLUDED.status,
+          checked_in = EXCLUDED.checked_in;
+      `;
+      return true;
+    } catch (fallbackErr) {
+      console.error("Fallback Save Neon Booking Error:", fallbackErr);
+      return false;
+    }
   }
 };
 

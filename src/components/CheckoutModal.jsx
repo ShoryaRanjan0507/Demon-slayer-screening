@@ -52,9 +52,41 @@ export default function CheckoutModal({
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      setScreenshotData(event.target.result);
-      setScreenshotFileName(file.name);
-      setErrorMsg('');
+      const rawBase64 = event.target.result;
+      
+      // Compress screenshot on HTML5 Canvas to max 800px & 60% JPEG quality (~40-70 KB)
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+        setScreenshotData(compressedBase64);
+        setScreenshotFileName(file.name);
+        setErrorMsg('');
+      };
+      img.src = rawBase64;
     };
     reader.readAsDataURL(file);
   };
