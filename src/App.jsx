@@ -14,6 +14,7 @@ import {
   saveRegisteredViewers,
   getSeatMap, 
   saveSeatMap, 
+  syncSeatMapWithBookings,
   getUserBookings, 
   saveUserBooking, 
   getActiveVerifiedUser, 
@@ -64,12 +65,12 @@ export default function App() {
         if (neonBookings && Array.isArray(neonBookings)) {
           localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
           setUserBookingsState([...neonBookings]);
-        }
 
-        const neonSeats = await fetchNeonSeatMap();
-        if (neonSeats) {
-          saveSeatMap(neonSeats);
-          setSeatMapState(neonSeats);
+          // Dynamically free up seats for REJECTED bookings across all clients
+          const currentMap = getSeatMap();
+          const syncedMap = syncSeatMapWithBookings(currentMap, neonBookings);
+          saveSeatMap(syncedMap);
+          setSeatMapState({ ...syncedMap });
         }
       } catch (err) {
         console.error("Neon DB sync warning:", err);

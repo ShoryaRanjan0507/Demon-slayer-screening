@@ -152,8 +152,19 @@ export const syncSeatMapWithBookings = (seatMap, bookings) => {
   if (!seatMap) return seatMap;
   const updatedMap = JSON.parse(JSON.stringify(seatMap));
 
+  // 1. Reset all seats to available
+  ['AUDI_1', 'AUDI_2'].forEach(audiKey => {
+    if (updatedMap[audiKey] && typeof updatedMap[audiKey] === 'object') {
+      Object.keys(updatedMap[audiKey]).forEach(sId => {
+        updatedMap[audiKey][sId].status = 'available';
+        updatedMap[audiKey][sId].bookedBy = null;
+      });
+    }
+  });
+
+  // 2. Mark occupied only for non-REJECTED bookings
   (bookings || []).forEach(b => {
-    if (b.status !== 'REJECTED' && b.seats) {
+    if (b.status !== 'REJECTED' && b.seats && Array.isArray(b.seats)) {
       const audiKey = b.audiKey || (b.auditorium && b.auditorium.includes('Audi 2') ? 'AUDI_2' : 'AUDI_1');
       b.seats.forEach(seat => {
         const sId = typeof seat === 'string' ? seat : seat?.id;
