@@ -56,13 +56,13 @@ export default function App() {
         const neonViewers = await fetchNeonViewers();
         if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
           saveRegisteredViewers(neonViewers);
-          setRegisteredViewers(neonViewers);
+          setRegisteredViewers([...neonViewers]);
         }
 
         const neonBookings = await fetchNeonBookings();
         if (neonBookings && Array.isArray(neonBookings)) {
           localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
-          setUserBookingsState(neonBookings);
+          setUserBookingsState([...neonBookings]);
         }
 
         const neonSeats = await fetchNeonSeatMap();
@@ -88,7 +88,7 @@ export default function App() {
       const neonViewers = await fetchNeonViewers();
       if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
         saveRegisteredViewers(neonViewers);
-        setRegisteredViewers(neonViewers);
+        setRegisteredViewers([...neonViewers]);
       } else {
         setRegisteredViewers(getRegisteredViewers());
       }
@@ -96,7 +96,7 @@ export default function App() {
       const neonBookings = await fetchNeonBookings();
       if (neonBookings && Array.isArray(neonBookings)) {
         localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
-        setUserBookingsState(neonBookings);
+        setUserBookingsState([...neonBookings]);
       }
     } catch (err) {
       setRegisteredViewers(getRegisteredViewers());
