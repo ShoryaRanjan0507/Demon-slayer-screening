@@ -18,7 +18,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
   const [successUser, setSuccessUser] = useState(null);
 
   // Handle New Viewer Registration
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -32,14 +32,14 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
       return;
     }
 
-    const newViewer = addRegisteredViewer({
+    const newViewer = await addRegisteredViewer({
       name: regName.trim(),
       email: regEmail.trim(),
       rollNo: regRollNo.trim() || 'N/A',
       phone: regPhone.trim() || 'N/A'
     });
 
-    if (onRegisterNewViewer) onRegisterNewViewer();
+    if (onRegisterNewViewer) await onRegisterNewViewer();
 
     setSuccessUser(newViewer);
     setTimeout(() => {

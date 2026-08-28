@@ -36,16 +36,18 @@ export const saveRegisteredViewers = (viewers) => {
   }
 };
 
-export const addRegisteredViewer = (viewerData) => {
+export const addRegisteredViewer = async (viewerData) => {
   const current = getRegisteredViewers();
+  const emailClean = viewerData.email.trim().toLowerCase();
+  
   // check if already exists by email
-  const existing = current.find(v => v.email.toLowerCase() === viewerData.email.toLowerCase());
+  const existing = current.find(v => v.email.toLowerCase() === emailClean);
   if (existing) return existing;
 
   const newViewer = {
     id: `reg-${Date.now()}`,
-    email: viewerData.email.trim().toLowerCase(),
-    name: viewerData.name || viewerData.email.split('@')[0],
+    email: emailClean,
+    name: viewerData.name || emailClean.split('@')[0],
     rollNo: viewerData.rollNo || 'N/A',
     phone: viewerData.phone || 'N/A',
     formTimestamp: new Date().toLocaleString()
@@ -53,7 +55,9 @@ export const addRegisteredViewer = (viewerData) => {
 
   const updated = [newViewer, ...current];
   saveRegisteredViewers(updated);
-  saveNeonViewer(newViewer); // Sync to Neon Postgres
+  
+  // Await the Neon Postgres DB insert so it commits before any refetch
+  await saveNeonViewer(newViewer);
   return newViewer;
 };
 

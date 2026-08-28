@@ -82,15 +82,15 @@ export default function AdminPortal({
     }
   };
 
-  const handleAddSingleViewer = (e) => {
+  const handleAddSingleViewer = async (e) => {
     e.preventDefault();
     if (!newEmail) return;
-    addRegisteredViewer({
+    await addRegisteredViewer({
       email: newEmail,
       name: newName || newEmail.split('@')[0],
       rollNo: newRollNo || 'N/A'
     });
-    onUpdateViewers();
+    if (onUpdateViewers) await onUpdateViewers();
     setNewEmail('');
     setNewName('');
     setNewRollNo('');
