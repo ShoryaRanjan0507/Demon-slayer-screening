@@ -70,6 +70,7 @@ export const fetchNeonViewers = async () => {
   try {
     const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
     if (!rows) return [];
+    console.log("⚡ [Neon DB] Viewers loaded from database:", rows.length);
     return rows.map(r => ({
       id: `reg-${r.email}`,
       email: r.email,
@@ -77,7 +78,7 @@ export const fetchNeonViewers = async () => {
       rollNo: r.rollNo || 'N/A'
     }));
   } catch (err) {
-    console.error("Fetch Neon Viewers Error:", err);
+    console.error("⚡ Fetch Neon Viewers Error:", err);
     return null;
   }
 };
