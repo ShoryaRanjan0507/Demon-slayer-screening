@@ -68,7 +68,11 @@ export default function AdminPortal({
         qrScannerRef.current = null;
       }
     };
-  }, [activeTab, isOpen]);
+  useEffect(() => {
+    if (isOpen && onUpdateViewers) {
+      onUpdateViewers();
+    }
+  }, [isOpen, onUpdateViewers]);
 
   if (!isOpen) return null;
 

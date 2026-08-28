@@ -1,18 +1,18 @@
 import { neon } from '@neondatabase/serverless';
 
-const DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz.c-2.us-east-2.aws.neon.tech/neondb";
+export const NEON_CONNECTION_STRING = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
 
 export const getSql = () => {
-  let activeUrl = DEFAULT_NEON_URL;
+  let url = NEON_CONNECTION_STRING;
   try {
     if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
       const custom = import.meta.env.VITE_NEON_DATABASE_URL.trim();
-      if (custom.length > 10) activeUrl = custom.split('?')[0].replace('-pooler.', '.');
+      if (custom.length > 10) url = custom;
     }
   } catch (e) {
-    activeUrl = DEFAULT_NEON_URL;
+    url = NEON_CONNECTION_STRING;
   }
-  return neon(activeUrl);
+  return neon(url);
 };
 
 // Initialize Database Tables in Neon Postgres
