@@ -11,6 +11,7 @@ import ParticipantsModal from './components/ParticipantsModal';
 
 import { 
   getRegisteredViewers, 
+  saveRegisteredViewers,
   getSeatMap, 
   saveSeatMap, 
   getUserBookings, 
