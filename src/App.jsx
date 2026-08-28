@@ -56,7 +56,7 @@ export default function App() {
     const syncNeonData = async () => {
       try {
         const neonViewers = await fetchNeonViewers();
-        if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
+        if (neonViewers && Array.isArray(neonViewers)) {
           saveRegisteredViewers(neonViewers);
           setRegisteredViewers([...neonViewers]);
         }
@@ -89,12 +89,9 @@ export default function App() {
     console.log("🔄 handleUpdateViewers: starting sync...");
     const neonViewers = await fetchNeonViewers();
     console.log("🔄 handleUpdateViewers: got viewers:", neonViewers?.length, neonViewers);
-    if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
+    if (neonViewers && Array.isArray(neonViewers)) {
       saveRegisteredViewers(neonViewers);
       setRegisteredViewers([...neonViewers]);
-    } else {
-      console.warn("🔄 handleUpdateViewers: no viewers from DB, falling back to localStorage");
-      setRegisteredViewers(getRegisteredViewers());
     }
 
     const neonBookings = await fetchNeonBookings();
