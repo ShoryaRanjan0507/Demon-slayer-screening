@@ -1,7 +1,14 @@
 import { neon } from '@neondatabase/serverless';
 
 const FALLBACK_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
-const envUrl = import.meta.env.VITE_NEON_DATABASE_URL;
+let envUrl = null;
+try {
+  if (typeof import.meta !== 'undefined' && import.meta && import.meta.env) {
+    envUrl = import.meta.env.VITE_NEON_DATABASE_URL;
+  }
+} catch (e) {
+  // safe fallback
+}
 const DB_URL = (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 10) ? envUrl.trim() : FALLBACK_URL;
 
 export const sql = DB_URL ? neon(DB_URL) : null;
