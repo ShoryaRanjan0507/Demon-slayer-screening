@@ -50,51 +50,19 @@ export default function App() {
     setUserBookingsState(getUserBookings());
     setVerifiedUser(getActiveVerifiedUser());
 
-    // 2. Async sync with Neon Postgres DB
+    // 2. Async sync with Neon Postgres DB (Single Source of Truth)
     const syncNeonData = async () => {
       try {
         const neonViewers = await fetchNeonViewers();
-        if (neonViewers && Array.isArray(neonViewers)) {
-          const localViewers = getRegisteredViewers();
-          const viewerMap = new Map();
-
-          // Add Neon DB viewers FIRST (Real Database Registrations)
-          neonViewers.forEach(v => {
-            if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
-          });
-
-          // Add local viewers ONLY if they are not fake pre-seeded placeholders
-          localViewers.forEach(v => {
-            if (v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club')) {
-              if (!viewerMap.has(v.email.toLowerCase())) {
-                viewerMap.set(v.email.toLowerCase(), v);
-              }
-            }
-          });
-
-          const mergedViewers = Array.from(viewerMap.values());
-          saveRegisteredViewers(mergedViewers);
-          setRegisteredViewers(mergedViewers);
+        if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
+          saveRegisteredViewers(neonViewers);
+          setRegisteredViewers(neonViewers);
         }
 
         const neonBookings = await fetchNeonBookings();
-        if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
-          const localBookings = getUserBookings();
-          const bookingMap = new Map();
-
-          neonBookings.forEach(b => {
-            if (b && b.bookingId) bookingMap.set(b.bookingId, b);
-          });
-
-          localBookings.forEach(b => {
-            if (b && b.bookingId && !bookingMap.has(b.bookingId)) {
-              bookingMap.set(b.bookingId, b);
-            }
-          });
-
-          const mergedBookings = Array.from(bookingMap.values());
-          localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(mergedBookings));
-          setUserBookingsState(mergedBookings);
+        if (neonBookings && Array.isArray(neonBookings)) {
+          localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
+          setUserBookingsState(neonBookings);
         }
 
         const neonSeats = await fetchNeonSeatMap();
@@ -118,31 +86,17 @@ export default function App() {
   const handleUpdateViewers = async () => {
     try {
       const neonViewers = await fetchNeonViewers();
-      if (neonViewers && Array.isArray(neonViewers)) {
-        const localViewers = getRegisteredViewers();
-        const viewerMap = new Map();
-        neonViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
-        localViewers.forEach(v => {
-          if (v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club')) {
-            if (!viewerMap.has(v.email.toLowerCase())) viewerMap.set(v.email.toLowerCase(), v);
-          }
-        });
-        const mergedViewers = Array.from(viewerMap.values());
-        saveRegisteredViewers(mergedViewers);
-        setRegisteredViewers(mergedViewers);
+      if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
+        saveRegisteredViewers(neonViewers);
+        setRegisteredViewers(neonViewers);
       } else {
         setRegisteredViewers(getRegisteredViewers());
       }
 
       const neonBookings = await fetchNeonBookings();
-      if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
-        const localBookings = getUserBookings();
-        const bookingMap = new Map();
-        neonBookings.forEach(b => { if (b && b.bookingId) bookingMap.set(b.bookingId, b); });
-        localBookings.forEach(b => { if (b && b.bookingId && !bookingMap.has(b.bookingId)) bookingMap.set(b.bookingId, b); });
-        const mergedBookings = Array.from(bookingMap.values());
-        localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(mergedBookings));
-        setUserBookingsState(mergedBookings);
+      if (neonBookings && Array.isArray(neonBookings)) {
+        localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
+        setUserBookingsState(neonBookings);
       }
     } catch (err) {
       setRegisteredViewers(getRegisteredViewers());
