@@ -18,14 +18,25 @@ const KEYS = {
   VERIFIED_USER: 'ds_infinity_castle_active_user'
 };
 
+const MOCK_EMAILS = [
+  'tanjiro@demonslayer.club',
+  'nezuko@demonslayer.club',
+  'zenitsu@demonslayer.club',
+  'inosuke@demonslayer.club',
+  'rengoku@hashira.club',
+  'giyu@hashira.club',
+  'shinobu@hashira.club',
+  'viewer@gmail.com',
+  'animefan@gmail.com'
+];
+
 export const getRegisteredViewers = () => {
   try {
     const data = localStorage.getItem(KEYS.VIEWERS);
     if (!data) return [];
     const parsed = JSON.parse(data);
     if (!Array.isArray(parsed)) return [];
-    // Filter out fake static demo accounts (@demonslayer.club, @hashira.club)
-    return parsed.filter(v => v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club'));
+    return parsed.filter(v => v && v.email && !MOCK_EMAILS.includes(v.email.toLowerCase()));
   } catch (e) {
     console.error("Storage error:", e);
     return [];

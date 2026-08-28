@@ -1,12 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 
-const DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb";
+const DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz.c-2.us-east-2.aws.neon.tech/neondb";
 
 let activeUrl = DEFAULT_NEON_URL;
 try {
   if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
     const custom = import.meta.env.VITE_NEON_DATABASE_URL.trim();
-    if (custom.length > 10) activeUrl = custom.split('?')[0];
+    if (custom.length > 10) activeUrl = custom.split('?')[0].replace('-pooler.', '.');
   }
 } catch (e) {
   activeUrl = DEFAULT_NEON_URL;
