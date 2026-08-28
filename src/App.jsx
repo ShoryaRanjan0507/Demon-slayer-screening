@@ -58,14 +58,16 @@ export default function App() {
           const localViewers = getRegisteredViewers();
           const viewerMap = new Map();
 
-          // Add local viewers first
-          localViewers.forEach(v => {
+          // Add Neon DB viewers FIRST so newest registrations sit at the TOP of the list
+          neonViewers.forEach(v => {
             if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
           });
 
-          // Add/override with Neon DB viewers
-          neonViewers.forEach(v => {
-            if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
+          // Add any remaining local viewers
+          localViewers.forEach(v => {
+            if (v && v.email && !viewerMap.has(v.email.toLowerCase())) {
+              viewerMap.set(v.email.toLowerCase(), v);
+            }
           });
 
           const mergedViewers = Array.from(viewerMap.values());
@@ -78,14 +80,16 @@ export default function App() {
           const localBookings = getUserBookings();
           const bookingMap = new Map();
 
-          // Add local bookings first
-          localBookings.forEach(b => {
+          // Add Neon DB bookings FIRST so newest bookings sit at the TOP of the list
+          neonBookings.forEach(b => {
             if (b && b.bookingId) bookingMap.set(b.bookingId, b);
           });
 
-          // Add/override with Neon DB bookings
-          neonBookings.forEach(b => {
-            if (b && b.bookingId) bookingMap.set(b.bookingId, b);
+          // Add any remaining local bookings
+          localBookings.forEach(b => {
+            if (b && b.bookingId && !bookingMap.has(b.bookingId)) {
+              bookingMap.set(b.bookingId, b);
+            }
           });
 
           const mergedBookings = Array.from(bookingMap.values());
@@ -117,8 +121,8 @@ export default function App() {
       if (neonViewers && Array.isArray(neonViewers)) {
         const localViewers = getRegisteredViewers();
         const viewerMap = new Map();
-        localViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
         neonViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
+        localViewers.forEach(v => { if (v && v.email && !viewerMap.has(v.email.toLowerCase())) viewerMap.set(v.email.toLowerCase(), v); });
         const mergedViewers = Array.from(viewerMap.values());
         saveRegisteredViewers(mergedViewers);
         setRegisteredViewers(mergedViewers);
@@ -130,8 +134,8 @@ export default function App() {
       if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
         const localBookings = getUserBookings();
         const bookingMap = new Map();
-        localBookings.forEach(b => { if (b && b.bookingId) bookingMap.set(b.bookingId, b); });
         neonBookings.forEach(b => { if (b && b.bookingId) bookingMap.set(b.bookingId, b); });
+        localBookings.forEach(b => { if (b && b.bookingId && !bookingMap.has(b.bookingId)) bookingMap.set(b.bookingId, b); });
         const mergedBookings = Array.from(bookingMap.values());
         localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(mergedBookings));
         setUserBookingsState(mergedBookings);
