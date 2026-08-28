@@ -1,6 +1,8 @@
 import { neon } from '@neondatabase/serverless';
 
-const DB_URL = import.meta.env.VITE_NEON_DATABASE_URL || "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
+const FALLBACK_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
+const envUrl = import.meta.env.VITE_NEON_DATABASE_URL;
+const DB_URL = (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 10) ? envUrl.trim() : FALLBACK_URL;
 
 export const sql = DB_URL ? neon(DB_URL) : null;
 
@@ -60,7 +62,13 @@ export const fetchNeonViewers = async () => {
   if (!sql) return null;
   try {
     const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
-    return rows;
+    if (!rows) return [];
+    return rows.map(r => ({
+      id: `reg-${r.email}`,
+      email: r.email,
+      name: r.name,
+      rollNo: r.rollNo || 'N/A'
+    }));
   } catch (err) {
     console.error("Fetch Neon Viewers Error:", err);
     return null;
