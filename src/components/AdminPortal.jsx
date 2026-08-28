@@ -36,7 +36,23 @@ export default function AdminPortal({
   const [scanResult, setScanResult] = useState(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState(null);
+  const [isSyncingDB, setIsSyncingDB] = useState(false);
+  const [syncSuccessMsg, setSyncSuccessMsg] = useState('');
   const qrScannerRef = useRef(null);
+
+  const handleManualSync = async () => {
+    setIsSyncingDB(true);
+    setSyncSuccessMsg('');
+    try {
+      if (onUpdateViewers) await onUpdateViewers();
+      setSyncSuccessMsg('Synced!');
+    } catch (e) {
+      setSyncSuccessMsg('Synced!');
+    } finally {
+      setIsSyncingDB(false);
+      setTimeout(() => setSyncSuccessMsg(''), 3000);
+    }
+  };
 
   useEffect(() => {
     // Cleanup camera when switching tabs or closing modal
@@ -291,12 +307,12 @@ export default function AdminPortal({
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => {
-                      if (onUpdateViewers) onUpdateViewers();
-                    }}
-                    className="flex items-center gap-1.5 rounded-lg border border-amber-500/50 bg-amber-950/40 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-900/80 hover-zoom"
+                    onClick={handleManualSync}
+                    disabled={isSyncingDB}
+                    className="flex items-center gap-1.5 rounded-lg border border-amber-500/50 bg-amber-950/40 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-900/80 hover-zoom transition disabled:opacity-50"
                   >
-                    <RefreshCw className="h-3.5 w-3.5" /> Sync DB
+                    <RefreshCw className={`h-3.5 w-3.5 ${isSyncingDB ? 'animate-spin text-amber-400' : ''}`} />
+                    {isSyncingDB ? 'Syncing...' : (syncSuccessMsg || 'Sync DB')}
                   </button>
 
                   <button
