@@ -108,14 +108,38 @@ export default function App() {
     if (updatedSeatMap) setSeatMapState({ ...updatedSeatMap });
   };
 
-  const handleResetData = () => {
-    setRegisteredViewers(getRegisteredViewers());
-    setSeatMapState(getSeatMap());
-    setUserBookingsState(getUserBookings());
-    setVerifiedUser(null);
-    setSelectedSeats([]);
-    setActiveTicket(null);
-    setSelectedAudiKey('AUDI_1');
+  const handleResetData = async () => {
+    if (!window.confirm('⚠️ This will permanently delete ALL data — viewers, bookings, and seats — from both this browser and the cloud database. Are you sure?')) {
+      return;
+    }
+    try {
+      // 1. Clear cloud database
+      const res = await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Reset API failed');
+      }
+
+      // 2. Clear localStorage
+      localStorage.removeItem('ds_infinity_castle_viewers');
+      localStorage.removeItem('ds_infinity_castle_seats');
+      localStorage.removeItem('ds_infinity_castle_user_bookings');
+      localStorage.removeItem('ds_infinity_castle_active_user');
+
+      // 3. Reset all React state
+      setRegisteredViewers([]);
+      setSeatMapState(getSeatMap());
+      setUserBookingsState([]);
+      setVerifiedUser(null);
+      setSelectedSeats([]);
+      setActiveTicket(null);
+      setSelectedAudiKey('AUDI_1');
+
+      alert('✅ All data has been cleared from the database and this browser.');
+    } catch (err) {
+      console.error('Reset failed:', err);
+      alert(`❌ Reset failed: ${err.message}`);
+    }
   };
 
   // Toggle Audi 1 Full simulation for easy overflow testing
