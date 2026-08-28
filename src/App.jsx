@@ -84,22 +84,21 @@ export default function App() {
 
   // Update storage helpers & sync with Neon DB
   const handleUpdateViewers = async () => {
-    try {
-      const neonViewers = await fetchNeonViewers();
-      if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
-        saveRegisteredViewers(neonViewers);
-        setRegisteredViewers([...neonViewers]);
-      } else {
-        setRegisteredViewers(getRegisteredViewers());
-      }
-
-      const neonBookings = await fetchNeonBookings();
-      if (neonBookings && Array.isArray(neonBookings)) {
-        localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
-        setUserBookingsState([...neonBookings]);
-      }
-    } catch (err) {
+    console.log("🔄 handleUpdateViewers: starting sync...");
+    const neonViewers = await fetchNeonViewers();
+    console.log("🔄 handleUpdateViewers: got viewers:", neonViewers?.length, neonViewers);
+    if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
+      saveRegisteredViewers(neonViewers);
+      setRegisteredViewers([...neonViewers]);
+    } else {
+      console.warn("🔄 handleUpdateViewers: no viewers from DB, falling back to localStorage");
       setRegisteredViewers(getRegisteredViewers());
+    }
+
+    const neonBookings = await fetchNeonBookings();
+    if (neonBookings && Array.isArray(neonBookings)) {
+      localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
+      setUserBookingsState([...neonBookings]);
     }
   };
 

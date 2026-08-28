@@ -45,13 +45,13 @@ export default function AdminPortal({
     setSyncSuccessMsg('');
     try {
       if (onUpdateViewers) await onUpdateViewers();
-      setSyncSuccessMsg('Synced!');
+      setSyncSuccessMsg(`✅ Synced! (${registeredViewers?.length || 0} viewers)`);
     } catch (e) {
       console.error("Manual Sync Error:", e);
-      setSyncSuccessMsg('Sync Error');
+      setSyncSuccessMsg(`❌ ${e.message || 'Unknown error'}`);
     } finally {
       setIsSyncingDB(false);
-      setTimeout(() => setSyncSuccessMsg(''), 4000);
+      setTimeout(() => setSyncSuccessMsg(''), 8000);
     }
   };
 
