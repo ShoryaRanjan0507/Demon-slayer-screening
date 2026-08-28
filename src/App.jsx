@@ -113,29 +113,30 @@ export default function App() {
       return;
     }
     try {
-      // 1. Clear cloud database
+      // 1. Clear cloud database tables
       const res = await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Reset API failed');
       }
 
-      // 2. Clear localStorage
-      localStorage.removeItem('ds_infinity_castle_viewers');
-      localStorage.removeItem('ds_infinity_castle_seats');
-      localStorage.removeItem('ds_infinity_castle_user_bookings');
-      localStorage.removeItem('ds_infinity_castle_active_user');
+      // 2. Clear browser LocalStorage
+      localStorage.clear();
 
-      // 3. Reset all React state
+      // 3. Generate 100% fresh, empty seat map
+      const freshSeatMap = generateInitialSeatMap();
+      saveSeatMap(freshSeatMap);
+
+      // 4. Reset React states
       setRegisteredViewers([]);
-      setSeatMapState(getSeatMap());
+      setSeatMapState(freshSeatMap);
       setUserBookingsState([]);
       setVerifiedUser(null);
       setSelectedSeats([]);
       setActiveTicket(null);
       setSelectedAudiKey('AUDI_1');
 
-      alert('✅ All data has been cleared from the database and this browser.');
+      alert('✅ All data, bookings, and occupied seats have been completely reset!');
     } catch (err) {
       console.error('Reset failed:', err);
       alert(`❌ Reset failed: ${err.message}`);
