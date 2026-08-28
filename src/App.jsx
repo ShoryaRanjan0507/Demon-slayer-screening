@@ -54,23 +54,49 @@ export default function App() {
     const syncNeonData = async () => {
       try {
         const neonViewers = await fetchNeonViewers();
-        if (neonViewers && neonViewers.length > 0) {
-          saveRegisteredViewers(neonViewers);
-          setRegisteredViewers(neonViewers);
+        if (neonViewers && Array.isArray(neonViewers)) {
+          const localViewers = getRegisteredViewers();
+          const viewerMap = new Map();
+
+          // Add local viewers first
+          localViewers.forEach(v => {
+            if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
+          });
+
+          // Add/override with Neon DB viewers
+          neonViewers.forEach(v => {
+            if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
+          });
+
+          const mergedViewers = Array.from(viewerMap.values());
+          saveRegisteredViewers(mergedViewers);
+          setRegisteredViewers(mergedViewers);
         }
 
         const neonBookings = await fetchNeonBookings();
-        if (neonBookings && neonBookings.length > 0) {
-          localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
-          setUserBookingsState(neonBookings);
+        if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
+          const localBookings = getUserBookings();
+          const bookingMap = new Map();
+
+          // Add local bookings first
+          localBookings.forEach(b => {
+            if (b && b.bookingId) bookingMap.set(b.bookingId, b);
+          });
+
+          // Add/override with Neon DB bookings
+          neonBookings.forEach(b => {
+            if (b && b.bookingId) bookingMap.set(b.bookingId, b);
+          });
+
+          const mergedBookings = Array.from(bookingMap.values());
+          localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(mergedBookings));
+          setUserBookingsState(mergedBookings);
         }
 
         const neonSeats = await fetchNeonSeatMap();
         if (neonSeats) {
           saveSeatMap(neonSeats);
           setSeatMapState(neonSeats);
-        } else {
-          setSeatMapState(getSeatMap());
         }
       } catch (err) {
         console.error("Neon DB sync warning:", err);
@@ -79,8 +105,8 @@ export default function App() {
 
     syncNeonData();
 
-    // 3. Live 5-second polling interval across devices
-    const syncInterval = setInterval(syncNeonData, 5000);
+    // 3. Live 3-second polling interval across devices
+    const syncInterval = setInterval(syncNeonData, 3000);
     return () => clearInterval(syncInterval);
   }, []);
 
