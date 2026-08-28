@@ -26,7 +26,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const { email, name, rollNo } = req.body;
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      const { email, name, rollNo } = body;
       if (!email || !name) {
         return res.status(400).json({ error: 'email and name are required' });
       }

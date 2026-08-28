@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const b = req.body;
+      const b = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
       if (!b || !b.bookingId) {
         return res.status(400).json({ error: 'bookingId is required' });
       }
@@ -72,7 +72,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      const { bookingId, status, checkedIn, checkInTime } = req.body;
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      const { bookingId, status, checkedIn, checkInTime } = body;
       if (!bookingId) {
         return res.status(400).json({ error: 'bookingId is required' });
       }

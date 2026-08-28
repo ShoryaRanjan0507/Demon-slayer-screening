@@ -23,7 +23,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const { seatMap } = req.body;
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      const { seatMap } = body;
       if (!seatMap) {
         return res.status(400).json({ error: 'seatMap is required' });
       }
