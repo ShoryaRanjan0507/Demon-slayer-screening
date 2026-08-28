@@ -2,21 +2,23 @@ import { neon } from '@neondatabase/serverless';
 
 const DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz.c-2.us-east-2.aws.neon.tech/neondb";
 
-let activeUrl = DEFAULT_NEON_URL;
-try {
-  if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
-    const custom = import.meta.env.VITE_NEON_DATABASE_URL.trim();
-    if (custom.length > 10) activeUrl = custom.split('?')[0].replace('-pooler.', '.');
+export const getSql = () => {
+  let activeUrl = DEFAULT_NEON_URL;
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
+      const custom = import.meta.env.VITE_NEON_DATABASE_URL.trim();
+      if (custom.length > 10) activeUrl = custom.split('?')[0].replace('-pooler.', '.');
+    }
+  } catch (e) {
+    activeUrl = DEFAULT_NEON_URL;
   }
-} catch (e) {
-  activeUrl = DEFAULT_NEON_URL;
-}
-
-export const sql = neon(activeUrl);
+  return neon(activeUrl);
+};
 
 // Initialize Database Tables in Neon Postgres
 export const initNeonDatabase = async () => {
   try {
+    const sql = getSql();
     await sql`
       CREATE TABLE IF NOT EXISTS viewers (
         email TEXT PRIMARY KEY,
@@ -63,6 +65,7 @@ export const initNeonDatabase = async () => {
 // Fetch registered viewers from Neon Postgres
 export const fetchNeonViewers = async () => {
   try {
+    const sql = getSql();
     const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
     if (!rows) return [];
     console.log("⚡ [Neon DB] Viewers loaded from database:", rows.length);
@@ -80,8 +83,8 @@ export const fetchNeonViewers = async () => {
 
 // Save a new viewer to Neon Postgres
 export const saveNeonViewer = async (viewer) => {
-  if (!sql) return false;
   try {
+    const sql = getSql();
     await sql`
       INSERT INTO viewers (email, name, roll_no)
       VALUES (${viewer.email.toLowerCase()}, ${viewer.name}, ${viewer.rollNo || ''})
@@ -97,8 +100,8 @@ export const saveNeonViewer = async (viewer) => {
 
 // Fetch all bookings from Neon Postgres
 export const fetchNeonBookings = async () => {
-  if (!sql) return null;
   try {
+    const sql = getSql();
     const rows = await sql`
       SELECT 
         booking_id as "bookingId",
@@ -143,8 +146,8 @@ export const fetchNeonBookings = async () => {
 
 // Save a new booking record to Neon Postgres
 export const saveNeonBooking = async (b) => {
-  if (!sql) return false;
   try {
+    const sql = getSql();
     await sql`
       INSERT INTO bookings (
         booking_id, user_email, user_name, user_roll_no, auditorium, 
@@ -164,6 +167,7 @@ export const saveNeonBooking = async (b) => {
   } catch (err) {
     console.error("Save Neon Booking Warning (Retrying fallback without heavy payload):", err);
     try {
+      const sql = getSql();
       await sql`
         INSERT INTO bookings (
           booking_id, user_email, user_name, user_roll_no, auditorium, 
@@ -187,8 +191,8 @@ export const saveNeonBooking = async (b) => {
 
 // Update booking status in Neon Postgres
 export const updateNeonBookingStatus = async (bookingId, status) => {
-  if (!sql) return false;
   try {
+    const sql = getSql();
     await sql`
       UPDATE bookings 
       SET status = ${status}
@@ -203,8 +207,8 @@ export const updateNeonBookingStatus = async (bookingId, status) => {
 
 // Update check-in status in Neon Postgres
 export const markNeonCheckIn = async (bookingId, checkInTime) => {
-  if (!sql) return false;
   try {
+    const sql = getSql();
     await sql`
       UPDATE bookings 
       SET checked_in = TRUE, check_in_time = ${checkInTime}
@@ -219,8 +223,8 @@ export const markNeonCheckIn = async (bookingId, checkInTime) => {
 
 // Save full dual seat map state to Neon Postgres
 export const saveNeonSeatMap = async (seatMapData) => {
-  if (!sql) return false;
   try {
+    const sql = getSql();
     await sql`
       INSERT INTO seat_maps (audi_id, seat_data, updated_at)
       VALUES ('MAIN_SEAT_MAP', ${JSON.stringify(seatMapData)}, CURRENT_TIMESTAMP)
@@ -236,8 +240,8 @@ export const saveNeonSeatMap = async (seatMapData) => {
 
 // Fetch full seat map state from Neon Postgres
 export const fetchNeonSeatMap = async () => {
-  if (!sql) return null;
   try {
+    const sql = getSql();
     const rows = await sql`SELECT seat_data FROM seat_maps WHERE audi_id = 'MAIN_SEAT_MAP' LIMIT 1`;
     if (rows && rows.length > 0) {
       return typeof rows[0].seat_data === 'string' ? JSON.parse(rows[0].seat_data) : rows[0].seat_data;
