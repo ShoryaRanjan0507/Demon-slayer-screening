@@ -110,9 +110,35 @@ export default function App() {
     return () => clearInterval(syncInterval);
   }, []);
 
-  // Update storage helpers
-  const handleUpdateViewers = () => {
-    setRegisteredViewers(getRegisteredViewers());
+  // Update storage helpers & sync with Neon DB
+  const handleUpdateViewers = async () => {
+    try {
+      const neonViewers = await fetchNeonViewers();
+      if (neonViewers && Array.isArray(neonViewers)) {
+        const localViewers = getRegisteredViewers();
+        const viewerMap = new Map();
+        localViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
+        neonViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
+        const mergedViewers = Array.from(viewerMap.values());
+        saveRegisteredViewers(mergedViewers);
+        setRegisteredViewers(mergedViewers);
+      } else {
+        setRegisteredViewers(getRegisteredViewers());
+      }
+
+      const neonBookings = await fetchNeonBookings();
+      if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
+        const localBookings = getUserBookings();
+        const bookingMap = new Map();
+        localBookings.forEach(b => { if (b && b.bookingId) bookingMap.set(b.bookingId, b); });
+        neonBookings.forEach(b => { if (b && b.bookingId) bookingMap.set(b.bookingId, b); });
+        const mergedBookings = Array.from(bookingMap.values());
+        localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(mergedBookings));
+        setUserBookingsState(mergedBookings);
+      }
+    } catch (err) {
+      setRegisteredViewers(getRegisteredViewers());
+    }
   };
 
   const handleUpdateBookings = (updatedBookings, updatedSeatMap) => {
