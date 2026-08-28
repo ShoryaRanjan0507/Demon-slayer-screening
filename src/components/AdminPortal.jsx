@@ -291,6 +291,15 @@ export default function AdminPortal({
 
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => {
+                      if (onUpdateViewers) onUpdateViewers();
+                    }}
+                    className="flex items-center gap-1.5 rounded-lg border border-amber-500/50 bg-amber-950/40 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-900/80 hover-zoom"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" /> Sync DB
+                  </button>
+
+                  <button
                     onClick={onResetData}
                     className="flex items-center gap-1.5 rounded-lg border border-red-500/50 bg-red-950/40 px-3 py-1.5 text-xs font-bold text-red-300 hover:bg-red-900/80 hover-zoom"
                   >
