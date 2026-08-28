@@ -9,7 +9,8 @@ try {
 } catch (e) {
   // safe fallback
 }
-const DB_URL = (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 10) ? envUrl.trim() : FALLBACK_URL;
+const DB_URL_RAW = (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 10) ? envUrl.trim() : FALLBACK_URL;
+const DB_URL = DB_URL_RAW ? DB_URL_RAW.split('?')[0] : '';
 
 export const sql = DB_URL ? neon(DB_URL) : null;
 

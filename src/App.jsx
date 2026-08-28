@@ -58,15 +58,17 @@ export default function App() {
           const localViewers = getRegisteredViewers();
           const viewerMap = new Map();
 
-          // Add Neon DB viewers FIRST so newest registrations sit at the TOP of the list
+          // Add Neon DB viewers FIRST (Real Database Registrations)
           neonViewers.forEach(v => {
             if (v && v.email) viewerMap.set(v.email.toLowerCase(), v);
           });
 
-          // Add any remaining local viewers
+          // Add local viewers ONLY if they are not fake pre-seeded placeholders
           localViewers.forEach(v => {
-            if (v && v.email && !viewerMap.has(v.email.toLowerCase())) {
-              viewerMap.set(v.email.toLowerCase(), v);
+            if (v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club')) {
+              if (!viewerMap.has(v.email.toLowerCase())) {
+                viewerMap.set(v.email.toLowerCase(), v);
+              }
             }
           });
 
@@ -80,12 +82,10 @@ export default function App() {
           const localBookings = getUserBookings();
           const bookingMap = new Map();
 
-          // Add Neon DB bookings FIRST so newest bookings sit at the TOP of the list
           neonBookings.forEach(b => {
             if (b && b.bookingId) bookingMap.set(b.bookingId, b);
           });
 
-          // Add any remaining local bookings
           localBookings.forEach(b => {
             if (b && b.bookingId && !bookingMap.has(b.bookingId)) {
               bookingMap.set(b.bookingId, b);
@@ -122,7 +122,11 @@ export default function App() {
         const localViewers = getRegisteredViewers();
         const viewerMap = new Map();
         neonViewers.forEach(v => { if (v && v.email) viewerMap.set(v.email.toLowerCase(), v); });
-        localViewers.forEach(v => { if (v && v.email && !viewerMap.has(v.email.toLowerCase())) viewerMap.set(v.email.toLowerCase(), v); });
+        localViewers.forEach(v => {
+          if (v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club')) {
+            if (!viewerMap.has(v.email.toLowerCase())) viewerMap.set(v.email.toLowerCase(), v);
+          }
+        });
         const mergedViewers = Array.from(viewerMap.values());
         saveRegisteredViewers(mergedViewers);
         setRegisteredViewers(mergedViewers);
