@@ -1,25 +1,22 @@
 import { neon } from '@neondatabase/serverless';
 
-const FALLBACK_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
-let envUrl = null;
+const DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb";
+
+let activeUrl = DEFAULT_NEON_URL;
 try {
-  if (typeof import.meta !== 'undefined' && import.meta && import.meta.env) {
-    envUrl = import.meta.env.VITE_NEON_DATABASE_URL;
+  if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
+    const custom = import.meta.env.VITE_NEON_DATABASE_URL.trim();
+    if (custom.length > 10) activeUrl = custom.split('?')[0];
   }
 } catch (e) {
-  // safe fallback
+  activeUrl = DEFAULT_NEON_URL;
 }
-const DB_URL_RAW = (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 10) ? envUrl.trim() : FALLBACK_URL;
-const DB_URL = DB_URL_RAW ? DB_URL_RAW.split('?')[0] : '';
 
-export const sql = DB_URL ? neon(DB_URL) : null;
+export const sql = neon(activeUrl);
 
 // Initialize Database Tables in Neon Postgres
 export const initNeonDatabase = async () => {
-  if (!sql) return { success: false, msg: 'No Neon DB URL configured' };
-
   try {
-    // 1. Create registered viewers table
     await sql`
       CREATE TABLE IF NOT EXISTS viewers (
         email TEXT PRIMARY KEY,
@@ -29,7 +26,6 @@ export const initNeonDatabase = async () => {
       );
     `;
 
-    // 2. Create ticket bookings table
     await sql`
       CREATE TABLE IF NOT EXISTS bookings (
         booking_id TEXT PRIMARY KEY,
@@ -48,7 +44,6 @@ export const initNeonDatabase = async () => {
       );
     `;
 
-    // 3. Create seat maps table
     await sql`
       CREATE TABLE IF NOT EXISTS seat_maps (
         audi_id TEXT PRIMARY KEY,
@@ -67,7 +62,6 @@ export const initNeonDatabase = async () => {
 
 // Fetch registered viewers from Neon Postgres
 export const fetchNeonViewers = async () => {
-  if (!sql) return null;
   try {
     const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
     if (!rows) return [];
@@ -80,7 +74,7 @@ export const fetchNeonViewers = async () => {
     }));
   } catch (err) {
     console.error("⚡ Fetch Neon Viewers Error:", err);
-    return null;
+    throw err;
   }
 };
 

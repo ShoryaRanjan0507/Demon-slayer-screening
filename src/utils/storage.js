@@ -21,10 +21,14 @@ const KEYS = {
 export const getRegisteredViewers = () => {
   try {
     const data = localStorage.getItem(KEYS.VIEWERS);
-    return data ? JSON.parse(data) : INITIAL_REGISTERED_VIEWERS;
+    if (!data) return [];
+    const parsed = JSON.parse(data);
+    if (!Array.isArray(parsed)) return [];
+    // Filter out fake static demo accounts (@demonslayer.club, @hashira.club)
+    return parsed.filter(v => v && v.email && !v.email.endsWith('@demonslayer.club') && !v.email.endsWith('@hashira.club'));
   } catch (e) {
     console.error("Storage error:", e);
-    return INITIAL_REGISTERED_VIEWERS;
+    return [];
   }
 };
 

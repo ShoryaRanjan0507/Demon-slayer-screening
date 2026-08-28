@@ -47,10 +47,11 @@ export default function AdminPortal({
       if (onUpdateViewers) await onUpdateViewers();
       setSyncSuccessMsg('Synced!');
     } catch (e) {
-      setSyncSuccessMsg('Synced!');
+      console.error("Manual Sync Error:", e);
+      setSyncSuccessMsg('Sync Error');
     } finally {
       setIsSyncingDB(false);
-      setTimeout(() => setSyncSuccessMsg(''), 3000);
+      setTimeout(() => setSyncSuccessMsg(''), 4000);
     }
   };
 
