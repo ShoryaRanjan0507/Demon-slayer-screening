@@ -27,7 +27,7 @@ const getDirectSql = async () => {
   if (directSql) return directSql;
   try {
     const { neon } = await import('@neondatabase/serverless');
-    let url = "postgresql://neondb_owner:npg_e6wn1AzBgGpF@ep-super-recipe-aesw3lnz-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
+    let url = "postgresql://neondb_owner:npg_hIOBTiYDVL59@ep-purple-forest-axyt3h5l-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require";
     try {
       if (typeof import.meta !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_NEON_DATABASE_URL) {
         url = import.meta.env.VITE_NEON_DATABASE_URL;
