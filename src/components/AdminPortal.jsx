@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check, XCircle, Clock3, Image as ImageIcon, Camera, CameraOff } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { addRegisteredViewer, updateBookingStatus, markTicketCheckedIn } from '../utils/storage';
+import { fetchNeonBookingsFull } from '../utils/db';
 
 export default function AdminPortal({ 
   isOpen, 
@@ -25,6 +26,9 @@ export default function AdminPortal({
 
   // Screenshot preview modal state
   const [previewScreenshot, setPreviewScreenshot] = useState(null);
+
+  // Full bookings with screenshots (loaded on-demand when admin opens)
+  const [fullBookings, setFullBookings] = useState(null);
 
   // New viewer form
   const [newEmail, setNewEmail] = useState('');
@@ -74,7 +78,16 @@ export default function AdminPortal({
     if (isOpen && onUpdateViewers) {
       onUpdateViewers();
     }
-  }, [isOpen, onUpdateViewers]);
+    // Load full bookings with screenshots when admin portal opens
+    if (isOpen && isAuthenticated) {
+      fetchNeonBookingsFull().then(data => {
+        if (data) setFullBookings(data);
+      }).catch(() => {});
+    }
+  }, [isOpen, onUpdateViewers, isAuthenticated]);
+
+  // Merge: use fullBookings (with screenshots) if available, otherwise fall back to prop
+  const displayBookings = fullBookings || userBookings;
 
   if (!isOpen) return null;
 
@@ -342,7 +355,7 @@ export default function AdminPortal({
                   <Clock3 className="h-3.5 w-3.5" />
                   Pending Approvals
                   <span className="ml-1 rounded-full bg-red-950 px-2 py-0.5 text-[10px] font-mono font-black text-red-400 border border-red-500/40">
-                    {userBookings.filter(b => b.status === 'PENDING_VERIFICATION').length}
+                    {displayBookings.filter(b => b.status === 'PENDING_VERIFICATION').length}
                   </span>
                 </button>
 
@@ -371,7 +384,7 @@ export default function AdminPortal({
                     activeTab === 'bookings' ? 'bg-amber-500 text-black shadow-md' : 'bg-black/40 text-gray-400 hover:text-white'
                   }`}
                 >
-                  All Bookings ({userBookings.length})
+                  All Bookings ({displayBookings.length})
                 </button>
               </div>
 
@@ -389,14 +402,14 @@ export default function AdminPortal({
                       </span>
                     </div>
 
-                    {userBookings.filter(b => b.status === 'PENDING_VERIFICATION').length === 0 ? (
+                    {displayBookings.filter(b => b.status === 'PENDING_VERIFICATION').length === 0 ? (
                       <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-8 text-center text-xs text-emerald-300">
                         <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400 mb-2" />
                         All payment submissions are verified! No pending UTR approvals.
                       </div>
                     ) : (
                       <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-                        {userBookings.filter(b => b.status === 'PENDING_VERIFICATION').map(b => (
+                        {displayBookings.filter(b => b.status === 'PENDING_VERIFICATION').map(b => (
                           <div key={b.bookingId} className="p-3.5 rounded-xl border border-amber-900/60 bg-black/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover-zoom">
                             <div>
                               <div className="flex flex-wrap items-center gap-2">
@@ -608,7 +621,7 @@ export default function AdminPortal({
                 {activeTab === 'bookings' && (
                   <div className="space-y-4 animate-fadeIn">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Total Bookings: {userBookings.length}</span>
+                      <span className="text-xs text-gray-400">Total Bookings: {displayBookings.length}</span>
                       <button
                         onClick={handleExportBookingsCsv}
                         className="flex items-center gap-1 rounded bg-amber-600 px-3 py-1 text-xs font-bold text-black hover:bg-amber-500 hover-zoom"
@@ -618,10 +631,10 @@ export default function AdminPortal({
                     </div>
 
                     <div className="max-h-64 overflow-y-auto rounded-xl border border-amber-950/60 bg-black/40 p-2 space-y-1.5">
-                      {userBookings.length === 0 ? (
+                      {displayBookings.length === 0 ? (
                         <p className="text-xs text-gray-500 text-center py-6">No user bookings recorded on site yet.</p>
                       ) : (
-                        userBookings.map(b => (
+                        displayBookings.map(b => (
                           <div key={b.bookingId} className="p-2.5 rounded bg-black/60 border border-amber-950/40 text-xs flex items-center justify-between hover-zoom">
                             <div>
                               <strong className="text-amber-400">{b.bookingId}</strong> — {b.user.name} ({b.user.email})

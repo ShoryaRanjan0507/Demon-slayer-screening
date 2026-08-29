@@ -115,10 +115,41 @@ export const saveNeonViewer = async (viewer) => {
 
 // ─── Bookings ───
 
+// Lightweight fetch (excludes payment_screenshot to save bandwidth during polling)
 export const fetchNeonBookings = async () => {
   try {
     if (IS_PRODUCTION) {
       const data = await apiFetch('/api/bookings');
+      return data.bookings || [];
+    } else {
+      const sql = await getDirectSql();
+      if (!sql) return null;
+      const rows = await sql`
+        SELECT booking_id as "bookingId", user_email, user_name, user_roll_no, auditorium, seats,
+          total_amount::float as "totalAmount", utr_number as "utrNumber",
+          status, checked_in as "checkedIn", check_in_time as "checkInTime", timestamp
+        FROM bookings ORDER BY timestamp DESC;
+      `;
+      return (rows || []).map(r => ({
+        bookingId: r.bookingId,
+        user: { email: r.user_email, name: r.user_name, rollNo: r.user_roll_no },
+        auditorium: r.auditorium,
+        seats: typeof r.seats === 'string' ? JSON.parse(r.seats) : r.seats,
+        totalAmount: r.totalAmount, utrNumber: r.utrNumber, paymentScreenshot: null,
+        status: r.status, checkedIn: r.checkedIn, checkInTime: r.checkInTime, timestamp: r.timestamp
+      }));
+    }
+  } catch (err) {
+    console.error("Fetch Bookings Error:", err);
+    return null;
+  }
+};
+
+// Full fetch (includes payment_screenshot — for admin portal only)
+export const fetchNeonBookingsFull = async () => {
+  try {
+    if (IS_PRODUCTION) {
+      const data = await apiFetch('/api/bookings?full=true');
       return data.bookings || [];
     } else {
       const sql = await getDirectSql();
@@ -139,7 +170,7 @@ export const fetchNeonBookings = async () => {
       }));
     }
   } catch (err) {
-    console.error("Fetch Bookings Error:", err);
+    console.error("Fetch Bookings Full Error:", err);
     return null;
   }
 };

@@ -14,24 +14,27 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      const rows = await sql`
-        SELECT 
-          booking_id as "bookingId",
-          user_email,
-          user_name,
-          user_roll_no,
-          auditorium,
-          seats,
-          total_amount::float as "totalAmount",
-          utr_number as "utrNumber",
-          payment_screenshot as "paymentScreenshot",
-          status,
-          checked_in as "checkedIn",
-          check_in_time as "checkInTime",
-          timestamp
-        FROM bookings 
-        ORDER BY timestamp DESC;
-      `;
+      // ?full=true includes payment_screenshot (for admin portal only)
+      // Default excludes it to save bandwidth during polling
+      const includeFull = req.query?.full === 'true';
+
+      const rows = includeFull
+        ? await sql`
+            SELECT 
+              booking_id as "bookingId", user_email, user_name, user_roll_no, auditorium, seats,
+              total_amount::float as "totalAmount", utr_number as "utrNumber",
+              payment_screenshot as "paymentScreenshot",
+              status, checked_in as "checkedIn", check_in_time as "checkInTime", timestamp
+            FROM bookings ORDER BY timestamp DESC;
+          `
+        : await sql`
+            SELECT 
+              booking_id as "bookingId", user_email, user_name, user_roll_no, auditorium, seats,
+              total_amount::float as "totalAmount", utr_number as "utrNumber",
+              status, checked_in as "checkedIn", check_in_time as "checkInTime", timestamp
+            FROM bookings ORDER BY timestamp DESC;
+          `;
+
       const bookings = (rows || []).map(r => ({
         bookingId: r.bookingId,
         user: { email: r.user_email, name: r.user_name, rollNo: r.user_roll_no },
@@ -39,7 +42,7 @@ export default async function handler(req, res) {
         seats: typeof r.seats === 'string' ? JSON.parse(r.seats) : r.seats,
         totalAmount: r.totalAmount,
         utrNumber: r.utrNumber,
-        paymentScreenshot: r.paymentScreenshot,
+        paymentScreenshot: r.paymentScreenshot || null,
         status: r.status,
         checkedIn: r.checkedIn,
         checkInTime: r.checkInTime,

@@ -79,8 +79,8 @@ export default function App() {
 
     syncNeonData();
 
-    // 3. Live 3-second polling interval across devices
-    const syncInterval = setInterval(syncNeonData, 3000);
+    // 3. Live 15-second polling interval across devices (reduced from 3s to save bandwidth)
+    const syncInterval = setInterval(syncNeonData, 15000);
     return () => clearInterval(syncInterval);
   }, []);
 
