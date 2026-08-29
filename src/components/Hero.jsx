@@ -98,7 +98,7 @@ export default function Hero({ verifiedUser, onStartBooking }) {
               <div className="flex items-center gap-2 text-xs font-semibold text-gray-400">
                 <Tag className="h-3.5 w-3.5 text-emerald-400" /> Tickets From
               </div>
-              <p className="mt-1 text-sm font-bold text-emerald-400">₹59 onwards</p>
+              <p className="mt-1 text-sm font-bold text-emerald-400">₹67</p>
             </div>
           </div>
 
