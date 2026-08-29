@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, Sparkles, Flame, CheckCircle, ChevronDown, Tag } from 'lucide-react';
-import { SEAT_TIERS, EVENT_DETAILS } from '../data/initialData';
+import { EVENT_DETAILS } from '../data/initialData';
 
 export default function Hero({ verifiedUser, onStartBooking }) {
   const calculateTimeLeft = () => {
@@ -149,26 +149,21 @@ export default function Hero({ verifiedUser, onStartBooking }) {
             </div>
           </div>
 
-          {/* Seat Tiers Overview Cards with Zoom-In Hover */}
+          {/* Seat Pricing Overview */}
           <div className="mt-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Hall Seat Tier Pricing</h4>
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-              {Object.entries(SEAT_TIERS).map(([key, tier]) => (
-                <div
-                  key={key}
-                  className="rounded-xl border p-3.5 hover-zoom cursor-pointer"
-                  style={{
-                    borderColor: tier.borderColor,
-                    backgroundColor: tier.lightColor
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase" style={{ color: tier.color }}>{tier.name}</span>
-                    <span className="text-base font-black text-white">₹{tier.price}</span>
-                  </div>
-                  <p className="mt-1 text-[11px] text-gray-300 line-clamp-2">{tier.description}</p>
-                </div>
-              ))}
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Seat Pricing</h4>
+            <div
+              className="rounded-xl border p-3.5 hover-zoom cursor-pointer"
+              style={{
+                borderColor: '#ff8c42',
+                backgroundColor: 'rgba(255, 107, 26, 0.22)'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase" style={{ color: '#ff6b1a' }}>Standard — All Seats</span>
+                <span className="text-base font-black text-white">₹67</span>
+              </div>
+              <p className="mt-1 text-[11px] text-gray-300 line-clamp-2">Rows A to P — 288 seats across 16 rows with full Infinity Castle surround experience.</p>
             </div>
           </div>
 

@@ -32,34 +32,16 @@ export const EVENT_DETAILS = {
   targetIso: "2026-09-03T13:20:00"
 };
 
-// Seat Categories configuration (Standard Price: ₹67 for all zones)
+// Seat Categories configuration (Single Standard Price: ₹67)
 export const SEAT_TIERS = {
-  FRONT_ZONE: {
-    name: "Front Selection",
+  STANDARD: {
+    name: "Standard",
     price: 67,
-    badge: "Frontmost to Screen",
-    color: "#ff6b1a", // Flame orange
-    lightColor: "rgba(255, 107, 26, 0.25)",
+    badge: "All Seats",
+    color: "#ff6b1a", // Neon orange
+    lightColor: "rgba(255, 107, 26, 0.22)",
     borderColor: "#ff8c42",
-    description: "Rows A to D — Frontmost to the screen, immersive close-up view."
-  },
-  MID_ZONE: {
-    name: "Demon Slayer Center",
-    price: 67,
-    badge: "Sweet Spot",
-    color: "#8a2be2", // Purple
-    lightColor: "rgba(138, 43, 226, 0.25)",
-    borderColor: "#b15eff",
-    description: "Rows E to K — Perfect eye-level center view with balanced surround sound."
-  },
-  REAR_ZONE: {
-    name: "Hashira Rear VIP",
-    price: 67,
-    badge: "Elevated Rear View",
-    color: "#e62035", // Crimson red
-    lightColor: "rgba(230, 32, 53, 0.25)",
-    borderColor: "#ff4d6d",
-    description: "Rows L to P — Clear elevated rear view with full auditorium perspective."
+    description: "Rows A to P — 288 seats across 16 rows with full Infinity Castle surround experience."
   }
 };
 
@@ -70,19 +52,14 @@ export const generateSingleAudiSeatMap = (audiLabel) => {
   const seatMap = {};
 
   rows.forEach(row => {
-    let tierKey = 'MID_ZONE';
-    if (['A', 'B', 'C', 'D'].includes(row)) tierKey = 'FRONT_ZONE';
-    else if (['E', 'F', 'G', 'H', 'I', 'J', 'K'].includes(row)) tierKey = 'MID_ZONE';
-    else if (['L', 'M', 'N', 'O', 'P'].includes(row)) tierKey = 'REAR_ZONE';
-
     for (let num = 1; num <= seatsPerRow; num++) {
       const seatId = `${row}${num}`;
       seatMap[seatId] = {
         id: seatId,
         row: row,
         number: num,
-        tierKey: tierKey,
-        price: SEAT_TIERS[tierKey].price,
+        tierKey: 'STANDARD',
+        price: 67,
         status: 'available', // ALL SEATS EMPTY
         bookedBy: null,
         auditorium: audiLabel

@@ -171,15 +171,13 @@ export default function SeatMap({
 
       {/* Tier Legend Bar */}
       <div className="mb-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 rounded-xl border border-red-950/60 bg-black/50 p-4 backdrop-blur-md animate-popup">
-        {Object.entries(SEAT_TIERS).map(([key, tier]) => (
-          <div key={key} className="flex items-center gap-2 text-xs font-semibold text-white hover-zoom">
-            <span
-              className="h-4 w-4 rounded border shadow-sm"
-              style={{ borderColor: tier.borderColor, backgroundColor: tier.lightColor }}
-            ></span>
-            {tier.name} (₹{tier.price})
-          </div>
-        ))}
+        <div className="flex items-center gap-2 text-xs font-semibold text-white hover-zoom">
+          <span
+            className="h-4 w-4 rounded border shadow-sm"
+            style={{ borderColor: '#ff8c42', backgroundColor: 'rgba(255, 107, 26, 0.22)' }}
+          ></span>
+          Standard (₹67)
+        </div>
         <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 border-l border-red-950/80 pl-4">
           <span className="h-4 w-4 rounded bg-gray-800 border border-gray-700 opacity-60"></span>
           Occupied
@@ -291,7 +289,7 @@ function renderSeatButton(seat, selectedSeats, onToggleSeat) {
 
   const isSelected = selectedSeats.includes(seat.id);
   const isOccupied = seat.status === 'occupied';
-  const tierConfig = SEAT_TIERS[seat.tierKey] || SEAT_TIERS.MID_ZONE;
+  const tierConfig = SEAT_TIERS[seat.tierKey] || SEAT_TIERS.STANDARD;
 
   if (isOccupied) {
     return (
