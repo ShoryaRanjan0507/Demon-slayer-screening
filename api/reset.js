@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 
-const NEON_URL = process.env.VITE_NEON_DATABASE_URL || process.env.NEON_DATABASE_URL || "postgresql://neondb_owner:npg_hIOBTiYDVL59@ep-purple-forest-axyt3h5l-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require";
+const NEON_URL = process.env.NEON_DATABASE_URL || process.env.VITE_NEON_DATABASE_URL || "postgresql://neondb_owner:npg_hIOBTiYDVL59@ep-purple-forest-axyt3h5l-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require";
 const sql = neon(NEON_URL);
 
 export default async function handler(req, res) {
