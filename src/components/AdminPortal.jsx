@@ -286,12 +286,12 @@ export default function AdminPortal({
                     type="password"
                     value={pinInput}
                     onChange={(e) => setPinInput(e.target.value)}
-                    placeholder="Enter PIN (Default: anime2026)"
+                    placeholder="Enter Organiser PIN"
                     className="w-full rounded-xl border border-amber-900/60 bg-black/60 py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:border-amber-500 focus:outline-none"
                   />
                 </div>
 
-                {pinError && <p className="text-xs text-red-400 font-semibold animate-popup">Incorrect PIN. Try: anime2026</p>}
+                {pinError && <p className="text-xs text-red-400 font-semibold animate-popup">Incorrect PIN. Contact the organiser for access.</p>}
 
                 <button
                   type="submit"

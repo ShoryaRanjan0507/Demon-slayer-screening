@@ -32,11 +32,11 @@ export const EVENT_DETAILS = {
   targetIso: "2026-09-03T13:20:00"
 };
 
-// Seat Categories configuration (3 Tiers: Front ₹59, Center ₹69, Rear VIP ₹79)
+// Seat Categories configuration (Standard Price: ₹67 for all zones)
 export const SEAT_TIERS = {
   FRONT_ZONE: {
     name: "Front Selection",
-    price: 59,
+    price: 67,
     badge: "Frontmost to Screen",
     color: "#ff6b1a", // Flame orange
     lightColor: "rgba(255, 107, 26, 0.25)",
@@ -45,7 +45,7 @@ export const SEAT_TIERS = {
   },
   MID_ZONE: {
     name: "Demon Slayer Center",
-    price: 69,
+    price: 67,
     badge: "Sweet Spot",
     color: "#8a2be2", // Purple
     lightColor: "rgba(138, 43, 226, 0.25)",
@@ -54,7 +54,7 @@ export const SEAT_TIERS = {
   },
   REAR_ZONE: {
     name: "Hashira Rear VIP",
-    price: 79,
+    price: 67,
     badge: "Elevated Rear View",
     color: "#e62035", // Crimson red
     lightColor: "rgba(230, 32, 53, 0.25)",

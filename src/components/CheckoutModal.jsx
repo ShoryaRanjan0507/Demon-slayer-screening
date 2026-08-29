@@ -27,7 +27,7 @@ export default function CheckoutModal({
     : (seatMap || {});
 
   // Calculate total price
-  const totalPrice = selectedSeats.reduce((sum, seatId) => sum + (currentSeatMap[seatId]?.price || 69), 0);
+  const totalPrice = selectedSeats.reduce((sum, seatId) => sum + (currentSeatMap[seatId]?.price || 67), 0);
 
   const handleCopyAcc = () => {
     navigator.clipboard.writeText(BANK_DETAILS.accountNumber);
@@ -117,7 +117,7 @@ export default function CheckoutModal({
         id: id,
         row: id.slice(0, 1),
         number: parseInt(id.slice(1), 10) || 1,
-        price: 69,
+        price: 67,
         status: 'occupied'
       };
     });
