@@ -141,38 +141,7 @@ export default function App() {
     }
   };
 
-  // Toggle Audi 1 Full simulation for easy overflow testing
-  const handleSimulateAudi1Full = () => {
-    const currentMap = { ...seatMap };
-    if (!currentMap.AUDI_1) return;
 
-    const audi1Seats = Object.values(currentMap.AUDI_1);
-    const bookedCount = audi1Seats.filter(s => s.status === 'occupied').length;
-
-    const updatedAudi1 = { ...currentMap.AUDI_1 };
-    
-    if (bookedCount >= 288) {
-      // Reset Audi 1 seats back to available
-      Object.keys(updatedAudi1).forEach(id => {
-        updatedAudi1[id] = { ...updatedAudi1[id], status: 'available', bookedBy: null };
-      });
-      setSelectedAudiKey('AUDI_1');
-    } else {
-      // Mark all 288 seats in Audi 1 as occupied
-      Object.keys(updatedAudi1).forEach(id => {
-        updatedAudi1[id] = { 
-          ...updatedAudi1[id], 
-          status: 'occupied', 
-          bookedBy: { name: "Full Booking Demo", email: "demo@animeclub.org" } 
-        };
-      });
-      setSelectedAudiKey('AUDI_2');
-    }
-
-    const newMapState = { ...currentMap, AUDI_1: updatedAudi1 };
-    setSeatMapState(newMapState);
-    saveSeatMap(newMapState);
-  };
 
   // Handle Verification success
   const handleVerifySuccess = (user) => {
@@ -317,7 +286,6 @@ export default function App() {
                   onProceedToCheckout={() => setShowCheckoutModal(true)}
                   selectedAudiKey={selectedAudiKey}
                   onSelectAudiKey={setSelectedAudiKey}
-                  onSimulateAudi1Full={handleSimulateAudi1Full}
                 />
               )}
             </section>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, User, Mail, AlertTriangle, CheckCircle2, ArrowRight, Zap, Phone, IdCard, UserPlus, LogIn } from 'lucide-react';
+import { ShieldCheck, User, Mail, AlertTriangle, CheckCircle2, ArrowRight, Phone, IdCard, UserPlus, LogIn } from 'lucide-react';
 import { addRegisteredViewer } from '../utils/storage';
 
 export default function VerificationStep({ onVerifySuccess, registeredViewers, onRegisterNewViewer }) {
@@ -75,14 +75,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
     }
   };
 
-  const handleQuickDemo = (demoViewer) => {
-    setLoginQuery(demoViewer.email);
-    setErrorMsg('');
-    setSuccessUser(demoViewer);
-    setTimeout(() => {
-      onVerifySuccess(demoViewer);
-    }, 700);
-  };
+
 
   return (
     <div className="mx-auto max-w-xl rounded-2xl border border-red-900/60 bg-[#0d091a] p-6 shadow-2xl backdrop-blur-xl sm:p-8 animate-popup">
@@ -259,26 +252,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
         </div>
       )}
 
-      {/* Quick Demo Pre-filled Viewers */}
-      <div className="mt-6 border-t border-red-950/80 pt-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
-            <Zap className="h-3.5 w-3.5 text-amber-400" /> Quick Demo Accounts
-          </span>
-          <span className="text-[10px] text-gray-500">Click to quick log in</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {registeredViewers.slice(0, 4).map((v) => (
-            <button
-              key={v.id}
-              onClick={() => handleQuickDemo(v)}
-              className="rounded-lg border border-red-900/50 bg-red-950/30 px-2.5 py-1.5 text-xs text-gray-300 hover-zoom hover:border-orange-500 hover:bg-orange-950/40 hover:text-white"
-            >
-              {v.name} ({v.email})
-            </button>
-          ))}
-        </div>
-      </div>
+
 
     </div>
   );

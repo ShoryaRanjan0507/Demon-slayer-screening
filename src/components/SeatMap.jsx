@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SEAT_TIERS } from '../data/initialData';
-import { Check, Lock, User, ShoppingBag, Building2, AlertTriangle, ArrowRight, Zap } from 'lucide-react';
+import { Check, Lock, User, ShoppingBag, Building2, AlertTriangle, ArrowRight } from 'lucide-react';
 
 export default function SeatMap({
   seatMap,
@@ -9,8 +9,7 @@ export default function SeatMap({
   verifiedUser,
   onProceedToCheckout,
   selectedAudiKey = 'AUDI_1',
-  onSelectAudiKey,
-  onSimulateAudi1Full
+  onSelectAudiKey
 }) {
 
   // Active auditorium state ('AUDI_1' or 'AUDI_2')
@@ -77,17 +76,6 @@ export default function SeatMap({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Quick Demo Overflow Simulator Button */}
-            {onSimulateAudi1Full && (
-              <button
-                onClick={onSimulateAudi1Full}
-                className="rounded-lg border border-amber-500/50 bg-amber-950/40 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-900/60 flex items-center gap-1.5 hover-zoom shadow"
-                title="Click to simulate Audi 1 reaching 100% capacity to test unlocking Audi 2"
-              >
-                <Zap className="h-3.5 w-3.5 text-amber-400" />
-                {isAudi1Full ? "Reset Audi 1 (Relock Audi 2)" : "Fill Audi 1 (Test Unlock Audi 2)"}
-              </button>
-            )}
           </div>
         </div>
 
