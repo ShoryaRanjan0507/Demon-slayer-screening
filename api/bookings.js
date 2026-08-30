@@ -14,6 +14,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      res.setHeader('Cache-Control', 's-maxage=5, stale-while-revalidate=15');
       // ?full=true includes payment_screenshot (for admin portal only)
       // Default excludes it to save bandwidth during polling
       const includeFull = req.query?.full === 'true';

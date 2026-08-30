@@ -15,6 +15,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=60');
       const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
       const viewers = (rows || []).map(r => ({
         id: `reg-${r.email}`,
