@@ -52,8 +52,8 @@ export default function App() {
     setUserBookingsState(getUserBookings());
     setVerifiedUser(getActiveVerifiedUser());
 
-    // 2. Async sync with Neon Postgres DB (Single Source of Truth)
-    const syncNeonData = async () => {
+    // 2. Full initial sync with Neon Postgres DB
+    const syncAllData = async () => {
       try {
         const neonViewers = await fetchNeonViewers();
         if (neonViewers && Array.isArray(neonViewers)) {
@@ -66,7 +66,6 @@ export default function App() {
           localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
           setUserBookingsState([...neonBookings]);
 
-          // Dynamically free up seats for REJECTED bookings across all clients
           const currentMap = getSeatMap();
           const syncedMap = syncSeatMapWithBookings(currentMap, neonBookings);
           saveSeatMap(syncedMap);
@@ -77,11 +76,43 @@ export default function App() {
       }
     };
 
-    syncNeonData();
+    // Lightweight sync for live seat updates
+    const syncBookingsOnly = async () => {
+      if (document.hidden || document.visibilityState !== 'visible') return;
+      try {
+        const neonBookings = await fetchNeonBookings();
+        if (neonBookings && Array.isArray(neonBookings)) {
+          localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
+          setUserBookingsState([...neonBookings]);
 
-    // 3. Live 15-second polling interval across devices (reduced from 3s to save bandwidth)
-    const syncInterval = setInterval(syncNeonData, 15000);
-    return () => clearInterval(syncInterval);
+          const currentMap = getSeatMap();
+          const syncedMap = syncSeatMapWithBookings(currentMap, neonBookings);
+          saveSeatMap(syncedMap);
+          setSeatMapState({ ...syncedMap });
+        }
+      } catch (err) {
+        console.error("Neon DB sync warning:", err);
+      }
+    };
+
+    // Initial load
+    syncAllData();
+
+    // 3. Smart interval: runs every 45s ONLY when tab is active/visible
+    const syncInterval = setInterval(syncBookingsOnly, 45000);
+
+    // Sync immediately when user switches back to this tab
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        syncBookingsOnly();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(syncInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Update storage helpers & sync with Neon DB
