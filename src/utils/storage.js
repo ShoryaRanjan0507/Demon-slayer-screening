@@ -379,6 +379,6 @@ export const resetAllData = () => {
   localStorage.removeItem(KEYS.VERIFIED_USER);
 };
 
-// Immediately execute clearAllBookings on module load as requested by user
-clearAllBookings();
+// NOTE: clearAllBookings() was previously called here on every module load,
+// which wiped all bookings from localStorage on each page refresh. Removed.
 

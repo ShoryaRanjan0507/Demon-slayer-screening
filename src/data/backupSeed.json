@@ -1,0 +1,1288 @@
+{
+  "bookings": [
+    {
+      "bookingId": "DS-644673",
+      "user": {
+        "email": "siddhesh.25bce10169@vitbhopal.ac.in",
+        "name": "Siddhesh Wagh",
+        "rollNo": "25BCE10169"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "E11",
+          "row": "E",
+          "price": 67,
+          "number": 11,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "660783963519",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:06:42"
+    },
+    {
+      "bookingId": "DS-251287",
+      "user": {
+        "email": "daksh.25bai10747@vitbhopal.ac.in",
+        "name": "Daksh Chauhan",
+        "rollNo": "25BAI10747"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H9",
+          "row": "H",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624142222709",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:06:53"
+    },
+    {
+      "bookingId": "DS-106373",
+      "user": {
+        "email": "arnav.25bai10072@vitbhopal.ac.in",
+        "name": "Arnav Singh",
+        "rollNo": "25bai10072"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H10",
+          "row": "H",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "660741056732",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "8/29/2026, 10:07:05 PM"
+    },
+    {
+      "bookingId": "DS-944820",
+      "user": {
+        "email": "jai.26bai10975@vitbhopal.ac.in",
+        "name": "Zeion Jain",
+        "rollNo": "26BAI10975"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "I10",
+          "row": "I",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "298260303879",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:14:49"
+    },
+    {
+      "bookingId": "DS-266607",
+      "user": {
+        "email": "aastha18p@gmail.com",
+        "name": "Aastha Srivastava",
+        "rollNo": "23BAI10537"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "G9",
+          "row": "G",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G10",
+          "row": "G",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "624153372175",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:18:24"
+    },
+    {
+      "bookingId": "DS-366383",
+      "user": {
+        "email": "daksh.25bce10294@vitbhopal.ac.in",
+        "name": "Daksh Gandhi",
+        "rollNo": "25BCE10294"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "F10",
+          "row": "F",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "F11",
+          "row": "F",
+          "price": 67,
+          "number": 11,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "624102268402",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/8/2026, 10:21:04 PM"
+    },
+    {
+      "bookingId": "DS-562759",
+      "user": {
+        "email": "demo@vitbhopal.ac.in",
+        "name": "demo",
+        "rollNo": "25XXX00000"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "K13",
+          "row": "K",
+          "price": 67,
+          "number": 13,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "1234567890",
+      "paymentScreenshot": null,
+      "status": "REJECTED",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 21:47:57"
+    },
+    {
+      "bookingId": "DS-312744",
+      "user": {
+        "email": "shaurya.25bce10200@vitbhopal.ac.in",
+        "name": "Shaurya Thapa",
+        "rollNo": "25BCE10200"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "E9",
+          "row": "E",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624152380692",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 21:53:01"
+    },
+    {
+      "bookingId": "DS-416238",
+      "user": {
+        "email": "vedant.25bai10063@vitbhopal.ac.in",
+        "name": "VEDANT TOMAR",
+        "rollNo": "25BAI10063"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "E10",
+          "row": "E",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624152553899",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 21:57:42"
+    },
+    {
+      "bookingId": "DS-380987",
+      "user": {
+        "email": "aryan.26bai10837@vitbhopal.ac.in",
+        "name": "Aryan Chaudhary",
+        "rollNo": "26BAI10837"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "F9",
+          "row": "F",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "660769068610",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:04:56"
+    },
+    {
+      "bookingId": "DS-195107",
+      "user": {
+        "email": "abhisar.25bhi10115@vitbhopal.ac.in",
+        "name": "Abhisar porwal",
+        "rollNo": "25BHI10115"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "G5",
+          "row": "G",
+          "price": 67,
+          "number": 5,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G6",
+          "row": "G",
+          "price": 67,
+          "number": 6,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "128715319110",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:06:00"
+    },
+    {
+      "bookingId": "DS-273147",
+      "user": {
+        "email": "shivang.25bec10017@vitbhopal.ac.in",
+        "name": "Shivang kumar",
+        "rollNo": "25BEC10017"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "G9",
+          "row": "G",
+          "price": 67,
+          "number": 9,
+          "status": "occupied",
+          "tierKey": "STANDARD",
+          "bookedBy": {
+            "name": "Aastha Srivastava",
+            "email": "aastha18p@gmail.com"
+          },
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G10",
+          "row": "G",
+          "price": 67,
+          "number": 10,
+          "status": "occupied",
+          "tierKey": "STANDARD",
+          "bookedBy": {
+            "name": "Aastha Srivastava",
+            "email": "aastha18p@gmail.com"
+          },
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G11",
+          "row": "G",
+          "price": 67,
+          "number": 11,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G12",
+          "row": "G",
+          "price": 67,
+          "number": 12,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 268,
+      "utrNumber": "18376438201",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "8/29/2026, 10:22:41 PM"
+    },
+    {
+      "bookingId": "DS-465445",
+      "user": {
+        "email": "latika.25bai10928@vitbhopal.ac.in",
+        "name": "Latika Shekhawat",
+        "rollNo": "25BAI10928"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "I8",
+          "row": "I",
+          "price": 67,
+          "number": 8,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "028111041007",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "8/29/2026, 10:29:06 PM"
+    },
+    {
+      "bookingId": "DS-311458",
+      "user": {
+        "email": "aryan.25bce11350@vitbhopal.ac.in",
+        "name": "Aryan Kumar",
+        "rollNo": "25BCE11350"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H3",
+          "row": "H",
+          "price": 67,
+          "number": 3,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624153722660",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:30:33"
+    },
+    {
+      "bookingId": "DS-534448",
+      "user": {
+        "email": "suvradeep.25bai10328@vitbhopal.ac.in",
+        "name": "Suvradeep Datta",
+        "rollNo": "25BAI10328"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "I9",
+          "row": "I",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624153813630",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:31:32"
+    },
+    {
+      "bookingId": "DS-257207",
+      "user": {
+        "email": "krishna.24mim10150@vitbhopal.ac.in",
+        "name": "Krishna Kumar Sahu",
+        "rollNo": "24MIM10150"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "K6",
+          "row": "K",
+          "price": 67,
+          "number": 6,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "K7",
+          "row": "K",
+          "price": 67,
+          "number": 7,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "K8",
+          "row": "K",
+          "price": 67,
+          "number": 8,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "K9",
+          "row": "K",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "K10",
+          "row": "K",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 335,
+      "utrNumber": "624162253027",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "8/29/2026, 10:34:39 PM"
+    },
+    {
+      "bookingId": "DS-799971",
+      "user": {
+        "email": "harsh.26mip10039@vitbhopal.ac.in",
+        "name": "Harsh Pachori",
+        "rollNo": "26MIP10039"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H17",
+          "row": "H",
+          "price": 67,
+          "number": 17,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "128716492651",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:34:45"
+    },
+    {
+      "bookingId": "DS-534983",
+      "user": {
+        "email": "maan.25bce10315@vitbhopal.ac.in",
+        "name": "Maan",
+        "rollNo": "25BCE10315"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H7",
+          "row": "H",
+          "price": 67,
+          "number": 7,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "H8",
+          "row": "H",
+          "price": 67,
+          "number": 8,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "793023189516",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:36:28"
+    },
+    {
+      "bookingId": "DS-381367",
+      "user": {
+        "email": "koppolu.24bac10055@vitbhopal.ac.in",
+        "name": "Koppolu pardhu",
+        "rollNo": "24BAC10055"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "P9",
+          "row": "P",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "882454334308",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/8/2026, 10:45:30 PM"
+    },
+    {
+      "bookingId": "DS-852339",
+      "user": {
+        "email": "kishan.24bai10352@vitbhopal.ac.in",
+        "name": "Kishan Bishwakarma",
+        "rollNo": "24BAI10352"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "E6",
+          "row": "E",
+          "price": 67,
+          "number": 6,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "E5",
+          "row": "E",
+          "price": 67,
+          "number": 5,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "660793881713",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/8/2026, 10:47:28 pm"
+    },
+    {
+      "bookingId": "DS-553067",
+      "user": {
+        "email": "kushagra.25bce10929@vitbhopal.ac.in",
+        "name": "Kushagra Joshi",
+        "rollNo": "25BCE10929"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "B9",
+          "row": "B",
+          "price": 67,
+          "number": 9,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "B10",
+          "row": "B",
+          "price": 67,
+          "number": 10,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "B11",
+          "row": "B",
+          "price": 67,
+          "number": 11,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "B8",
+          "row": "B",
+          "price": 67,
+          "number": 8,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 268,
+      "utrNumber": "624143092083",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 22:59:56"
+    },
+    {
+      "bookingId": "DS-333249",
+      "user": {
+        "email": "avyanjali.25bai10775@vitbhopal.ac.in",
+        "name": "Avyanjali Kumar",
+        "rollNo": "25BAI10775"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "I7",
+          "row": "I",
+          "price": 67,
+          "number": 7,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624123995775",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 23:21:43"
+    },
+    {
+      "bookingId": "DS-649885",
+      "user": {
+        "email": "parth.26bce11172@vitbhopal.ac.in",
+        "name": "Parth Prashar",
+        "rollNo": "26BCE11172"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "H18",
+          "row": "H",
+          "price": 67,
+          "number": 18,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "12871038488",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "8/29/2026, 11:47:03 PM"
+    },
+    {
+      "bookingId": "DS-919625",
+      "user": {
+        "email": "dayanita.26mim10123@vitbhopal.ac.in",
+        "name": "Dayanita Shree",
+        "rollNo": "26MIM10123"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "G7",
+          "row": "G",
+          "price": 67,
+          "number": 7,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "G8",
+          "row": "G",
+          "price": 67,
+          "number": 8,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "624189193332",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "29/08/2026, 23:55:15"
+    },
+    {
+      "bookingId": "DS-223903",
+      "user": {
+        "email": "kirtika.25bce10533@vitbhopal.ac.in",
+        "name": "Kirtika Singh",
+        "rollNo": "25BCE10533"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "J18",
+          "row": "J",
+          "price": 67,
+          "number": 18,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        },
+        {
+          "id": "J17",
+          "row": "J",
+          "price": 67,
+          "number": 17,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "660837685157",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "30/08/2026, 00:16:02"
+    },
+    {
+      "bookingId": "DS-329086",
+      "user": {
+        "email": "aditya.25bce10863@vitbhopal.ac.in",
+        "name": "Aditya Dev",
+        "rollNo": "25BCE10863"
+      },
+      "auditorium": "AB02 — Audi 1",
+      "seats": [
+        {
+          "id": "E12",
+          "row": "E",
+          "price": 67,
+          "number": 12,
+          "status": "available",
+          "tierKey": "STANDARD",
+          "bookedBy": null,
+          "auditorium": "AB02 — Audi 1"
+        }
+      ],
+      "totalAmount": 67,
+      "utrNumber": "624281375482",
+      "paymentScreenshot": null,
+      "status": "PENDING_VERIFICATION",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "30/08/2026, 00:22:53"
+    }
+  ],
+  "viewers": [
+    {
+      "id": "reg-demo@vitbhopal.ac.in",
+      "email": "demo@vitbhopal.ac.in",
+      "name": "demo",
+      "rollNo": "25XXX00000"
+    },
+    {
+      "id": "reg-kaulik.24bai10208@vitbhopal.ac.in",
+      "email": "kaulik.24bai10208@vitbhopal.ac.in",
+      "name": "Kaulik Chakraborty",
+      "rollNo": "24BAI10208"
+    },
+    {
+      "id": "reg-kondani.24mim10248@vitbhopal.ac.in",
+      "email": "kondani.24mim10248@vitbhopal.ac.in",
+      "name": "Harshith",
+      "rollNo": "24MIM10248"
+    },
+    {
+      "id": "reg-ananya.24bcy10339@vitbhopal.ac.in",
+      "email": "ananya.24bcy10339@vitbhopal.ac.in",
+      "name": "Ananya",
+      "rollNo": "24BCY10339"
+    },
+    {
+      "id": "reg-sanskar.25mip10125@vitbhopal.ac.in",
+      "email": "sanskar.25mip10125@vitbhopal.ac.in",
+      "name": "Sanskar Sharma",
+      "rollNo": "25MIP10125"
+    },
+    {
+      "id": "reg-shaurya.25bce10200@vitbhopal.ac.in",
+      "email": "shaurya.25bce10200@vitbhopal.ac.in",
+      "name": "Shaurya Thapa",
+      "rollNo": "25BCE10200"
+    },
+    {
+      "id": "reg-vedant.25bai10063@vitbhopal.ac.in",
+      "email": "vedant.25bai10063@vitbhopal.ac.in",
+      "name": "VEDANT TOMAR",
+      "rollNo": "25BAI10063"
+    },
+    {
+      "id": "reg-23bcy10283@vitbhopal.ac.in",
+      "email": "23bcy10283@vitbhopal.ac.in",
+      "name": "Akshay Singh",
+      "rollNo": "23BCY10283"
+    },
+    {
+      "id": "reg-aastha18p@gmail.com",
+      "email": "aastha18p@gmail.com",
+      "name": "Aastha Srivastava",
+      "rollNo": "23BAI10537"
+    },
+    {
+      "id": "reg-abhisar.25bhi10115@vitbhopal.ac.in",
+      "email": "abhisar.25bhi10115@vitbhopal.ac.in",
+      "name": "Abhisar porwal",
+      "rollNo": "25BHI10115"
+    },
+    {
+      "id": "reg-ujjawal.24bsa10091@vitbhopal.ac.in",
+      "email": "ujjawal.24bsa10091@vitbhopal.ac.in",
+      "name": "Ujjawal gupta",
+      "rollNo": "24BSA10091"
+    },
+    {
+      "id": "reg-nimmagadda.24mim10027@vitbhopal.ac.in",
+      "email": "nimmagadda.24mim10027@vitbhopal.ac.in",
+      "name": "N Raja Ravi Varma",
+      "rollNo": "24MIM10027"
+    },
+    {
+      "id": "reg-siddhesh.25bce10169@vitbhopal.ac.in",
+      "email": "siddhesh.25bce10169@vitbhopal.ac.in",
+      "name": "Siddhesh Wagh",
+      "rollNo": "25BCE10169"
+    },
+    {
+      "id": "reg-daksh.25bai10747@vitbhopal.ac.in",
+      "email": "daksh.25bai10747@vitbhopal.ac.in",
+      "name": "Daksh Chauhan",
+      "rollNo": "25BAI10747"
+    },
+    {
+      "id": "reg-aryan.26bai10837@vitbhopal.ac.in",
+      "email": "aryan.26bai10837@vitbhopal.ac.in",
+      "name": "Aryan Chaudhary",
+      "rollNo": "26BAI10837"
+    },
+    {
+      "id": "reg-suvradeep.25bai10328@vitbhopal.ac.in",
+      "email": "suvradeep.25bai10328@vitbhopal.ac.in",
+      "name": "Suvradeep Datta",
+      "rollNo": "25BAI10328"
+    },
+    {
+      "id": "reg-arnav.25bai10072@vitbhopal.ac.in",
+      "email": "arnav.25bai10072@vitbhopal.ac.in",
+      "name": "Arnav Singh",
+      "rollNo": "25bai10072"
+    },
+    {
+      "id": "reg-himanshu.26bai10949@vitbhopal.ac.in",
+      "email": "himanshu.26bai10949@vitbhopal.ac.in",
+      "name": "Himanshu Gangwar",
+      "rollNo": "26BAI10949"
+    },
+    {
+      "id": "reg-jai.26bai10975@vitbhopal.ac.in",
+      "email": "jai.26bai10975@vitbhopal.ac.in",
+      "name": "Zeion Jain",
+      "rollNo": "26BAI10975"
+    },
+    {
+      "id": "reg-krishna.26bai10869@vitbhopal.ac.in",
+      "email": "krishna.26bai10869@vitbhopal.ac.in",
+      "name": "Krishna Tripathi",
+      "rollNo": "26BAI10869"
+    },
+    {
+      "id": "reg-harsh.26bec10077@vitbhopal.ac.in",
+      "email": "harsh.26bec10077@vitbhopal.ac.in",
+      "name": "Harsh Vardhan Pal",
+      "rollNo": "26BEC10077"
+    },
+    {
+      "id": "reg-daksh.25bce10294@vitbhopal.ac.in",
+      "email": "daksh.25bce10294@vitbhopal.ac.in",
+      "name": "Daksh Gandhi",
+      "rollNo": "25BCE10294"
+    },
+    {
+      "id": "reg-shivang.25bec10017@vitbhopal.ac.in",
+      "email": "shivang.25bec10017@vitbhopal.ac.in",
+      "name": "Shivang kumar",
+      "rollNo": "25BEC10017"
+    },
+    {
+      "id": "reg-latika.25bai10928@vitbhopal.ac.in",
+      "email": "latika.25bai10928@vitbhopal.ac.in",
+      "name": "Latika Shekhawat",
+      "rollNo": "25BAI10928"
+    },
+    {
+      "id": "reg-aryan.25bce11350@vitbhopal.ac.in",
+      "email": "aryan.25bce11350@vitbhopal.ac.in",
+      "name": "Aryan Kumar",
+      "rollNo": "25BCE11350"
+    },
+    {
+      "id": "reg-prajwal.24mim10176@vitbhopal.ac.in",
+      "email": "prajwal.24mim10176@vitbhopal.ac.in",
+      "name": "Prajwal Chatse",
+      "rollNo": "24MIM10176"
+    },
+    {
+      "id": "reg-krishna.24mim10150@vitbhopal.ac.in",
+      "email": "krishna.24mim10150@vitbhopal.ac.in",
+      "name": "Krishna Kumar Sahu",
+      "rollNo": "24MIM10150"
+    },
+    {
+      "id": "reg-purshottam.24bai10198@vitbhopal.ac.in",
+      "email": "purshottam.24bai10198@vitbhopal.ac.in",
+      "name": "Purshottam Rakesh",
+      "rollNo": "24BAI10198"
+    },
+    {
+      "id": "reg-anjaney.25bce10320@vitbhopal.ac.in",
+      "email": "anjaney.25bce10320@vitbhopal.ac.in",
+      "name": "ANJANEY DWIVEDI",
+      "rollNo": "25BCE10320"
+    },
+    {
+      "id": "reg-ved.25bai11363@vitbhopal.ac.in",
+      "email": "ved.25bai11363@vitbhopal.ac.in",
+      "name": "Ved Prakash",
+      "rollNo": "25bai11363"
+    },
+    {
+      "id": "reg-maan.25bce10315@vitbhopal.ac.in",
+      "email": "maan.25bce10315@vitbhopal.ac.in",
+      "name": "Maan",
+      "rollNo": "25BCE10315"
+    },
+    {
+      "id": "reg-sounak.24bcy10012@vitbhopal.ac.in",
+      "email": "sounak.24bcy10012@vitbhopal.ac.in",
+      "name": "SOUNAK BERA",
+      "rollNo": "24BCY10012"
+    },
+    {
+      "id": "reg-prasanna.24mei10034@vitbhopal.ac.in",
+      "email": "prasanna.24mei10034@vitbhopal.ac.in",
+      "name": "Prasanna Varma",
+      "rollNo": "24MEI10034"
+    },
+    {
+      "id": "reg-yash.26bec10036@vitbhopal.ac.in",
+      "email": "yash.26bec10036@vitbhopal.ac.in",
+      "name": "Yash Patel",
+      "rollNo": "26BEC10036"
+    },
+    {
+      "id": "reg-harsh.26mip10039@vitbhopal.ac.in",
+      "email": "harsh.26mip10039@vitbhopal.ac.in",
+      "name": "Harsh Pachori",
+      "rollNo": "26MIP10039"
+    },
+    {
+      "id": "reg-jayverma3008@gmail.com",
+      "email": "jayverma3008@gmail.com",
+      "name": "Jay Verma",
+      "rollNo": "26BAI10993"
+    },
+    {
+      "id": "reg-amyra.26bsa10028@vitbhopal.ac.in",
+      "email": "amyra.26bsa10028@vitbhopal.ac.in",
+      "name": "Amyra salah",
+      "rollNo": "26bsa10028"
+    },
+    {
+      "id": "reg-yashwardhan.26bas10065@vitbhopal.ac.in",
+      "email": "yashwardhan.26bas10065@vitbhopal.ac.in",
+      "name": "yashwardhan Kachhwaha",
+      "rollNo": "26bas10065"
+    },
+    {
+      "id": "reg-kishan.24bai10352@vitbhopal.ac.in",
+      "email": "kishan.24bai10352@vitbhopal.ac.in",
+      "name": "Kishan Bishwakarma",
+      "rollNo": "24BAI10352"
+    },
+    {
+      "id": "reg-akshata.26bai10858@vitbhopal.ac.in",
+      "email": "akshata.26bai10858@vitbhopal.ac.in",
+      "name": "Akshata agrawal",
+      "rollNo": "26bai10858"
+    },
+    {
+      "id": "reg-archishmit.26bce11389@vitbhopal.ac.in",
+      "email": "archishmit.26bce11389@vitbhopal.ac.in",
+      "name": "Archishmit Waghmare",
+      "rollNo": "26BCE11389"
+    },
+    {
+      "id": "reg-akhand.26bec10033@vitbhopal.ac.in",
+      "email": "akhand.26bec10033@vitbhopal.ac.in",
+      "name": "Akhand Pratap Singh",
+      "rollNo": "26BEC10033"
+    },
+    {
+      "id": "reg-kushagra.25bce10929@vitbhopal.ac.in",
+      "email": "kushagra.25bce10929@vitbhopal.ac.in",
+      "name": "Kushagra Joshi",
+      "rollNo": "25BCE10929"
+    },
+    {
+      "id": "reg-varun.25mei10094@vitbhopal.ac.in",
+      "email": "varun.25mei10094@vitbhopal.ac.in",
+      "name": "Varun batta",
+      "rollNo": "25MEI10094"
+    },
+    {
+      "id": "reg-vallabh.25bai11162@vitbhopal.ac.in",
+      "email": "vallabh.25bai11162@vitbhopal.ac.in",
+      "name": "Vallabh Singhal",
+      "rollNo": "25BAI11162"
+    },
+    {
+      "id": "reg-aditee.25bce11025@vitbhopal.ac.in",
+      "email": "aditee.25bce11025@vitbhopal.ac.in",
+      "name": "Aditee Singh",
+      "rollNo": "25bce11025"
+    },
+    {
+      "id": "reg-samriddhi.25bai10416@vitbhopal.ac.in",
+      "email": "samriddhi.25bai10416@vitbhopal.ac.in",
+      "name": "Samriddhi Maudgal",
+      "rollNo": "25BAI10416"
+    },
+    {
+      "id": "reg-varun.24bce11084@vitbhopal.ac.in",
+      "email": "varun.24bce11084@vitbhopal.ac.in",
+      "name": "varun kushwah",
+      "rollNo": "24BCE11084"
+    },
+    {
+      "id": "reg-avyanjali.25bai10775@vitbhopal.ac.in",
+      "email": "avyanjali.25bai10775@vitbhopal.ac.in",
+      "name": "Avyanjali Kumar",
+      "rollNo": "25BAI10775"
+    },
+    {
+      "id": "reg-akshat.26bai10591@vitbhopal.ac.in",
+      "email": "akshat.26bai10591@vitbhopal.ac.in",
+      "name": "Akshat Shrivastava",
+      "rollNo": "26BAI10591"
+    },
+    {
+      "id": "reg-siddharth.25mim10211@vitbhopal.ac.in",
+      "email": "siddharth.25mim10211@vitbhopal.ac.in",
+      "name": "SIDDHARTH SHUKLA 25MIM10211",
+      "rollNo": "25MIM10211"
+    },
+    {
+      "id": "reg-aryan.26bai10336@vitbhopal.ac.in",
+      "email": "aryan.26bai10336@vitbhopal.ac.in",
+      "name": "Aryan Shukla",
+      "rollNo": "26BAI10336"
+    },
+    {
+      "id": "reg-tejashri.25bhi10113@vitbhopal.ac.in",
+      "email": "tejashri.25bhi10113@vitbhopal.ac.in",
+      "name": "Tejashri Bhandari",
+      "rollNo": "25BHI10113"
+    },
+    {
+      "id": "reg-kushagra.25bce10144@vitbhopal.ac.in",
+      "email": "kushagra.25bce10144@vitbhopal.ac.in",
+      "name": "Kushagra Mall",
+      "rollNo": "25BCE10144"
+    },
+    {
+      "id": "reg-dayanita.26mim10123@vitbhopal.ac",
+      "email": "dayanita.26mim10123@vitbhopal.ac",
+      "name": "Dayanita Shree",
+      "rollNo": "26MIM10123"
+    },
+    {
+      "id": "reg-shaurya.25bai10521@vitbhopal.ac.in",
+      "email": "shaurya.25bai10521@vitbhopal.ac.in",
+      "name": "Shaurya Mehta",
+      "rollNo": "25BAI10521"
+    },
+    {
+      "id": "reg-dayanita.26mim10123@vitbhopal.ac.in",
+      "email": "dayanita.26mim10123@vitbhopal.ac.in",
+      "name": "Dayanita Shree",
+      "rollNo": "26MIM10123"
+    },
+    {
+      "id": "reg-mihika.26bec10070@vitbhopal.ac.in",
+      "email": "mihika.26bec10070@vitbhopal.ac.in",
+      "name": "Mihika Mishra",
+      "rollNo": "26BEC10070"
+    },
+    {
+      "id": "reg-parth.26bce11172@vitbhopal.ac.in",
+      "email": "parth.26bce11172@vitbhopal.ac.in",
+      "name": "Parth Prashar",
+      "rollNo": "26BCE11172"
+    },
+    {
+      "id": "reg-kirtika.25bce10533@vitbhopal.ac.in",
+      "email": "kirtika.25bce10533@vitbhopal.ac.in",
+      "name": "Kirtika Singh",
+      "rollNo": "25BCE10533"
+    },
+    {
+      "id": "reg-vinayak.25bce10968@vitbhopal.ac.in",
+      "email": "vinayak.25bce10968@vitbhopal.ac.in",
+      "name": "Vinayak Makwana",
+      "rollNo": "25BCE10968"
+    },
+    {
+      "id": "reg-aditya.25bce10863@vitbhopal.ac.in",
+      "email": "aditya.25bce10863@vitbhopal.ac.in",
+      "name": "Aditya Dev",
+      "rollNo": "25BCE10863"
+    },
+    {
+      "id": "reg-numan.26mim10060@vitbhopal.ac.in",
+      "email": "numan.26mim10060@vitbhopal.ac.in",
+      "name": "Numan khalid",
+      "rollNo": "26MIM10060"
+    }
+  ]
+}

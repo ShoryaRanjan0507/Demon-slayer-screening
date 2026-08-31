@@ -8,6 +8,7 @@ import TicketPass from './components/TicketPass';
 import MyTicketsModal from './components/MyTicketsModal';
 import AdminPortal from './components/AdminPortal';
 import ParticipantsModal from './components/ParticipantsModal';
+import backupSeed from './data/backupSeed.json';
 
 import { 
   getRegisteredViewers, 
@@ -56,13 +57,13 @@ export default function App() {
     const syncAllData = async () => {
       try {
         const neonViewers = await fetchNeonViewers();
-        if (neonViewers && Array.isArray(neonViewers)) {
+        if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
           saveRegisteredViewers(neonViewers);
           setRegisteredViewers([...neonViewers]);
         }
 
         const neonBookings = await fetchNeonBookings();
-        if (neonBookings && Array.isArray(neonBookings)) {
+        if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
           localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
           setUserBookingsState([...neonBookings]);
 
@@ -74,6 +75,24 @@ export default function App() {
       } catch (err) {
         console.error("Neon DB sync warning:", err);
       }
+
+      // Fallback: if localStorage is STILL empty after sync attempt, seed from backup
+      const localBookings = getUserBookings();
+      const localViewers = getRegisteredViewers();
+      if ((!localBookings || localBookings.length === 0) && backupSeed.bookings?.length > 0) {
+        console.warn("⚠️ DB unreachable & localStorage empty — loading from backup seed");
+        localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(backupSeed.bookings));
+        setUserBookingsState([...backupSeed.bookings]);
+
+        const currentMap = getSeatMap();
+        const syncedMap = syncSeatMapWithBookings(currentMap, backupSeed.bookings);
+        saveSeatMap(syncedMap);
+        setSeatMapState({ ...syncedMap });
+      }
+      if ((!localViewers || localViewers.length === 0) && backupSeed.viewers?.length > 0) {
+        saveRegisteredViewers(backupSeed.viewers);
+        setRegisteredViewers([...backupSeed.viewers]);
+      }
     };
 
     // Lightweight sync for live seat updates
@@ -81,7 +100,8 @@ export default function App() {
       if (document.hidden || document.visibilityState !== 'visible') return;
       try {
         const neonBookings = await fetchNeonBookings();
-        if (neonBookings && Array.isArray(neonBookings)) {
+        // Only overwrite if DB returned real data (null = error/unreachable)
+        if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
           localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
           setUserBookingsState([...neonBookings]);
 
