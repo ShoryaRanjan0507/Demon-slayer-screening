@@ -23,28 +23,7 @@ export default function SeatMap({
   const audi2BookedCount = audi2Seats.filter(s => s.status === 'occupied').length;
 
   const isAudi1Full = audi1BookedCount >= 288;
-  const isAudi2Unlocked = isAudi1Full;
-
-  const [lockedClickMsg, setLockedClickMsg] = useState('');
-
-  // Lock enforcement effect: If Audi 1 is not full and activeAudi is AUDI_2, redirect back to AUDI_1
-  useEffect(() => {
-    if (!isAudi1Full && activeAudi === 'AUDI_2' && onSelectAudiKey) {
-      onSelectAudiKey('AUDI_1');
-    } else if (isAudi1Full && activeAudi === 'AUDI_1' && onSelectAudiKey) {
-      onSelectAudiKey('AUDI_2');
-    }
-  }, [isAudi1Full, activeAudi, onSelectAudiKey]);
-
-  // Handle click on Audi 2 tab
-  const handleAudi2TabClick = () => {
-    if (!isAudi2Unlocked) {
-      setLockedClickMsg(' AB02 Audi 2 is currently locked! It will automatically unlock once all 288 seats in Audi 1 are booked.');
-      setTimeout(() => setLockedClickMsg(''), 4000);
-      return;
-    }
-    if (onSelectAudiKey) onSelectAudiKey('AUDI_2');
-  };
+  const isAudi2Full = audi2BookedCount >= 288;
 
   // Group seats by Row (A through P)
   const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
@@ -84,54 +63,49 @@ export default function SeatMap({
 
         {/* Auditorium Selection Tabs */}
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-red-500" /> Select Auditorium Venue (AB02 Building):
-          </span>
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-200 flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-red-500" /> Choose Screening Venue:
+            </span>
+            <span className="text-[11px] text-gray-400">Select either Audi 1 or Audi 2 to choose your seats</span>
+          </div>
 
-          <div className="flex w-full sm:w-auto rounded-xl border border-red-950/80 bg-black/60 p-1 gap-1">
+          <div className="flex w-full sm:w-auto rounded-xl border border-red-950/80 bg-black/60 p-1 gap-1.5">
             {/* Audi 1 Tab */}
             <button
               onClick={() => onSelectAudiKey && onSelectAudiKey('AUDI_1')}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition hover-zoom ${activeAudi === 'AUDI_1'
-                ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-md'
-                : 'text-gray-400 hover:text-white'
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold transition hover-zoom ${activeAudi === 'AUDI_1'
+                ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
             >
               <span>🏛️ AB02 — AUDI 1</span>
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-black ${isAudi1Full ? 'bg-red-600 text-white animate-pulse' : 'bg-black/60 text-emerald-400 border border-emerald-500/30'
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-black ${isAudi1Full 
+                ? 'bg-red-950 text-red-400 border border-red-500/50' 
+                : 'bg-black/60 text-emerald-400 border border-emerald-500/30'
                 }`}>
                 {isAudi1Full ? 'FULL (288/288)' : `${audi1BookedCount}/288`}
               </span>
             </button>
 
-            {/* Audi 2 Tab (Locked initially) */}
+            {/* Audi 2 Tab (Fully Open & Selectable) */}
             <button
-              onClick={handleAudi2TabClick}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition ${isAudi2Unlocked
-                ? (activeAudi === 'AUDI_2'
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md hover-zoom'
-                  : 'text-gray-300 hover:text-white hover-zoom')
-                : 'bg-gray-950/80 text-gray-500 border border-gray-800/80 cursor-not-allowed opacity-70'
+              onClick={() => onSelectAudiKey && onSelectAudiKey('AUDI_2')}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold transition hover-zoom ${activeAudi === 'AUDI_2'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
             >
-              <span>{isAudi2Unlocked ? '🔓 AB02 — AUDI 2' : '🔒 AB02 — AUDI 2'}</span>
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-black ${isAudi2Unlocked
-                ? 'bg-purple-950 text-purple-300 border border-purple-500/30'
-                : 'bg-gray-900 text-gray-500 border border-gray-800'
+              <span>🏛️ AB02 — AUDI 2</span>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-black ${isAudi2Full 
+                ? 'bg-red-950 text-red-400 border border-red-500/50' 
+                : 'bg-black/60 text-purple-300 border border-purple-500/30'
                 }`}>
-                {isAudi2Unlocked ? (audi2BookedCount > 0 ? `${audi2BookedCount}/288` : 'UNLOCKED') : 'LOCKED'}
+                {isAudi2Full ? 'FULL (288/288)' : `${audi2BookedCount}/288`}
               </span>
             </button>
           </div>
         </div>
-
-        {/* Locked Click Alert Toast */}
-        {lockedClickMsg && (
-          <div className="mt-3 rounded-xl border border-amber-500/50 bg-amber-950/40 p-3 text-xs text-amber-300 flex items-center gap-2 animate-popup">
-            <Lock className="h-4 w-4 shrink-0 text-amber-400" />
-            {lockedClickMsg}
-          </div>
-        )}
       </div>
 
       {/* AUTO OVERFLOW NOTIFICATION BANNER */}

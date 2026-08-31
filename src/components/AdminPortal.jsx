@@ -440,15 +440,11 @@ export default function AdminPortal({
                       </div>
                     </div>
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border font-mono ${
-                      audi1BookedSeatsCount < 288
-                        ? 'bg-amber-950/80 text-amber-300 border-amber-500/40'
-                        : audi2BookedSeatsCount >= 288
+                      audi2BookedSeatsCount >= 288
                         ? 'bg-red-950 text-red-400 border-red-500/50'
                         : 'bg-emerald-950/80 text-emerald-400 border-emerald-500/40'
                     }`}>
-                      {audi1BookedSeatsCount < 288 
-                        ? '🔒 UNLOCKS WHEN AUDI 1 FULL' 
-                        : audi2BookedSeatsCount >= 288 
+                      {audi2BookedSeatsCount >= 288 
                         ? '🔴 HOUSEFULL (288/288)' 
                         : '🟢 BOOKING LIVE'}
                     </span>

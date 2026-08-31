@@ -228,6 +228,14 @@ export default function App() {
     });
   };
 
+  // Switch Auditorium and clear previous seat selections
+  const handleSelectAudiKey = (audiKey) => {
+    if (audiKey !== selectedAudiKey) {
+      setSelectedSeats([]);
+      setSelectedAudiKey(audiKey);
+    }
+  };
+
   // Handle Booking Confirmation
   const handleConfirmBooking = (bookingData) => {
     // 1. Mark selected seats as occupied in active auditorium
@@ -340,7 +348,7 @@ export default function App() {
                   verifiedUser={verifiedUser}
                   onProceedToCheckout={() => setShowCheckoutModal(true)}
                   selectedAudiKey={selectedAudiKey}
-                  onSelectAudiKey={setSelectedAudiKey}
+                  onSelectAudiKey={handleSelectAudiKey}
                 />
               )}
             </section>
