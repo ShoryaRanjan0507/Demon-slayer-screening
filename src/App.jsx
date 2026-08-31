@@ -208,7 +208,7 @@ export default function App() {
     setSelectedSeats([]);
   };
 
-  // Toggle seat selection
+  // Toggle seat selection (Max 4 seats per booking anti-abuse limit)
   const handleToggleSeat = (seatId) => {
     if (!verifiedUser) {
       setShowVerifyModal(true);
@@ -219,6 +219,10 @@ export default function App() {
       if (prev.includes(seatId)) {
         return prev.filter(id => id !== seatId);
       } else {
+        if (prev.length >= 4) {
+          alert('⚠️ Limit reached: Maximum 4 seats allowed per booking to ensure fair availability for all students.');
+          return prev;
+        }
         return [...prev, seatId];
       }
     });

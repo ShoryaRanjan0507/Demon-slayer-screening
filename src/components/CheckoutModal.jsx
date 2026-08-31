@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { X, CreditCard, Copy, AlertCircle, Building2, CheckCircle2, ShieldAlert, Upload, Image as ImageIcon, Trash2, Eye } from 'lucide-react';
-import { BANK_DETAILS } from '../data/initialData';
+import { X, Copy, AlertCircle, CheckCircle2, ShieldAlert, Upload, QrCode, Check } from 'lucide-react';
+import { getUserBookings } from '../utils/storage';
+
+const UPI_DETAILS = {
+  name: 'K Chakraborty',
+  upiId: 'kauliknov27-1@okicici',
+  qrImage: '/payment-qr.jpg'
+};
 
 export default function CheckoutModal({ 
   isOpen, 
@@ -14,8 +20,7 @@ export default function CheckoutModal({
   const [utrNumber, setUtrNumber] = useState('');
   const [screenshotData, setScreenshotData] = useState(null);
   const [screenshotFileName, setScreenshotFileName] = useState('');
-  const [copiedAcc, setCopiedAcc] = useState(false);
-  const [copiedIfsc, setCopiedIfsc] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -26,19 +31,13 @@ export default function CheckoutModal({
     ? (seatMap[selectedAudiKey] || seatMap.AUDI_1) 
     : (seatMap || {});
 
-  // Calculate total price
+  // Calculate total price (₹67 per seat)
   const totalPrice = selectedSeats.reduce((sum, seatId) => sum + (currentSeatMap[seatId]?.price || 67), 0);
 
-  const handleCopyAcc = () => {
-    navigator.clipboard.writeText(BANK_DETAILS.accountNumber);
-    setCopiedAcc(true);
-    setTimeout(() => setCopiedAcc(false), 2000);
-  };
-
-  const handleCopyIfsc = () => {
-    navigator.clipboard.writeText(BANK_DETAILS.ifscCode);
-    setCopiedIfsc(true);
-    setTimeout(() => setCopiedIfsc(false), 2000);
+  const handleCopyUpi = () => {
+    navigator.clipboard.writeText(UPI_DETAILS.upiId);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2500);
   };
 
   const handleFileChange = (e) => {
@@ -54,7 +53,6 @@ export default function CheckoutModal({
     reader.onload = (event) => {
       const rawBase64 = event.target.result;
       
-      // Compress screenshot on HTML5 Canvas to max 800px & 60% JPEG quality (~40-70 KB)
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -95,16 +93,40 @@ export default function CheckoutModal({
     e.preventDefault();
     setErrorMsg('');
 
-    if (!utrNumber.trim()) {
-      setErrorMsg('Please enter your 12-digit Bank Transaction / UTR Reference number.');
+    const cleanUtr = utrNumber.trim().replace(/\s+/g, '');
+
+    // 1. Max seats limit check
+    if (selectedSeats.length > 4) {
+      setErrorMsg('Maximum 4 seats allowed per booking.');
       return;
     }
 
-    if (utrNumber.trim().length < 6) {
-      setErrorMsg('Please enter a valid 12-digit UTR / Transaction Reference number.');
+    // 2. Exact 12-digit numeric validation
+    if (!/^\d{12}$/.test(cleanUtr)) {
+      setErrorMsg('Please enter a valid 12-digit numeric Bank Reference / UTR Number (digits only, e.g. 660783963519).');
       return;
     }
 
+    // 3. Repeated dummy number patterns check
+    const isDummy = /^(.)\1{11}$/.test(cleanUtr) || cleanUtr === '123456789012' || cleanUtr === '012345678901' || cleanUtr === '987654321098';
+    if (isDummy) {
+      setErrorMsg('Invalid or dummy UTR number. Please enter the genuine 12-digit UTR from your UPI payment receipt.');
+      return;
+    }
+
+    // 4. Duplicate UTR check across existing non-rejected bookings
+    const existingBookings = getUserBookings();
+    const isDuplicate = existingBookings.some(b => 
+      b.utrNumber && 
+      b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
+      b.status !== 'REJECTED'
+    );
+    if (isDuplicate) {
+      setErrorMsg('⚠️ This 12-digit UTR number has already been used for another booking. Please check your UPI payment receipt.');
+      return;
+    }
+
+    // 5. Screenshot required check
     if (!screenshotData) {
       setErrorMsg('Please attach/upload your payment receipt screenshot before submitting.');
       return;
@@ -148,7 +170,7 @@ export default function CheckoutModal({
         user: verifiedUser,
         seats: formattedSeats,
         totalAmount: totalPrice,
-        utrNumber: utrNumber.trim(),
+        utrNumber: cleanUtr,
         paymentScreenshot: finalScreenshotUrl,
         timestamp: new Date().toLocaleString(),
         status: 'PENDING_VERIFICATION', // 2-Step Organiser Verification
@@ -165,7 +187,7 @@ export default function CheckoutModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-red-900/80 bg-[#0c0818] p-6 shadow-2xl sm:p-8 animate-popup">
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-red-900/80 bg-[#0c0818] p-5 shadow-2xl sm:p-7 animate-popup">
         
         {/* Close Button */}
         <button
@@ -176,88 +198,97 @@ export default function CheckoutModal({
         </button>
 
         {/* Modal Header */}
-        <div className="mb-6 flex items-center gap-3 border-b border-red-950/80 pb-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-orange-600 text-white shadow-lg">
-            <CreditCard className="h-6 w-6" />
+        <div className="mb-5 flex items-center gap-3 border-b border-red-950/80 pb-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-orange-600 text-white shadow-lg shrink-0">
+            <QrCode className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-white">Indian Bank Transfer</h2>
+            <h2 className="text-lg font-extrabold text-white">Scan UPI QR To Pay</h2>
             <p className="text-xs text-gray-400">
-              Total Payable: <strong className="text-orange-400 font-mono text-sm">₹{totalPrice}</strong> for {selectedSeats.length} seat(s) ({selectedSeats.join(', ')})
+              Total: <strong className="text-orange-400 font-mono text-sm font-bold">₹{totalPrice}</strong> for {selectedSeats.length} seat(s) ({selectedSeats.join(', ')})
             </p>
           </div>
         </div>
 
-        {/* Bank Account Details Card */}
-        <div className="rounded-xl border border-red-900/60 bg-[#120a21] p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-red-950/80 pb-2">
-            <span className="text-xs font-bold text-red-400 uppercase tracking-widest flex items-center gap-1.5">
-              <Building2 className="h-4 w-4" /> OFFICIAL CLUB BANK DETAILS
+        {/* Official Payment QR Card */}
+        <div className="rounded-2xl border border-red-900/60 bg-[#120a21] p-4 text-center space-y-3">
+          
+          {/* Header Banner */}
+          <div className="flex items-center justify-between border-b border-red-950/80 pb-2 px-1">
+            <span className="text-[11px] font-bold text-red-400 uppercase tracking-widest flex items-center gap-1.5">
+              <QrCode className="h-4 w-4" /> OFFICIAL SCREENING UPI QR
             </span>
-            <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
-              INDIAN BANK
+            <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-500/40">
+              GPay • PhonePe • Paytm • BHIM
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="bg-black/60 p-3 rounded-xl border border-red-950">
-              <span className="text-[10px] text-gray-400 block uppercase">Account Holder Name</span>
-              <strong className="text-white font-bold">{BANK_DETAILS.accountName}</strong>
-            </div>
-
-            <div className="bg-black/60 p-3 rounded-xl border border-red-950 flex items-center justify-between">
-              <div>
-                <span className="text-[10px] text-gray-400 block uppercase">Account Number</span>
-                <strong className="text-orange-400 font-mono text-sm font-black">{BANK_DETAILS.accountNumber}</strong>
-              </div>
-              <button
-                onClick={handleCopyAcc}
-                className="flex items-center gap-1 rounded bg-red-950 px-2 py-1 text-[10px] font-bold text-red-300 hover:bg-red-900"
-              >
-                <Copy className="h-3.5 w-3.5" />
-                {copiedAcc ? "Copied!" : "Copy"}
-              </button>
-            </div>
-
-            <div className="bg-black/60 p-3 rounded-xl border border-red-950 flex items-center justify-between sm:col-span-2">
-              <div>
-                <span className="text-[10px] text-gray-400 block uppercase">IFSC Code</span>
-                <strong className="text-emerald-400 font-mono text-sm font-bold">{BANK_DETAILS.ifscCode}</strong>
-              </div>
-              <button
-                onClick={handleCopyIfsc}
-                className="flex items-center gap-1 rounded bg-red-950 px-2 py-1 text-[10px] font-bold text-red-300 hover:bg-red-900"
-              >
-                <Copy className="h-3.5 w-3.5" />
-                {copiedIfsc ? "Copied!" : "Copy"}
-              </button>
-            </div>
-
-            <div className="bg-black/60 p-3 rounded-xl border border-amber-900/40 sm:col-span-2 flex items-center justify-between">
-              <div>
-                <span className="text-[10px] text-gray-400 block uppercase">Branch & Branch Code</span>
-                <strong className="text-gray-200 text-xs">{BANK_DETAILS.branch} (Branch Code: {BANK_DETAILS.branchCode})</strong>
-              </div>
+          {/* QR Code Image Container */}
+          <div className="flex justify-center py-1">
+            <div className="relative rounded-2xl bg-white p-2.5 shadow-2xl border-2 border-red-500/40 max-w-[220px]">
+              <img 
+                src={UPI_DETAILS.qrImage} 
+                alt="Payment QR Code - K Chakraborty" 
+                className="w-full h-auto rounded-xl object-contain"
+              />
             </div>
           </div>
+
+          {/* Account Details & 1-Click Copy */}
+          <div className="bg-black/70 p-3 rounded-xl border border-red-950 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-400 text-[11px] uppercase">Payee Name:</span>
+              <strong className="text-white font-bold">{UPI_DETAILS.name}</strong>
+            </div>
+
+            <div className="flex items-center justify-between text-xs pt-1 border-t border-red-950/60">
+              <span className="text-gray-400 text-[11px] uppercase">UPI ID:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-orange-400 font-mono font-bold">{UPI_DETAILS.upiId}</span>
+                <button
+                  type="button"
+                  onClick={handleCopyUpi}
+                  className="flex items-center gap-1 rounded bg-red-950 px-2 py-1 text-[10px] font-bold text-red-300 hover:bg-red-900 border border-red-800/50 transition"
+                >
+                  {copiedUpi ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                  {copiedUpi ? "Copied!" : "Copy"}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs pt-1 border-t border-red-950/60">
+              <span className="text-gray-400 text-[11px] uppercase">Exact Amount to Pay:</span>
+              <span className="text-emerald-400 font-mono font-black text-sm bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                ₹{totalPrice}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-gray-400 leading-tight">
+            Scan using any UPI App (GPay, PhonePe, Paytm), pay <strong>₹{totalPrice}</strong>, and copy the <strong>12-digit UTR Number</strong>.
+          </p>
         </div>
 
         {/* Payment Verification Form */}
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
           
           {/* UTR Input Field */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
-              1. 12-Digit Bank UTR / Transaction Ref Number <span className="text-red-500">*</span>
+              1. 12-Digit Bank Reference / UTR Number <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               required
+              maxLength={12}
               value={utrNumber}
-              onChange={(e) => setUtrNumber(e.target.value)}
-              placeholder="12-Digit UTR or Bank Reference ID"
-              className="w-full rounded-xl border border-red-900/60 bg-black/60 py-3 px-4 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, ''))}
+              placeholder="e.g. 660783963519 (12 digits from UPI receipt)"
+              className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 px-3.5 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none font-mono tracking-wider"
             />
+            <span className="text-[10px] text-gray-400 mt-1 block">
+              Characters: {utrNumber.length}/12
+            </span>
           </div>
 
           {/* Payment Screenshot Upload Field */}
@@ -267,8 +298,8 @@ export default function CheckoutModal({
             </label>
 
             {!screenshotData ? (
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl border-red-900/60 bg-black/40 hover:bg-black/60 cursor-pointer transition hover:border-red-500/80 p-4 text-center">
-                <Upload className="h-7 w-7 text-red-400 mb-1 animate-pulse" />
+              <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl border-red-900/60 bg-black/40 hover:bg-black/60 cursor-pointer transition hover:border-red-500/80 p-3 text-center">
+                <Upload className="h-6 w-6 text-red-400 mb-1 animate-pulse" />
                 <span className="text-xs font-bold text-gray-200">Click or Drag & Drop Payment Screenshot</span>
                 <span className="text-[10px] text-gray-500 mt-0.5">Supports PNG, JPG, JPEG, WebP</span>
                 <input 
@@ -279,58 +310,75 @@ export default function CheckoutModal({
                 />
               </label>
             ) : (
-              <div className="relative rounded-xl border border-emerald-500/50 bg-emerald-950/30 p-3 flex items-center justify-between gap-3 animate-popup">
-                <div className="flex items-center gap-3 overflow-hidden">
+              <div className="relative rounded-xl border border-emerald-500/50 bg-emerald-950/30 p-2.5 flex items-center justify-between gap-3 animate-popup">
+                <div className="flex items-center gap-2.5 overflow-hidden">
                   <img 
                     src={screenshotData} 
                     alt="Payment Receipt Preview" 
-                    className="h-12 w-12 object-cover rounded-lg border border-emerald-500/60 shrink-0" 
+                    className="h-10 w-10 object-cover rounded-lg border border-emerald-500/60 shrink-0" 
                   />
                   <div className="truncate">
                     <span className="text-xs font-bold text-emerald-400 flex items-center gap-1 truncate">
                       <CheckCircle2 className="h-3.5 w-3.5 shrink-0" /> {screenshotFileName || 'Screenshot Attached'}
                     </span>
-                    <span className="text-[10px] text-gray-400 block">Ready for verification submission</span>
+                    <span className="text-[10px] text-gray-400 block">Ready for submission</span>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => { setScreenshotData(null); setScreenshotFileName(''); }}
-                  className="p-1.5 text-gray-400 hover:text-red-400 rounded-lg hover:bg-red-950/50 transition"
-                  title="Remove and upload different screenshot"
+                  className="p-1.5 text-gray-400 hover:text-red-400 rounded-lg hover:bg-red-950/50 transition text-xs font-bold"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  ✕ Remove
                 </button>
               </div>
             )}
-            <p className="mt-1 text-[10px] text-gray-400 flex items-center gap-1">
-              <ShieldAlert className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-              Transfer ₹{totalPrice} to Indian Bank above, upload receipt proof, and submit for organiser approval.
-            </p>
           </div>
 
+          {/* Error Message */}
           {errorMsg && (
-            <div className="rounded-lg border border-red-500/50 bg-red-950/40 p-3 text-xs text-red-200 flex items-center gap-2 animate-popup">
+            <div className="flex items-center gap-2 rounded-xl bg-red-950/80 border border-red-500 p-3 text-xs font-semibold text-red-200 animate-popup">
               <AlertCircle className="h-4 w-4 shrink-0 text-red-400" />
-              {errorMsg}
+              <span>{errorMsg}</span>
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-xl transition hover:brightness-110 active:scale-98 disabled:opacity-50 hover-zoom"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-                Submitting Receipt & UTR Verification...
-              </span>
-            ) : (
-              `Submit UTR & Receipt Proof (₹${totalPrice})`
-            )}
-          </button>
+          {/* Information Notice */}
+          <div className="flex items-start gap-2 rounded-xl bg-amber-950/30 border border-amber-600/30 p-2.5 text-[11px] text-amber-300/90">
+            <ShieldAlert className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
+            <span>
+              <strong>Organiser Verification:</strong> Organisers cross-reference the 12-digit UTR with bank records before confirming tickets. Duplicate or fake UTRs result in automatic booking cancellation.
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="rounded-xl border border-red-950 px-4 py-2.5 text-xs font-bold text-gray-400 hover:bg-red-950/40 hover:text-white transition disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="rounded-xl bg-gradient-to-r from-red-600 to-orange-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg hover:from-red-500 hover:to-orange-500 transition disabled:opacity-50 flex items-center gap-2 hover-zoom"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                  <span>Verifying & Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <span>Submit Payment Verification</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
       </div>

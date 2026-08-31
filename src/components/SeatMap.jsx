@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SEAT_TIERS } from '../data/initialData';
-import { Check, Lock, User, ShoppingBag, Building2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Check, Lock, User, ShoppingBag, Building2, AlertTriangle, ArrowRight, ShieldAlert } from 'lucide-react';
 
 export default function SeatMap({
   seatMap,
@@ -76,6 +76,9 @@ export default function SeatMap({
           </div>
 
           <div className="flex items-center gap-2">
+            <span className="rounded-full bg-amber-950/80 border border-amber-500/40 px-3 py-1 text-[11px] font-bold text-amber-300 flex items-center gap-1.5 shadow">
+              <ShieldAlert className="h-3.5 w-3.5 text-amber-400" /> Max 4 Seats / Person
+            </span>
           </div>
         </div>
 

@@ -22,20 +22,34 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
     e.preventDefault();
     setErrorMsg('');
 
-    if (!regName.trim() || !regEmail.trim()) {
-      setErrorMsg('Please fill in your Full Name and Email Address.');
+    const cleanName = regName.trim();
+    const cleanEmail = regEmail.trim().toLowerCase();
+    const cleanRollNo = regRollNo.trim().toUpperCase();
+
+    if (!cleanName || !cleanEmail) {
+      setErrorMsg('Please fill in your Full Name and University Email.');
       return;
     }
 
-    if (!regEmail.includes('@')) {
-      setErrorMsg('Please enter a valid Email Address.');
+    if (cleanName.length < 3) {
+      setErrorMsg('Please enter your complete Full Name.');
+      return;
+    }
+
+    if (!cleanEmail.endsWith('@vitbhopal.ac.in')) {
+      setErrorMsg('Please enter your official VIT Bhopal student email (@vitbhopal.ac.in).');
+      return;
+    }
+
+    if (!cleanRollNo || cleanRollNo.length < 5) {
+      setErrorMsg('Please enter your valid college Registration / Roll Number (e.g., 25BCE10001).');
       return;
     }
 
     const newViewer = await addRegisteredViewer({
-      name: regName.trim(),
-      email: regEmail.trim(),
-      rollNo: regRollNo.trim() || 'N/A',
+      name: cleanName,
+      email: cleanEmail,
+      rollNo: cleanRollNo,
       phone: regPhone.trim() || 'N/A'
     });
 
