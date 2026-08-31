@@ -43,6 +43,9 @@ export default function AdminPortal({
   const [cameraError, setCameraError] = useState(null);
   const [isSyncingDB, setIsSyncingDB] = useState(false);
   const [syncSuccessMsg, setSyncSuccessMsg] = useState('');
+  // Auditorium filter for bookings list
+  const [audiFilter, setAudiFilter] = useState('ALL'); // 'ALL', 'AUDI_1', 'AUDI_2'
+
   const qrScannerRef = useRef(null);
 
   const handleManualSync = async () => {
@@ -109,6 +112,20 @@ export default function AdminPortal({
       paymentScreenshot: b.paymentScreenshot || screenshotMap[b.bookingId] || null
     }));
   }, [fullBookings, userBookings]);
+
+  // Calculate Audi 1 and Audi 2 occupancy
+  const audi1Seats = seatMap?.AUDI_1 ? Object.values(seatMap.AUDI_1) : [];
+  const audi2Seats = seatMap?.AUDI_2 ? Object.values(seatMap.AUDI_2) : [];
+
+  const audi1BookedSeatsCount = audi1Seats.filter(s => s.status === 'occupied').length;
+  const audi2BookedSeatsCount = audi2Seats.filter(s => s.status === 'occupied').length;
+
+  const totalSeatsPerAudi = 288;
+  const audi1Available = Math.max(0, totalSeatsPerAudi - audi1BookedSeatsCount);
+  const audi2Available = Math.max(0, totalSeatsPerAudi - audi2BookedSeatsCount);
+
+  const audi1Percent = Math.min(100, Math.round((audi1BookedSeatsCount / totalSeatsPerAudi) * 100));
+  const audi2Percent = Math.min(100, Math.round((audi2BookedSeatsCount / totalSeatsPerAudi) * 100));
 
   if (!isOpen) return null;
 
@@ -365,8 +382,107 @@ export default function AdminPortal({
                 </div>
               </div>
 
+              {/* 🏛️ Live Auditorium Seat Occupancy Dashboard */}
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                
+                {/* Audi 1 Card */}
+                <div className="rounded-2xl border border-red-900/70 bg-[#12081c] p-4 shadow-xl relative overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">🏛️</span>
+                      <div>
+                        <h4 className="text-xs font-black uppercase tracking-wider text-white">AB02 — AUDI 1</h4>
+                        <span className="text-[10px] text-gray-400 font-mono">Main Screening Hall</span>
+                      </div>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border font-mono ${
+                      audi1BookedSeatsCount >= 288 
+                        ? 'bg-red-950 text-red-400 border-red-500/50' 
+                        : 'bg-emerald-950/80 text-emerald-400 border-emerald-500/40'
+                    }`}>
+                      {audi1BookedSeatsCount >= 288 ? '🔴 HOUSEFULL (288/288)' : '🟢 BOOKING LIVE'}
+                    </span>
+                  </div>
+
+                  <div className="mt-3.5 flex items-baseline justify-between">
+                    <div>
+                      <span className="text-2xl font-black font-mono text-orange-400">{audi1BookedSeatsCount}</span>
+                      <span className="text-xs text-gray-400 font-mono"> / 288 Seats Full</span>
+                    </div>
+                    <div className="text-right font-mono">
+                      <span className="text-sm font-bold text-emerald-400">{audi1Available}</span>
+                      <span className="text-[10px] text-gray-400 block">Available</span>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mt-2.5 h-2.5 w-full rounded-full bg-black/60 overflow-hidden border border-red-950">
+                    <div 
+                      className="h-full bg-gradient-to-r from-orange-500 to-red-600 transition-all duration-500 rounded-full"
+                      style={{ width: `${audi1Percent}%` }}
+                    ></div>
+                  </div>
+                  <div className="mt-1.5 flex justify-between text-[10px] text-gray-400 font-mono">
+                    <span>0 Booked</span>
+                    <span className="font-bold text-orange-300">{audi1Percent}% Capacity</span>
+                    <span>288 Max</span>
+                  </div>
+                </div>
+
+                {/* Audi 2 Card */}
+                <div className="rounded-2xl border border-purple-900/70 bg-[#100720] p-4 shadow-xl relative overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">🏛️</span>
+                      <div>
+                        <h4 className="text-xs font-black uppercase tracking-wider text-white">AB02 — AUDI 2</h4>
+                        <span className="text-[10px] text-gray-400 font-mono">Overflow Screening Hall</span>
+                      </div>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border font-mono ${
+                      audi1BookedSeatsCount < 288
+                        ? 'bg-amber-950/80 text-amber-300 border-amber-500/40'
+                        : audi2BookedSeatsCount >= 288
+                        ? 'bg-red-950 text-red-400 border-red-500/50'
+                        : 'bg-emerald-950/80 text-emerald-400 border-emerald-500/40'
+                    }`}>
+                      {audi1BookedSeatsCount < 288 
+                        ? '🔒 UNLOCKS WHEN AUDI 1 FULL' 
+                        : audi2BookedSeatsCount >= 288 
+                        ? '🔴 HOUSEFULL (288/288)' 
+                        : '🟢 BOOKING LIVE'}
+                    </span>
+                  </div>
+
+                  <div className="mt-3.5 flex items-baseline justify-between">
+                    <div>
+                      <span className="text-2xl font-black font-mono text-purple-400">{audi2BookedSeatsCount}</span>
+                      <span className="text-xs text-gray-400 font-mono"> / 288 Seats Full</span>
+                    </div>
+                    <div className="text-right font-mono">
+                      <span className="text-sm font-bold text-emerald-400">{audi2Available}</span>
+                      <span className="text-[10px] text-gray-400 block">Available</span>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mt-2.5 h-2.5 w-full rounded-full bg-black/60 overflow-hidden border border-purple-950">
+                    <div 
+                      className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500 rounded-full"
+                      style={{ width: `${audi2Percent}%` }}
+                    ></div>
+                  </div>
+                  <div className="mt-1.5 flex justify-between text-[10px] text-gray-400 font-mono">
+                    <span>0 Booked</span>
+                    <span className="font-bold text-purple-300">{audi2Percent}% Capacity</span>
+                    <span>288 Max</span>
+                  </div>
+                </div>
+
+              </div>
+
               {/* Navigation Tabs */}
-              <div className="mt-4 flex flex-wrap gap-2 border-b border-amber-950/60 pb-3">
+              <div className="mt-5 flex flex-wrap gap-2 border-b border-amber-950/60 pb-3">
                 <button
                   onClick={() => setActiveTab('approvals')}
                   className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition hover-zoom flex items-center gap-1.5 ${
@@ -639,50 +755,92 @@ export default function AdminPortal({
                 )}
 
                 {/* TAB 4: ALL BOOKINGS */}
-                {activeTab === 'bookings' && (
-                  <div className="space-y-4 animate-fadeIn">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Total Bookings: {displayBookings.length}</span>
-                      <button
-                        onClick={handleExportBookingsCsv}
-                        className="flex items-center gap-1 rounded bg-amber-600 px-3 py-1 text-xs font-bold text-black hover:bg-amber-500 hover-zoom"
-                      >
-                        <Download className="h-3.5 w-3.5" /> Export Bookings CSV
-                      </button>
-                    </div>
+                {activeTab === 'bookings' && (() => {
+                  const audi1BookingsCount = displayBookings.filter(b => !b.auditorium || b.auditorium.includes('Audi 1') || b.audiKey === 'AUDI_1').length;
+                  const audi2BookingsCount = displayBookings.filter(b => b.auditorium?.includes('Audi 2') || b.audiKey === 'AUDI_2').length;
 
-                    <div className="max-h-64 overflow-y-auto rounded-xl border border-amber-950/60 bg-black/40 p-2 space-y-1.5">
-                      {displayBookings.length === 0 ? (
-                        <p className="text-xs text-gray-500 text-center py-6">No user bookings recorded on site yet.</p>
-                      ) : (
-                        displayBookings.map(b => (
-                          <div key={b.bookingId} className="p-2.5 rounded bg-black/60 border border-amber-950/40 text-xs flex items-center justify-between hover-zoom">
-                            <div>
-                              <strong className="text-amber-400">{b.bookingId}</strong> — {b.user.name} ({b.user.email})
-                              <p className="text-[11px] text-gray-400">Seats: {b.seats.map(s => s.id).join(', ')} | Venue: {b.auditorium || 'AB02 — Audi 1'} | UTR: {b.utrNumber}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {b.paymentScreenshot && (
-                                <button
-                                  onClick={() => setPreviewScreenshot(b.paymentScreenshot)}
-                                  className="rounded bg-indigo-950 px-2 py-1 text-[10px] font-bold text-indigo-300 border border-indigo-500/40"
-                                >
-                                  Receipt Proof
-                                </button>
-                              )}
-                              <div className="text-right">
-                                <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${b.status === 'CONFIRMED' ? 'bg-emerald-950 text-emerald-400' : b.status === 'PENDING_VERIFICATION' ? 'bg-amber-950 text-amber-300' : 'bg-red-950 text-red-300'}`}>
-                                  {b.status}
-                                </span>
-                                <p className="text-xs font-bold text-emerald-400 mt-0.5">₹{b.totalAmount}</p>
+                  const filteredBookings = displayBookings.filter(b => {
+                    if (audiFilter === 'AUDI_1') return !b.auditorium || b.auditorium.includes('Audi 1') || b.audiKey === 'AUDI_1';
+                    if (audiFilter === 'AUDI_2') return b.auditorium?.includes('Audi 2') || b.audiKey === 'AUDI_2';
+                    return true;
+                  });
+
+                  return (
+                    <div className="space-y-4 animate-fadeIn">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        {/* Auditorium Filter Selector */}
+                        <div className="flex items-center gap-1 rounded-xl bg-black/60 p-1 border border-amber-950/80 text-xs">
+                          <button
+                            onClick={() => setAudiFilter('ALL')}
+                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom ${
+                              audiFilter === 'ALL' ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
+                            }`}
+                          >
+                            All Bookings ({displayBookings.length})
+                          </button>
+                          <button
+                            onClick={() => setAudiFilter('AUDI_1')}
+                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
+                              audiFilter === 'AUDI_1' ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                            }`}
+                          >
+                            <span>🏛️ Audi 1</span>
+                            <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi1BookingsCount})</span>
+                          </button>
+                          <button
+                            onClick={() => setAudiFilter('AUDI_2')}
+                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
+                              audiFilter === 'AUDI_2' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                            }`}
+                          >
+                            <span>🏛️ Audi 2</span>
+                            <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi2BookingsCount})</span>
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={handleExportBookingsCsv}
+                          className="flex items-center gap-1 rounded-xl bg-amber-600 px-3.5 py-1.5 text-xs font-bold text-black hover:bg-amber-500 hover-zoom shadow"
+                        >
+                          <Download className="h-3.5 w-3.5" /> Export Bookings CSV
+                        </button>
+                      </div>
+
+                      <div className="max-h-64 overflow-y-auto rounded-xl border border-amber-950/60 bg-black/40 p-2 space-y-1.5">
+                        {filteredBookings.length === 0 ? (
+                          <p className="text-xs text-gray-500 text-center py-6">No bookings found for the selected auditorium.</p>
+                        ) : (
+                          filteredBookings.map(b => (
+                            <div key={b.bookingId} className="p-2.5 rounded-xl bg-black/60 border border-amber-950/40 text-xs flex items-center justify-between hover-zoom">
+                              <div>
+                                <strong className="text-amber-400">{b.bookingId}</strong> — {b.user.name} ({b.user.email})
+                                <p className="text-[11px] text-gray-400">
+                                  Seats: <strong className="text-orange-400">{b.seats.map(s => s.id).join(', ')}</strong> | Venue: <span className="text-purple-300 font-bold">{b.auditorium || 'AB02 — Audi 1'}</span> | UTR: {b.utrNumber}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {b.paymentScreenshot && (
+                                  <button
+                                    onClick={() => setPreviewScreenshot(b.paymentScreenshot)}
+                                    className="rounded-lg bg-indigo-950 px-2.5 py-1 text-[10px] font-bold text-indigo-300 border border-indigo-500/40 hover:bg-indigo-900/80"
+                                  >
+                                    Receipt Proof
+                                  </button>
+                                )}
+                                <div className="text-right">
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${b.status === 'CONFIRMED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' : b.status === 'PENDING_VERIFICATION' ? 'bg-amber-950 text-amber-300 border border-amber-500/40' : 'bg-red-950 text-red-300 border border-red-500/40'}`}>
+                                    {b.status}
+                                  </span>
+                                  <p className="text-xs font-bold text-emerald-400 mt-0.5 font-mono">₹{b.totalAmount}</p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))
-                      )}
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </div>
           )}
