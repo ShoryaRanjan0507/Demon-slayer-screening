@@ -3,6 +3,7 @@ import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check,
 import { Html5Qrcode } from 'html5-qrcode';
 import { addRegisteredViewer, updateBookingStatus, markTicketCheckedIn } from '../utils/storage';
 import { fetchNeonBookingsFull } from '../utils/db';
+import backupSeed from '../data/backupSeed.json';
 
 export default function AdminPortal({ 
   isOpen, 
@@ -87,7 +88,27 @@ export default function AdminPortal({
   }, [isOpen, onUpdateViewers, isAuthenticated]);
 
   // Merge: use fullBookings (with screenshots) if available, otherwise fall back to prop
-  const displayBookings = fullBookings || userBookings;
+  // If screenshots are missing (DB unreachable), enrich from backup seed
+  const displayBookings = React.useMemo(() => {
+    const base = fullBookings || userBookings;
+    if (!base || base.length === 0) return [];
+
+    // Check if any booking already has a screenshot
+    const hasScreenshots = base.some(b => b.paymentScreenshot);
+    if (hasScreenshots) return base;
+
+    // Build screenshot lookup from backup seed
+    const screenshotMap = {};
+    (backupSeed.bookings || []).forEach(b => {
+      if (b.paymentScreenshot) screenshotMap[b.bookingId] = b.paymentScreenshot;
+    });
+
+    // Merge screenshots into bookings
+    return base.map(b => ({
+      ...b,
+      paymentScreenshot: b.paymentScreenshot || screenshotMap[b.bookingId] || null
+    }));
+  }, [fullBookings, userBookings]);
 
   if (!isOpen) return null;
 
