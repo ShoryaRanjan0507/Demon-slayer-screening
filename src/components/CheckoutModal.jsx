@@ -112,32 +112,55 @@ export default function CheckoutModal({
 
     setIsSubmitting(true);
 
-    const formattedSeats = selectedSeats.map(id => {
-      return currentSeatMap[id] || {
-        id: id,
-        row: id.slice(0, 1),
-        number: parseInt(id.slice(1), 10) || 1,
-        price: 67,
-        status: 'occupied'
-      };
-    });
-
-    const bookingData = {
-      bookingId: `DS-${Math.floor(100000 + Math.random() * 900000)}`,
-      user: verifiedUser,
-      seats: formattedSeats,
-      totalAmount: totalPrice,
-      utrNumber: utrNumber.trim(),
-      paymentScreenshot: screenshotData,
-      timestamp: new Date().toLocaleString(),
-      status: 'PENDING_VERIFICATION', // 2-Step Organiser Verification
-      checkedIn: false
+    const uploadToCloudinary = async (base64Data) => {
+      try {
+        const res = await fetch('https://api.cloudinary.com/v1_1/rai15q1n/image/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: base64Data,
+            upload_preset: 'screening_preset'
+          })
+        });
+        const data = await res.json();
+        if (data && data.secure_url) {
+          return data.secure_url;
+        }
+      } catch (err) {
+        console.warn("Cloudinary upload fallback to local base64:", err);
+      }
+      return base64Data;
     };
 
-    setTimeout(() => {
+    uploadToCloudinary(screenshotData).then((finalScreenshotUrl) => {
+      const formattedSeats = selectedSeats.map(id => {
+        return currentSeatMap[id] || {
+          id: id,
+          row: id.slice(0, 1),
+          number: parseInt(id.slice(1), 10) || 1,
+          price: 67,
+          status: 'occupied'
+        };
+      });
+
+      const bookingData = {
+        bookingId: `DS-${Math.floor(100000 + Math.random() * 900000)}`,
+        user: verifiedUser,
+        seats: formattedSeats,
+        totalAmount: totalPrice,
+        utrNumber: utrNumber.trim(),
+        paymentScreenshot: finalScreenshotUrl,
+        timestamp: new Date().toLocaleString(),
+        status: 'PENDING_VERIFICATION', // 2-Step Organiser Verification
+        checkedIn: false
+      };
+
       setIsSubmitting(false);
       onConfirmBooking(bookingData);
-    }, 1000);
+    }).catch(err => {
+      setIsSubmitting(false);
+      setErrorMsg('Error submitting booking: ' + (err.message || 'Please try again'));
+    });
   };
 
   return (
