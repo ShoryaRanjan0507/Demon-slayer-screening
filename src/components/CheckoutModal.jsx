@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import { X, Copy, AlertCircle, CheckCircle2, ShieldAlert, Upload, QrCode, Check } from 'lucide-react';
+import { X, Copy, AlertCircle, CheckCircle2, ShieldAlert, Upload, Building2, Check, Landmark, CreditCard } from 'lucide-react';
 import { getUserBookings } from '../utils/storage';
-
-const UPI_DETAILS = {
-  name: 'K Chakraborty',
-  upiId: 'kauliknov27-1@okicici',
-  qrImage: '/payment-qr.jpg'
-};
+import { BANK_DETAILS } from '../data/initialData';
 
 export default function CheckoutModal({ 
   isOpen, 
@@ -20,7 +15,8 @@ export default function CheckoutModal({
   const [utrNumber, setUtrNumber] = useState('');
   const [screenshotData, setScreenshotData] = useState(null);
   const [screenshotFileName, setScreenshotFileName] = useState('');
-  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [copiedAcc, setCopiedAcc] = useState(false);
+  const [copiedIfsc, setCopiedIfsc] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -34,10 +30,16 @@ export default function CheckoutModal({
   // Calculate total price (₹67 per seat)
   const totalPrice = selectedSeats.reduce((sum, seatId) => sum + (currentSeatMap[seatId]?.price || 67), 0);
 
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText(UPI_DETAILS.upiId);
-    setCopiedUpi(true);
-    setTimeout(() => setCopiedUpi(false), 2500);
+  const handleCopyAcc = () => {
+    navigator.clipboard.writeText(BANK_DETAILS.accountNumber);
+    setCopiedAcc(true);
+    setTimeout(() => setCopiedAcc(false), 2500);
+  };
+
+  const handleCopyIfsc = () => {
+    navigator.clipboard.writeText(BANK_DETAILS.ifscCode);
+    setCopiedIfsc(true);
+    setTimeout(() => setCopiedIfsc(false), 2500);
   };
 
   const handleFileChange = (e) => {
@@ -110,7 +112,7 @@ export default function CheckoutModal({
     // 3. Repeated dummy number patterns check
     const isDummy = /^(.)\1{11}$/.test(cleanUtr) || cleanUtr === '123456789012' || cleanUtr === '012345678901' || cleanUtr === '987654321098';
     if (isDummy) {
-      setErrorMsg('Invalid or dummy UTR number. Please enter the genuine 12-digit UTR from your UPI payment receipt.');
+      setErrorMsg('Invalid or dummy UTR number. Please enter the genuine 12-digit UTR from your payment receipt.');
       return;
     }
 
@@ -122,7 +124,7 @@ export default function CheckoutModal({
       b.status !== 'REJECTED'
     );
     if (isDuplicate) {
-      setErrorMsg('⚠️ This 12-digit UTR number has already been used for another booking. Please check your UPI payment receipt.');
+      setErrorMsg('⚠️ This 12-digit UTR number has already been used for another booking. Please check your payment receipt.');
       return;
     }
 
@@ -187,7 +189,7 @@ export default function CheckoutModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-red-900/80 bg-[#0c0818] p-5 shadow-2xl sm:p-7 animate-popup">
+      <div className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl border border-red-900/80 bg-[#0c0818] p-5 shadow-2xl sm:p-7 animate-popup">
         
         {/* Close Button */}
         <button
@@ -200,72 +202,83 @@ export default function CheckoutModal({
         {/* Modal Header */}
         <div className="mb-5 flex items-center gap-3 border-b border-red-950/80 pb-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-orange-600 text-white shadow-lg shrink-0">
-            <QrCode className="h-6 w-6" />
+            <Landmark className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-lg font-extrabold text-white">Scan UPI QR To Pay</h2>
+            <h2 className="text-lg font-extrabold text-white">Indian Bank Transfer</h2>
             <p className="text-xs text-gray-400">
-              Total: <strong className="text-orange-400 font-mono text-sm font-bold">₹{totalPrice}</strong> for {selectedSeats.length} seat(s) ({selectedSeats.join(', ')})
+              Total Payable: <strong className="text-orange-400 font-mono text-sm font-bold">₹{totalPrice}</strong> for {selectedSeats.length} seat(s) ({selectedSeats.join(', ')})
             </p>
           </div>
         </div>
 
-        {/* Official Payment QR Card */}
-        <div className="rounded-2xl border border-red-900/60 bg-[#120a21] p-4 text-center space-y-3">
-          
-          {/* Header Banner */}
+        {/* Bank Account Details Card */}
+        <div className="rounded-2xl border border-red-900/60 bg-[#120a21] p-4 space-y-3">
           <div className="flex items-center justify-between border-b border-red-950/80 pb-2 px-1">
             <span className="text-[11px] font-bold text-red-400 uppercase tracking-widest flex items-center gap-1.5">
-              <QrCode className="h-4 w-4" /> OFFICIAL SCREENING UPI QR
+              <Building2 className="h-4 w-4" /> OFFICIAL CLUB BANK DETAILS
             </span>
-            <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-500/40">
-              GPay • PhonePe • Paytm • BHIM
+            <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-500/40 font-bold">
+              {BANK_DETAILS.bankName}
             </span>
           </div>
 
-          {/* QR Code Image Container */}
-          <div className="flex justify-center py-1">
-            <div className="relative rounded-2xl bg-white p-2.5 shadow-2xl border-2 border-red-500/40 max-w-[220px]">
-              <img 
-                src={UPI_DETAILS.qrImage} 
-                alt="Payment QR Code - K Chakraborty" 
-                className="w-full h-auto rounded-xl object-contain"
-              />
-            </div>
-          </div>
-
-          {/* Account Details & 1-Click Copy */}
-          <div className="bg-black/70 p-3 rounded-xl border border-red-950 space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-400 text-[11px] uppercase">Payee Name:</span>
-              <strong className="text-white font-bold">{UPI_DETAILS.name}</strong>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            {/* Account Holder Name */}
+            <div className="bg-black/70 p-3 rounded-xl border border-red-950">
+              <span className="text-[10px] text-gray-400 block uppercase">Account Holder Name</span>
+              <strong className="text-white font-bold text-sm">{BANK_DETAILS.accountName}</strong>
             </div>
 
-            <div className="flex items-center justify-between text-xs pt-1 border-t border-red-950/60">
-              <span className="text-gray-400 text-[11px] uppercase">UPI ID:</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-orange-400 font-mono font-bold">{UPI_DETAILS.upiId}</span>
-                <button
-                  type="button"
-                  onClick={handleCopyUpi}
-                  className="flex items-center gap-1 rounded bg-red-950 px-2 py-1 text-[10px] font-bold text-red-300 hover:bg-red-900 border border-red-800/50 transition"
-                >
-                  {copiedUpi ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
-                  {copiedUpi ? "Copied!" : "Copy"}
-                </button>
+            {/* Account Number with Copy */}
+            <div className="bg-black/70 p-3 rounded-xl border border-red-950 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-gray-400 block uppercase">Account Number</span>
+                <strong className="text-orange-400 font-mono text-sm font-black tracking-wider">{BANK_DETAILS.accountNumber}</strong>
               </div>
+              <button
+                type="button"
+                onClick={handleCopyAcc}
+                className="flex items-center gap-1 rounded-lg bg-red-950 px-2.5 py-1.5 text-[10px] font-bold text-red-300 hover:bg-red-900 border border-red-800/50 transition shrink-0"
+              >
+                {copiedAcc ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                {copiedAcc ? "Copied!" : "Copy"}
+              </button>
             </div>
 
-            <div className="flex items-center justify-between text-xs pt-1 border-t border-red-950/60">
-              <span className="text-gray-400 text-[11px] uppercase">Exact Amount to Pay:</span>
-              <span className="text-emerald-400 font-mono font-black text-sm bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+            {/* IFSC Code with Copy */}
+            <div className="bg-black/70 p-3 rounded-xl border border-red-950 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-gray-400 block uppercase">IFSC Code</span>
+                <strong className="text-emerald-400 font-mono text-sm font-bold tracking-wider">{BANK_DETAILS.ifscCode}</strong>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyIfsc}
+                className="flex items-center gap-1 rounded-lg bg-red-950 px-2.5 py-1.5 text-[10px] font-bold text-red-300 hover:bg-red-900 border border-red-800/50 transition shrink-0"
+              >
+                {copiedIfsc ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                {copiedIfsc ? "Copied!" : "Copy"}
+              </button>
+            </div>
+
+            {/* Branch & Code */}
+            <div className="bg-black/70 p-3 rounded-xl border border-red-950">
+              <span className="text-[10px] text-gray-400 block uppercase">Branch & Code</span>
+              <strong className="text-gray-200 text-xs">{BANK_DETAILS.branch} (Code: {BANK_DETAILS.branchCode})</strong>
+            </div>
+
+            {/* Total Amount Badge */}
+            <div className="bg-black/70 p-3 rounded-xl border border-amber-900/40 sm:col-span-2 flex items-center justify-between">
+              <span className="text-xs text-gray-300 uppercase font-bold">Exact Amount to Transfer:</span>
+              <span className="text-emerald-400 font-mono font-black text-sm bg-emerald-950/80 px-3 py-1 rounded-lg border border-emerald-500/40">
                 ₹{totalPrice}
               </span>
             </div>
           </div>
 
-          <p className="text-[11px] text-gray-400 leading-tight">
-            Scan using any UPI App (GPay, PhonePe, Paytm), pay <strong>₹{totalPrice}</strong>, and copy the <strong>12-digit UTR Number</strong>.
+          <p className="text-[11px] text-gray-400 leading-tight text-center pt-1">
+            Transfer <strong>₹{totalPrice}</strong> via IMPS/NEFT/UPI to the Indian Bank account above, then enter the <strong>12-digit UTR</strong> below.
           </p>
         </div>
 
@@ -283,7 +296,7 @@ export default function CheckoutModal({
               maxLength={12}
               value={utrNumber}
               onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, ''))}
-              placeholder="e.g. 660783963519 (12 digits from UPI receipt)"
+              placeholder="e.g. 660783963519 (12 digits from transaction receipt)"
               className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 px-3.5 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none font-mono tracking-wider"
             />
             <span className="text-[10px] text-gray-400 mt-1 block">
@@ -348,7 +361,7 @@ export default function CheckoutModal({
           <div className="flex items-start gap-2 rounded-xl bg-amber-950/30 border border-amber-600/30 p-2.5 text-[11px] text-amber-300/90">
             <ShieldAlert className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
             <span>
-              <strong>Organiser Verification:</strong> Organisers cross-reference the 12-digit UTR with bank records before confirming tickets. Duplicate or fake UTRs result in automatic booking cancellation.
+              <strong>Organiser Verification:</strong> Organisers cross-reference the 12-digit UTR with Indian Bank account records before confirming tickets. Duplicate or fake UTRs result in automatic booking cancellation.
             </span>
           </div>
 
