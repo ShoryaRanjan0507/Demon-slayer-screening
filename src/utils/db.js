@@ -1,29 +1,8 @@
-// Database layer - uses Vercel serverless API routes on production,
-// falls back to direct @neondatabase/serverless calls in local dev.
-
-const IS_PRODUCTION = typeof window !== 'undefined' && 
-  (window.location.hostname.includes('vercel.app') || 
-   window.location.hostname.includes('.vercel.') ||
-   !window.location.hostname.includes('localhost'));
-
-// ─── API-based fetchers (production - go through /api/ serverless functions) ───
-
-const apiFetch = async (url, options = {}) => {
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  });
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    throw new Error(errData.error || `API ${url} failed with status ${res.status}`);
-  }
-  return res.json();
-};
-
-// ─── Direct DB fetchers (local dev only) ───
+// Database layer - connects directly to Neon PostgreSQL over WebSockets/HTTPS
+// (eliminating Vercel Serverless Function invocation limits), with automatic API fallback.
 
 let directSql = null;
-const getDirectSql = async () => {
+export const getDirectSql = async () => {
   if (directSql) return directSql;
   try {
     const { neon } = await import('@neondatabase/serverless');
@@ -43,23 +22,34 @@ const getDirectSql = async () => {
   }
 };
 
+const apiFetch = async (url, options = {}) => {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `API ${url} failed with status ${res.status}`);
+  }
+  return res.json();
+};
+
 // ─── Initialize Database ───
 
 export const initNeonDatabase = async () => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/init');
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return { success: false };
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`CREATE TABLE IF NOT EXISTS viewers (email TEXT PRIMARY KEY, name TEXT NOT NULL, roll_no TEXT, registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
       await sql`CREATE TABLE IF NOT EXISTS bookings (booking_id TEXT PRIMARY KEY, user_email TEXT NOT NULL, user_name TEXT NOT NULL, user_roll_no TEXT, auditorium TEXT NOT NULL, seats JSONB NOT NULL, total_amount NUMERIC NOT NULL, utr_number TEXT NOT NULL, payment_screenshot TEXT, status TEXT NOT NULL DEFAULT 'PENDING_VERIFICATION', checked_in BOOLEAN DEFAULT FALSE, check_in_time TEXT, timestamp TEXT NOT NULL)`;
       await sql`CREATE TABLE IF NOT EXISTS seat_maps (audi_id TEXT PRIMARY KEY, seat_data JSONB NOT NULL, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
+      console.log("⚡ Database initialized directly via Neon!");
+      return { success: true };
     }
-    console.log("⚡ Database initialized!");
+    await apiFetch('/api/init');
     return { success: true };
   } catch (err) {
-    console.error("DB Init Error:", err);
+    console.warn("DB Init fallback:", err);
     return { success: false, error: err };
   }
 };
@@ -68,15 +58,9 @@ export const initNeonDatabase = async () => {
 
 export const fetchNeonViewers = async () => {
   try {
-    if (IS_PRODUCTION) {
-      const data = await apiFetch('/api/viewers');
-      console.log("⚡ [API] Viewers loaded:", data.viewers?.length);
-      return data.viewers || [];
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return [];
+    const sql = await getDirectSql();
+    if (sql) {
       const rows = await sql`SELECT email, name, roll_no as "rollNo" FROM viewers ORDER BY registered_at DESC`;
-      console.log("⚡ [Direct] Viewers loaded:", rows?.length);
       return (rows || []).map(r => ({
         id: `reg-${r.email}`,
         email: r.email,
@@ -84,28 +68,39 @@ export const fetchNeonViewers = async () => {
         rollNo: r.rollNo || 'N/A'
       }));
     }
+  } catch (directErr) {
+    console.warn("Direct SQL viewers fetch fallback to API:", directErr);
+  }
+
+  try {
+    const data = await apiFetch('/api/viewers');
+    return data.viewers || [];
   } catch (err) {
     console.error("Fetch Viewers Error:", err);
-    throw err;
+    return [];
   }
 };
 
 export const saveNeonViewer = async (viewer) => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/viewers', {
-        method: 'POST',
-        body: JSON.stringify({ email: viewer.email, name: viewer.name, rollNo: viewer.rollNo })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`
         INSERT INTO viewers (email, name, roll_no)
         VALUES (${viewer.email.toLowerCase()}, ${viewer.name}, ${viewer.rollNo || ''})
         ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, roll_no = EXCLUDED.roll_no;
       `;
+      return true;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL save viewer fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch('/api/viewers', {
+      method: 'POST',
+      body: JSON.stringify({ email: viewer.email, name: viewer.name, rollNo: viewer.rollNo })
+    });
     return true;
   } catch (err) {
     console.error("Save Viewer Error:", err);
@@ -118,12 +113,8 @@ export const saveNeonViewer = async (viewer) => {
 // Lightweight fetch (excludes payment_screenshot to save bandwidth during polling)
 export const fetchNeonBookings = async () => {
   try {
-    if (IS_PRODUCTION) {
-      const data = await apiFetch('/api/bookings');
-      return data.bookings || [];
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return null;
+    const sql = await getDirectSql();
+    if (sql) {
       const rows = await sql`
         SELECT booking_id as "bookingId", user_email, user_name, user_roll_no, auditorium, seats,
           total_amount::float as "totalAmount", utr_number as "utrNumber",
@@ -139,6 +130,13 @@ export const fetchNeonBookings = async () => {
         status: r.status, checkedIn: r.checkedIn, checkInTime: r.checkInTime, timestamp: r.timestamp
       }));
     }
+  } catch (directErr) {
+    console.warn("Direct SQL bookings fetch fallback to API:", directErr);
+  }
+
+  try {
+    const data = await apiFetch('/api/bookings');
+    return data.bookings || [];
   } catch (err) {
     console.error("Fetch Bookings Error:", err);
     return null;
@@ -148,12 +146,8 @@ export const fetchNeonBookings = async () => {
 // Full fetch (includes payment_screenshot — for admin portal only)
 export const fetchNeonBookingsFull = async () => {
   try {
-    if (IS_PRODUCTION) {
-      const data = await apiFetch('/api/bookings?full=true');
-      return data.bookings || [];
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return null;
+    const sql = await getDirectSql();
+    if (sql) {
       const rows = await sql`
         SELECT booking_id as "bookingId", user_email, user_name, user_roll_no, auditorium, seats,
           total_amount::float as "totalAmount", utr_number as "utrNumber", payment_screenshot as "paymentScreenshot",
@@ -169,6 +163,13 @@ export const fetchNeonBookingsFull = async () => {
         status: r.status, checkedIn: r.checkedIn, checkInTime: r.checkInTime, timestamp: r.timestamp
       }));
     }
+  } catch (directErr) {
+    console.warn("Direct SQL full bookings fetch fallback to API:", directErr);
+  }
+
+  try {
+    const data = await apiFetch('/api/bookings?full=true');
+    return data.bookings || [];
   } catch (err) {
     console.error("Fetch Bookings Full Error:", err);
     return null;
@@ -180,20 +181,8 @@ export const checkNeonUtrDuplicate = async (utrNumber, excludeBookingId = '') =>
     const cleanUtr = (utrNumber || '').trim().replace(/\s+/g, '');
     if (!cleanUtr) return false;
 
-    if (IS_PRODUCTION) {
-      const data = await fetchNeonBookings();
-      if (data && Array.isArray(data)) {
-        return data.some(b => 
-          b.utrNumber && 
-          b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
-          b.status !== 'REJECTED' && 
-          b.bookingId !== excludeBookingId
-        );
-      }
-      return false;
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       const rows = await sql`
         SELECT booking_id FROM bookings 
         WHERE TRIM(utr_number) = ${cleanUtr} 
@@ -203,6 +192,17 @@ export const checkNeonUtrDuplicate = async (utrNumber, excludeBookingId = '') =>
       `;
       return rows && rows.length > 0;
     }
+
+    const data = await fetchNeonBookings();
+    if (data && Array.isArray(data)) {
+      return data.some(b => 
+        b.utrNumber && 
+        b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
+        b.status !== 'REJECTED' && 
+        b.bookingId !== excludeBookingId
+      );
+    }
+    return false;
   } catch (err) {
     console.error("Check UTR Duplicate Error:", err);
     return false;
@@ -210,18 +210,10 @@ export const checkNeonUtrDuplicate = async (utrNumber, excludeBookingId = '') =>
 };
 
 export const saveNeonBooking = async (b) => {
+  const cleanUtr = (b.utrNumber || '').trim().replace(/\s+/g, '');
   try {
-    const cleanUtr = (b.utrNumber || '').trim().replace(/\s+/g, '');
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/bookings', {
-        method: 'POST',
-        body: JSON.stringify({ ...b, utrNumber: cleanUtr || b.utrNumber })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
-
-      // Duplicate UTR check in direct mode
+    const sql = await getDirectSql();
+    if (sql) {
       if (cleanUtr) {
         const existing = await sql`
           SELECT booking_id FROM bookings 
@@ -240,7 +232,18 @@ export const saveNeonBooking = async (b) => {
         VALUES (${b.bookingId}, ${b.user.email}, ${b.user.name}, ${b.user.rollNo || ''}, ${b.auditorium || 'AB02 — Audi 1'}, ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${cleanUtr || b.utrNumber}, ${b.paymentScreenshot || null}, ${b.status || 'PENDING_VERIFICATION'}, ${b.checkedIn || false}, ${b.timestamp})
         ON CONFLICT (booking_id) DO UPDATE SET status = EXCLUDED.status, payment_screenshot = COALESCE(EXCLUDED.payment_screenshot, bookings.payment_screenshot), checked_in = EXCLUDED.checked_in, check_in_time = EXCLUDED.check_in_time;
       `;
+      return true;
     }
+  } catch (directErr) {
+    if (directErr.message?.includes('already been used')) throw directErr;
+    console.warn("Direct SQL save booking fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch('/api/bookings', {
+      method: 'POST',
+      body: JSON.stringify({ ...b, utrNumber: cleanUtr || b.utrNumber })
+    });
     return true;
   } catch (err) {
     console.error("Save Booking Error:", err);
@@ -250,16 +253,20 @@ export const saveNeonBooking = async (b) => {
 
 export const updateNeonBookingStatus = async (bookingId, status) => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/bookings', {
-        method: 'PUT',
-        body: JSON.stringify({ bookingId, status })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`UPDATE bookings SET status = ${status} WHERE booking_id = ${bookingId}`;
+      return true;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL update status fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch('/api/bookings', {
+      method: 'PUT',
+      body: JSON.stringify({ bookingId, status })
+    });
     return true;
   } catch (err) {
     console.error("Update Booking Status Error:", err);
@@ -269,16 +276,20 @@ export const updateNeonBookingStatus = async (bookingId, status) => {
 
 export const markNeonCheckIn = async (bookingId, checkInTime) => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/bookings', {
-        method: 'PUT',
-        body: JSON.stringify({ bookingId, checkedIn: true, checkInTime })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`UPDATE bookings SET checked_in = TRUE, check_in_time = ${checkInTime} WHERE booking_id = ${bookingId}`;
+      return true;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL check in fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch('/api/bookings', {
+      method: 'PUT',
+      body: JSON.stringify({ bookingId, checkedIn: true, checkInTime })
+    });
     return true;
   } catch (err) {
     console.error("Mark Check-in Error:", err);
@@ -288,16 +299,20 @@ export const markNeonCheckIn = async (bookingId, checkInTime) => {
 
 export const deleteNeonBooking = async (bookingId) => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch(`/api/bookings?bookingId=${encodeURIComponent(bookingId)}`, {
-        method: 'DELETE',
-        body: JSON.stringify({ bookingId })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`DELETE FROM bookings WHERE booking_id = ${bookingId}`;
+      return true;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL delete booking fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch(`/api/bookings?bookingId=${encodeURIComponent(bookingId)}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ bookingId })
+    });
     return true;
   } catch (err) {
     console.error("Delete Booking DB Error:", err);
@@ -309,20 +324,24 @@ export const deleteNeonBooking = async (bookingId) => {
 
 export const saveNeonSeatMap = async (seatMapData) => {
   try {
-    if (IS_PRODUCTION) {
-      await apiFetch('/api/seats', {
-        method: 'POST',
-        body: JSON.stringify({ seatMap: seatMapData })
-      });
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return false;
+    const sql = await getDirectSql();
+    if (sql) {
       await sql`
         INSERT INTO seat_maps (audi_id, seat_data, updated_at)
         VALUES ('MAIN_SEAT_MAP', ${JSON.stringify(seatMapData)}, CURRENT_TIMESTAMP)
         ON CONFLICT (audi_id) DO UPDATE SET seat_data = EXCLUDED.seat_data, updated_at = CURRENT_TIMESTAMP;
       `;
+      return true;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL save seat map fallback to API:", directErr);
+  }
+
+  try {
+    await apiFetch('/api/seats', {
+      method: 'POST',
+      body: JSON.stringify({ seatMap: seatMapData })
+    });
     return true;
   } catch (err) {
     console.error("Save Seat Map Error:", err);
@@ -332,20 +351,24 @@ export const saveNeonSeatMap = async (seatMapData) => {
 
 export const fetchNeonSeatMap = async () => {
   try {
-    if (IS_PRODUCTION) {
-      const data = await apiFetch('/api/seats');
-      return data.seatMap || null;
-    } else {
-      const sql = await getDirectSql();
-      if (!sql) return null;
+    const sql = await getDirectSql();
+    if (sql) {
       const rows = await sql`SELECT seat_data FROM seat_maps WHERE audi_id = 'MAIN_SEAT_MAP' LIMIT 1`;
       if (rows && rows.length > 0) {
         return typeof rows[0].seat_data === 'string' ? JSON.parse(rows[0].seat_data) : rows[0].seat_data;
       }
       return null;
     }
+  } catch (directErr) {
+    console.warn("Direct SQL fetch seat map fallback to API:", directErr);
+  }
+
+  try {
+    const data = await apiFetch('/api/seats');
+    return data.seatMap || null;
   } catch (err) {
     console.error("Fetch Seat Map Error:", err);
     return null;
   }
 };
+
