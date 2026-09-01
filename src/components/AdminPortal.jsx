@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check, XCircle, Clock3, Image as ImageIcon, Camera, CameraOff } from 'lucide-react';
+import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check, XCircle, Clock3, Image as ImageIcon, Camera, CameraOff, Trash2, Search, AlertTriangle } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { addRegisteredViewer, updateBookingStatus, markTicketCheckedIn } from '../utils/storage';
+import { addRegisteredViewer, updateBookingStatus, markTicketCheckedIn, cancelAndRemoveBooking } from '../utils/storage';
 import { fetchNeonBookingsFull } from '../utils/db';
 import backupSeed from '../data/backupSeed.json';
 
@@ -45,6 +45,15 @@ export default function AdminPortal({
   const [syncSuccessMsg, setSyncSuccessMsg] = useState('');
   // Auditorium filter for bookings list
   const [audiFilter, setAudiFilter] = useState('ALL'); // 'ALL', 'AUDI_1', 'AUDI_2'
+
+  // Cancel & Remove Booking State
+  const [bookingToRemove, setBookingToRemove] = useState(null);
+  const [isRemovingBooking, setIsRemovingBooking] = useState(false);
+  const [bookingActionMsg, setBookingActionMsg] = useState('');
+
+  // Search and Status filters for All Bookings
+  const [bookingSearch, setBookingSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL', 'CONFIRMED', 'PENDING_VERIFICATION', 'REJECTED'
 
   const qrScannerRef = useRef(null);
 
@@ -194,6 +203,30 @@ export default function AdminPortal({
   const handleSetBookingStatus = (bookingId, newStatus) => {
     const res = updateBookingStatus(bookingId, newStatus);
     if (onUpdateBookings) onUpdateBookings(res.bookings, res.seatMap);
+  };
+
+  // Handle Cancel and Remove Booking (Fake or Invalid)
+  const handleConfirmCancelAndRemove = async () => {
+    if (!bookingToRemove) return;
+    setIsRemovingBooking(true);
+    try {
+      const res = await cancelAndRemoveBooking(bookingToRemove.bookingId);
+      if (fullBookings) {
+        setFullBookings(prev => prev ? prev.filter(b => b.bookingId !== bookingToRemove.bookingId) : null);
+      }
+      if (onUpdateBookings) {
+        onUpdateBookings(res.bookings, res.seatMap);
+      }
+      setBookingActionMsg(`✅ Booking ${bookingToRemove.bookingId} cancelled & permanently removed! Reserved seats released.`);
+      setTimeout(() => setBookingActionMsg(''), 7000);
+    } catch (err) {
+      console.error("Failed to cancel and remove booking:", err);
+      setBookingActionMsg(`❌ Error removing booking: ${err.message}`);
+      setTimeout(() => setBookingActionMsg(''), 7000);
+    } finally {
+      setIsRemovingBooking(false);
+      setBookingToRemove(null);
+    }
   };
 
   // Process scanned code string
@@ -381,6 +414,22 @@ export default function AdminPortal({
                   </button>
                 </div>
               </div>
+
+              {/* Action Banner / Notification */}
+              {bookingActionMsg && (
+                <div className="mt-3 p-3 rounded-xl border border-emerald-500/50 bg-emerald-950/70 text-xs font-bold text-emerald-300 flex items-center justify-between shadow-lg animate-popup">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    {bookingActionMsg}
+                  </span>
+                  <button 
+                    onClick={() => setBookingActionMsg('')} 
+                    className="rounded p-1 text-gray-400 hover:text-white hover:bg-black/30"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
 
               {/* 🏛️ Live Auditorium Seat Occupancy Dashboard */}
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -583,9 +632,17 @@ export default function AdminPortal({
 
                               <button
                                 onClick={() => handleSetBookingStatus(b.bookingId, 'REJECTED')}
-                                className="rounded-lg bg-red-950 border border-red-500/50 px-3 py-1.5 text-xs font-bold text-red-300 hover:bg-red-900/60 flex items-center gap-1 hover-zoom"
+                                className="rounded-lg bg-red-950/60 border border-red-500/40 px-3 py-1.5 text-xs font-bold text-red-300 hover:bg-red-900/60 flex items-center gap-1 hover-zoom"
                               >
                                 <XCircle className="h-3.5 w-3.5" /> Reject UTR
+                              </button>
+
+                              <button
+                                onClick={() => setBookingToRemove(b)}
+                                className="rounded-lg bg-red-950 border border-red-500/70 px-3 py-1.5 text-xs font-bold text-red-200 hover:bg-red-900 flex items-center gap-1 hover-zoom shadow"
+                                title="Cancel & remove fake booking permanently"
+                              >
+                                <Trash2 className="h-3.5 w-3.5 text-red-400" /> Cancel & Remove
                               </button>
                             </div>
                           </div>
@@ -756,79 +813,169 @@ export default function AdminPortal({
                   const audi2BookingsCount = displayBookings.filter(b => b.auditorium?.includes('Audi 2') || b.audiKey === 'AUDI_2').length;
 
                   const filteredBookings = displayBookings.filter(b => {
-                    if (audiFilter === 'AUDI_1') return !b.auditorium || b.auditorium.includes('Audi 1') || b.audiKey === 'AUDI_1';
-                    if (audiFilter === 'AUDI_2') return b.auditorium?.includes('Audi 2') || b.audiKey === 'AUDI_2';
+                    // Auditorium filter
+                    if (audiFilter === 'AUDI_1' && (b.auditorium?.includes('Audi 2') || b.audiKey === 'AUDI_2')) return false;
+                    if (audiFilter === 'AUDI_2' && (!b.auditorium?.includes('Audi 2') && b.audiKey !== 'AUDI_2')) return false;
+                    
+                    // Status filter
+                    if (statusFilter !== 'ALL' && b.status !== statusFilter) return false;
+
+                    // Search query filter
+                    if (bookingSearch.trim()) {
+                      const q = bookingSearch.toLowerCase().trim();
+                      const matchId = b.bookingId?.toLowerCase().includes(q);
+                      const matchName = b.user?.name?.toLowerCase().includes(q);
+                      const matchEmail = b.user?.email?.toLowerCase().includes(q);
+                      const matchRoll = b.user?.rollNo?.toLowerCase().includes(q);
+                      const matchUtr = b.utrNumber?.toLowerCase().includes(q);
+                      const matchSeats = (b.seats || []).some(s => (typeof s === 'string' ? s : s?.id)?.toLowerCase().includes(q));
+                      if (!matchId && !matchName && !matchEmail && !matchRoll && !matchUtr && !matchSeats) return false;
+                    }
+
                     return true;
                   });
 
                   return (
                     <div className="space-y-4 animate-fadeIn">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        {/* Auditorium Filter Selector */}
-                        <div className="flex items-center gap-1 rounded-xl bg-black/60 p-1 border border-amber-950/80 text-xs">
+                      {/* Top Action & Search Bar */}
+                      <div className="space-y-2.5">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          {/* Search Input */}
+                          <div className="relative flex-1 min-w-[220px]">
+                            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-gray-400" />
+                            <input
+                              type="text"
+                              value={bookingSearch}
+                              onChange={(e) => setBookingSearch(e.target.value)}
+                              placeholder="Search by name, email, booking ID, UTR, seat..."
+                              className="w-full rounded-xl border border-amber-900/60 bg-black/60 py-2 pl-9 pr-7 text-xs text-white placeholder-gray-500 focus:border-amber-500 focus:outline-none"
+                            />
+                            {bookingSearch && (
+                              <button
+                                onClick={() => setBookingSearch('')}
+                                className="absolute right-2.5 top-2 text-xs text-gray-400 hover:text-white"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
+
                           <button
-                            onClick={() => setAudiFilter('ALL')}
-                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom ${
-                              audiFilter === 'ALL' ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
-                            }`}
+                            onClick={handleExportBookingsCsv}
+                            className="flex items-center gap-1 rounded-xl bg-amber-600 px-3.5 py-2 text-xs font-bold text-black hover:bg-amber-500 hover-zoom shadow shrink-0"
                           >
-                            All Bookings ({displayBookings.length})
-                          </button>
-                          <button
-                            onClick={() => setAudiFilter('AUDI_1')}
-                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
-                              audiFilter === 'AUDI_1' ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow' : 'text-gray-400 hover:text-white'
-                            }`}
-                          >
-                            <span>🏛️ Audi 1</span>
-                            <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi1BookingsCount})</span>
-                          </button>
-                          <button
-                            onClick={() => setAudiFilter('AUDI_2')}
-                            className={`px-3 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
-                              audiFilter === 'AUDI_2' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow' : 'text-gray-400 hover:text-white'
-                            }`}
-                          >
-                            <span>🏛️ Audi 2</span>
-                            <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi2BookingsCount})</span>
+                            <Download className="h-3.5 w-3.5" /> Export Bookings CSV
                           </button>
                         </div>
 
-                        <button
-                          onClick={handleExportBookingsCsv}
-                          className="flex items-center gap-1 rounded-xl bg-amber-600 px-3.5 py-1.5 text-xs font-bold text-black hover:bg-amber-500 hover-zoom shadow"
-                        >
-                          <Download className="h-3.5 w-3.5" /> Export Bookings CSV
-                        </button>
+                        {/* Status & Auditorium Filters */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                          {/* Status Filter */}
+                          <div className="flex flex-wrap items-center gap-1">
+                            <span className="text-[11px] font-bold text-gray-400 mr-1">Status:</span>
+                            {['ALL', 'CONFIRMED', 'PENDING_VERIFICATION', 'REJECTED'].map(st => (
+                              <button
+                                key={st}
+                                onClick={() => setStatusFilter(st)}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition hover-zoom ${
+                                  statusFilter === st ? 'bg-amber-500 text-black shadow' : 'bg-black/40 text-gray-400 hover:text-white'
+                                }`}
+                              >
+                                {st === 'ALL' ? 'All' : st === 'CONFIRMED' ? 'Confirmed' : st === 'PENDING_VERIFICATION' ? 'Pending' : 'Rejected'}
+                                <span className="ml-1 font-mono opacity-80">
+                                  ({st === 'ALL' ? displayBookings.length : displayBookings.filter(b => b.status === st).length})
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Auditorium Filter */}
+                          <div className="flex items-center gap-1 rounded-xl bg-black/60 p-0.5 border border-amber-950/80 text-[11px]">
+                            <button
+                              onClick={() => setAudiFilter('ALL')}
+                              className={`px-2.5 py-1 rounded-lg font-bold transition hover-zoom ${
+                                audiFilter === 'ALL' ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              All Audis ({displayBookings.length})
+                            </button>
+                            <button
+                              onClick={() => setAudiFilter('AUDI_1')}
+                              className={`px-2.5 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
+                                audiFilter === 'AUDI_1' ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              <span>🏛️ Audi 1</span>
+                              <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi1BookingsCount})</span>
+                            </button>
+                            <button
+                              onClick={() => setAudiFilter('AUDI_2')}
+                              className={`px-2.5 py-1 rounded-lg font-bold transition hover-zoom flex items-center gap-1 ${
+                                audiFilter === 'AUDI_2' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              <span>🏛️ Audi 2</span>
+                              <span className="font-mono text-[10px] bg-black/50 px-1.5 py-0.2 rounded">({audi2BookingsCount})</span>
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="max-h-64 overflow-y-auto rounded-xl border border-amber-950/60 bg-black/40 p-2 space-y-1.5">
+                      {/* Bookings List Cards */}
+                      <div className="max-h-80 overflow-y-auto rounded-xl border border-amber-950/60 bg-black/40 p-2 space-y-2">
                         {filteredBookings.length === 0 ? (
-                          <p className="text-xs text-gray-500 text-center py-6">No bookings found for the selected auditorium.</p>
+                          <p className="text-xs text-gray-500 text-center py-8">
+                            {bookingSearch ? `No bookings matching "${bookingSearch}".` : 'No bookings found for the selected filter.'}
+                          </p>
                         ) : (
                           filteredBookings.map(b => (
-                            <div key={b.bookingId} className="p-2.5 rounded-xl bg-black/60 border border-amber-950/40 text-xs flex items-center justify-between hover-zoom">
-                              <div>
-                                <strong className="text-amber-400">{b.bookingId}</strong> — {b.user.name} ({b.user.email})
+                            <div key={b.bookingId} className="p-3 rounded-xl bg-black/60 border border-amber-950/40 text-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 hover-zoom">
+                              <div className="space-y-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <strong className="text-amber-400 font-mono text-sm">{b.bookingId}</strong>
+                                  <span className="text-white font-bold">{b.user.name}</span>
+                                  <span className="text-gray-400 font-mono">({b.user.email})</span>
+                                  {b.user.rollNo && (
+                                    <span className="text-[10px] text-gray-400 font-mono bg-black/80 px-1.5 py-0.5 rounded border border-gray-800">
+                                      {b.user.rollNo}
+                                    </span>
+                                  )}
+                                </div>
                                 <p className="text-[11px] text-gray-400">
-                                  Seats: <strong className="text-orange-400">{b.seats.map(s => s.id).join(', ')}</strong> | Venue: <span className="text-purple-300 font-bold">{b.auditorium || 'AB02 — Audi 1'}</span> | UTR: {b.utrNumber}
+                                  Seats: <strong className="text-orange-400">{(b.seats || []).map(s => typeof s === 'string' ? s : s?.id).join(', ')}</strong> | Venue: <span className="text-purple-300 font-bold">{b.auditorium || 'AB02 — Audi 1'}</span> | UTR: <strong className="text-gray-300 font-mono">{b.utrNumber}</strong>
                                 </p>
                               </div>
-                              <div className="flex items-center gap-2">
+
+                              <div className="flex flex-wrap items-center gap-2 shrink-0 self-end md:self-center">
                                 {b.paymentScreenshot && (
                                   <button
                                     onClick={() => setPreviewScreenshot(b.paymentScreenshot)}
-                                    className="rounded-lg bg-indigo-950 px-2.5 py-1 text-[10px] font-bold text-indigo-300 border border-indigo-500/40 hover:bg-indigo-900/80"
+                                    className="rounded-lg bg-indigo-950 px-2.5 py-1 text-[11px] font-bold text-indigo-300 border border-indigo-500/40 hover:bg-indigo-900/80 flex items-center gap-1 hover-zoom"
                                   >
-                                    Receipt Proof
+                                    <ImageIcon className="h-3 w-3" /> Receipt
                                   </button>
                                 )}
-                                <div className="text-right">
-                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${b.status === 'CONFIRMED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' : b.status === 'PENDING_VERIFICATION' ? 'bg-amber-950 text-amber-300 border border-amber-500/40' : 'bg-red-950 text-red-300 border border-red-500/40'}`}>
-                                    {b.status}
+
+                                <div className="text-right mr-1">
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold block ${
+                                    b.status === 'CONFIRMED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' : 
+                                    b.status === 'PENDING_VERIFICATION' ? 'bg-amber-950 text-amber-300 border border-amber-500/40' : 
+                                    'bg-red-950 text-red-300 border border-red-500/40'
+                                  }`}>
+                                    {b.status === 'PENDING_VERIFICATION' ? 'PENDING' : b.status}
                                   </span>
                                   <p className="text-xs font-bold text-emerald-400 mt-0.5 font-mono">₹{b.totalAmount}</p>
                                 </div>
+
+                                {/* Cancel and Remove Button */}
+                                <button
+                                  onClick={() => setBookingToRemove(b)}
+                                  className="rounded-lg bg-red-950/80 border border-red-500/60 px-2.5 py-1.5 text-xs font-bold text-red-200 hover:bg-red-900 hover:text-white flex items-center gap-1 transition shadow hover-zoom"
+                                  title="Cancel and remove fake booking"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                                  Cancel & Remove
+                                </button>
                               </div>
                             </div>
                           ))
@@ -874,6 +1021,62 @@ export default function AdminPortal({
                 className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-bold uppercase text-white hover:bg-indigo-500 transition"
               >
                 Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel & Remove Fake Booking Confirmation Modal */}
+      {bookingToRemove && (
+        <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md animate-fadeIn">
+          <div className="relative max-w-lg w-full bg-[#12081c] border border-red-500/60 rounded-2xl p-6 shadow-2xl space-y-4 animate-popup">
+            <div className="flex items-center justify-between border-b border-red-950/80 pb-3">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-red-400" /> Confirm Cancel & Remove Booking
+              </h3>
+              <button
+                onClick={() => setBookingToRemove(null)}
+                disabled={isRemovingBooking}
+                className="rounded-lg p-1 text-gray-400 hover:bg-red-950/50 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="text-xs text-gray-300 space-y-3">
+              <p className="text-red-300 font-semibold bg-red-950/50 p-3 rounded-xl border border-red-900/60 leading-relaxed">
+                ⚠️ Are you sure you want to permanently cancel and remove this booking? It will be deleted from all database records and the reserved seats will be released immediately for other students.
+              </p>
+
+              <div className="bg-black/70 rounded-xl p-3.5 border border-amber-950/50 space-y-1.5 font-mono text-[11px]">
+                <p><span className="text-gray-400">Booking ID:</span> <strong className="text-amber-400">{bookingToRemove.bookingId}</strong></p>
+                <p><span className="text-gray-400">Viewer Name:</span> <strong className="text-white">{bookingToRemove.user?.name}</strong></p>
+                <p><span className="text-gray-400">Email:</span> <strong className="text-emerald-300">{bookingToRemove.user?.email}</strong></p>
+                <p><span className="text-gray-400">Reg No:</span> <strong className="text-gray-200">{bookingToRemove.user?.rollNo || 'N/A'}</strong></p>
+                <p><span className="text-gray-400">Auditorium:</span> <strong className="text-purple-300">{bookingToRemove.auditorium || 'AB02 — Audi 1'}</strong></p>
+                <p><span className="text-gray-400">Seats to Release:</span> <strong className="text-orange-400">{(bookingToRemove.seats || []).map(s => typeof s === 'string' ? s : s?.id).join(', ')}</strong></p>
+                <p><span className="text-gray-400">Amount / UTR:</span> <strong className="text-emerald-400">₹{bookingToRemove.totalAmount}</strong> | <strong className="text-white">UTR: {bookingToRemove.utrNumber}</strong></p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-red-950/60">
+              <button
+                type="button"
+                disabled={isRemovingBooking}
+                onClick={() => setBookingToRemove(null)}
+                className="rounded-xl bg-gray-800 px-4 py-2 text-xs font-bold text-gray-300 hover:bg-gray-700 hover-zoom"
+              >
+                Keep Booking
+              </button>
+              <button
+                type="button"
+                disabled={isRemovingBooking}
+                onClick={handleConfirmCancelAndRemove}
+                className="rounded-xl bg-gradient-to-r from-red-600 to-red-800 px-4 py-2 text-xs font-extrabold text-white uppercase hover:brightness-110 shadow-lg flex items-center gap-1.5 hover-zoom disabled:opacity-50"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {isRemovingBooking ? 'Removing...' : 'Confirm Cancel & Remove'}
               </button>
             </div>
           </div>

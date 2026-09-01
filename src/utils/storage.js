@@ -5,7 +5,8 @@ import {
   saveNeonBooking, 
   updateNeonBookingStatus, 
   saveNeonSeatMap, 
-  markNeonCheckIn 
+  markNeonCheckIn,
+  deleteNeonBooking 
 } from './db';
 
 // Initialize Neon Postgres tables on module load
@@ -296,6 +297,47 @@ export const updateBookingStatus = (bookingId, status) => {
     return { bookings: currentBookings, seatMap };
   } catch (e) {
     console.error("Update booking status error:", e);
+    return { bookings: getUserBookings(), seatMap: getSeatMap() };
+  }
+};
+
+export const cancelAndRemoveBooking = async (bookingId) => {
+  try {
+    const currentBookings = getUserBookings();
+    const targetBooking = currentBookings.find(b => b.bookingId === bookingId);
+    
+    // 1. Remove from bookings list
+    const remainingBookings = currentBookings.filter(b => b.bookingId !== bookingId);
+    localStorage.setItem(KEYS.BOOKINGS, JSON.stringify(remainingBookings));
+
+    // 2. Free up reserved seats on seatMap
+    let seatMap = getSeatMap();
+    if (targetBooking && targetBooking.seats && Array.isArray(targetBooking.seats)) {
+      const audiKey = targetBooking.audiKey || (targetBooking.auditorium && targetBooking.auditorium.includes('Audi 2') ? 'AUDI_2' : 'AUDI_1');
+      targetBooking.seats.forEach(seat => {
+        const sId = typeof seat === 'string' ? seat : seat?.id;
+        if (sId) {
+          if (seatMap[audiKey] && seatMap[audiKey][sId]) {
+            seatMap[audiKey][sId].status = 'available';
+            seatMap[audiKey][sId].bookedBy = null;
+          } else if (seatMap[sId]) {
+            seatMap[sId].status = 'available';
+            seatMap[sId].bookedBy = null;
+          }
+        }
+      });
+      saveSeatMap(seatMap);
+    } else {
+      seatMap = syncSeatMapWithBookings(seatMap, remainingBookings);
+      saveSeatMap(seatMap);
+    }
+
+    // 3. Delete from Neon Postgres DB
+    await deleteNeonBooking(bookingId);
+
+    return { bookings: remainingBookings, seatMap };
+  } catch (e) {
+    console.error("Cancel and remove booking error:", e);
     return { bookings: getUserBookings(), seatMap: getSeatMap() };
   }
 };

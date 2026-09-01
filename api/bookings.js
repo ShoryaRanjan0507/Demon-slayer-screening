@@ -5,7 +5,7 @@ const sql = neon(NEON_URL);
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -93,6 +93,18 @@ export default async function handler(req, res) {
         `;
       }
       return res.status(200).json({ success: true });
+    }
+
+    if (req.method === 'DELETE') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      const bookingId = req.query?.bookingId || body.bookingId;
+      if (!bookingId) {
+        return res.status(400).json({ error: 'bookingId is required' });
+      }
+      await sql`
+        DELETE FROM bookings WHERE booking_id = ${bookingId};
+      `;
+      return res.status(200).json({ success: true, deleted: bookingId });
     }
 
     return res.status(405).json({ error: 'Method not allowed' });

@@ -236,6 +236,25 @@ export const markNeonCheckIn = async (bookingId, checkInTime) => {
   }
 };
 
+export const deleteNeonBooking = async (bookingId) => {
+  try {
+    if (IS_PRODUCTION) {
+      await apiFetch(`/api/bookings?bookingId=${encodeURIComponent(bookingId)}`, {
+        method: 'DELETE',
+        body: JSON.stringify({ bookingId })
+      });
+    } else {
+      const sql = await getDirectSql();
+      if (!sql) return false;
+      await sql`DELETE FROM bookings WHERE booking_id = ${bookingId}`;
+    }
+    return true;
+  } catch (err) {
+    console.error("Delete Booking DB Error:", err);
+    return false;
+  }
+};
+
 // ─── Seat Maps ───
 
 export const saveNeonSeatMap = async (seatMapData) => {
