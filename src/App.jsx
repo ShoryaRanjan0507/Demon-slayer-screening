@@ -118,8 +118,8 @@ export default function App() {
     // Initial load
     syncAllData();
 
-    // 3. Smart interval: runs every 45s ONLY when tab is active/visible
-    const syncInterval = setInterval(syncBookingsOnly, 45000);
+    // 3. Smart interval: runs every 60s ONLY when tab is active/visible
+    const syncInterval = setInterval(syncBookingsOnly, 60000);
 
     // Sync immediately when user switches back to this tab
     const handleVisibilityChange = () => {
