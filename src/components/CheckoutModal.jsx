@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Copy, AlertCircle, CheckCircle2, ShieldAlert, Upload, Building2, Check, Landmark, CreditCard } from 'lucide-react';
-import { getUserBookings } from '../utils/storage';
+import { X, Copy, AlertCircle, CheckCircle2, ShieldAlert, Upload, Building2, Check, Landmark } from 'lucide-react';
+import { checkUtrIsUsed } from '../utils/storage';
 import { BANK_DETAILS } from '../data/initialData';
 
 export default function CheckoutModal({ 
@@ -91,7 +91,7 @@ export default function CheckoutModal({
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -116,25 +116,25 @@ export default function CheckoutModal({
       return;
     }
 
-    // 4. Duplicate UTR check across existing non-rejected bookings
-    const existingBookings = getUserBookings();
-    const isDuplicate = existingBookings.some(b => 
-      b.utrNumber && 
-      b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
-      b.status !== 'REJECTED'
-    );
-    if (isDuplicate) {
-      setErrorMsg('⚠️ This 12-digit UTR number has already been used for another booking. Please check your payment receipt.');
-      return;
-    }
-
-    // 5. Screenshot required check
+    // 4. Screenshot required check
     if (!screenshotData) {
       setErrorMsg('Please attach/upload your payment receipt screenshot before submitting.');
       return;
     }
 
     setIsSubmitting(true);
+
+    // 5. Strict Single-Use UTR Check (Local & Live Neon Database)
+    try {
+      const isUtrUsed = await checkUtrIsUsed(cleanUtr);
+      if (isUtrUsed) {
+        setIsSubmitting(false);
+        setErrorMsg(`⚠️ This 12-digit UTR number (${cleanUtr}) has already been used for another active booking. Each payment UTR can only be used once.`);
+        return;
+      }
+    } catch (checkErr) {
+      console.warn("UTR pre-check error:", checkErr);
+    }
 
     const uploadToCloudinary = async (base64Data) => {
       try {

@@ -57,13 +57,31 @@ export default async function handler(req, res) {
       if (!b || !b.bookingId) {
         return res.status(400).json({ error: 'bookingId is required' });
       }
+
+      const cleanUtr = (b.utrNumber || '').trim().replace(/\s+/g, '');
+      if (cleanUtr) {
+        // Enforce that one UTR can be used only once for active bookings
+        const existingUtr = await sql`
+          SELECT booking_id, status FROM bookings 
+          WHERE TRIM(utr_number) = ${cleanUtr} 
+            AND status != 'REJECTED' 
+            AND booking_id != ${b.bookingId} 
+          LIMIT 1;
+        `;
+        if (existingUtr && existingUtr.length > 0) {
+          return res.status(400).json({ 
+            error: `⚠️ This 12-digit UTR number (${cleanUtr}) has already been used for another booking (${existingUtr[0].booking_id}). Each payment UTR can only be used once.` 
+          });
+        }
+      }
+
       await sql`
         INSERT INTO bookings (
           booking_id, user_email, user_name, user_roll_no, auditorium, 
           seats, total_amount, utr_number, payment_screenshot, status, checked_in, timestamp
         ) VALUES (
           ${b.bookingId}, ${b.user?.email}, ${b.user?.name}, ${b.user?.rollNo || ''}, ${b.auditorium || 'AB02 — Audi 1'},
-          ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${b.utrNumber}, ${b.paymentScreenshot || null},
+          ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${cleanUtr || b.utrNumber}, ${b.paymentScreenshot || null},
           ${b.status || 'PENDING_VERIFICATION'}, ${b.checkedIn || false}, ${b.timestamp}
         )
         ON CONFLICT (booking_id) DO UPDATE SET

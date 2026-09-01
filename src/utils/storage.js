@@ -6,7 +6,8 @@ import {
   updateNeonBookingStatus, 
   saveNeonSeatMap, 
   markNeonCheckIn,
-  deleteNeonBooking 
+  deleteNeonBooking,
+  checkNeonUtrDuplicate
 } from './db';
 
 // Initialize Neon Postgres tables on module load
@@ -233,6 +234,24 @@ export const getUserBookings = () => {
   } catch (e) {
     return [];
   }
+};
+
+export const checkUtrIsUsed = async (utrNumber, excludeBookingId = '') => {
+  const cleanUtr = (utrNumber || '').trim().replace(/\s+/g, '');
+  if (!cleanUtr) return false;
+
+  // 1. Check LocalStorage
+  const localBookings = getUserBookings();
+  const localMatch = localBookings.some(b => 
+    b.utrNumber && 
+    b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
+    b.status !== 'REJECTED' && 
+    b.bookingId !== excludeBookingId
+  );
+  if (localMatch) return true;
+
+  // 2. Check live Neon PostgreSQL database
+  return await checkNeonUtrDuplicate(cleanUtr, excludeBookingId);
 };
 
 export const saveUserBooking = (booking) => {

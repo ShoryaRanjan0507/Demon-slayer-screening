@@ -175,26 +175,76 @@ export const fetchNeonBookingsFull = async () => {
   }
 };
 
+export const checkNeonUtrDuplicate = async (utrNumber, excludeBookingId = '') => {
+  try {
+    const cleanUtr = (utrNumber || '').trim().replace(/\s+/g, '');
+    if (!cleanUtr) return false;
+
+    if (IS_PRODUCTION) {
+      const data = await fetchNeonBookings();
+      if (data && Array.isArray(data)) {
+        return data.some(b => 
+          b.utrNumber && 
+          b.utrNumber.trim().replace(/\s+/g, '') === cleanUtr && 
+          b.status !== 'REJECTED' && 
+          b.bookingId !== excludeBookingId
+        );
+      }
+      return false;
+    } else {
+      const sql = await getDirectSql();
+      if (!sql) return false;
+      const rows = await sql`
+        SELECT booking_id FROM bookings 
+        WHERE TRIM(utr_number) = ${cleanUtr} 
+          AND status != 'REJECTED' 
+          AND booking_id != ${excludeBookingId} 
+        LIMIT 1;
+      `;
+      return rows && rows.length > 0;
+    }
+  } catch (err) {
+    console.error("Check UTR Duplicate Error:", err);
+    return false;
+  }
+};
+
 export const saveNeonBooking = async (b) => {
   try {
+    const cleanUtr = (b.utrNumber || '').trim().replace(/\s+/g, '');
     if (IS_PRODUCTION) {
       await apiFetch('/api/bookings', {
         method: 'POST',
-        body: JSON.stringify(b)
+        body: JSON.stringify({ ...b, utrNumber: cleanUtr || b.utrNumber })
       });
     } else {
       const sql = await getDirectSql();
       if (!sql) return false;
+
+      // Duplicate UTR check in direct mode
+      if (cleanUtr) {
+        const existing = await sql`
+          SELECT booking_id FROM bookings 
+          WHERE TRIM(utr_number) = ${cleanUtr} 
+            AND status != 'REJECTED' 
+            AND booking_id != ${b.bookingId} 
+          LIMIT 1;
+        `;
+        if (existing && existing.length > 0) {
+          throw new Error(`⚠️ This 12-digit UTR number (${cleanUtr}) has already been used for another booking (${existing[0].booking_id}). Each payment UTR can only be used once.`);
+        }
+      }
+
       await sql`
         INSERT INTO bookings (booking_id, user_email, user_name, user_roll_no, auditorium, seats, total_amount, utr_number, payment_screenshot, status, checked_in, timestamp)
-        VALUES (${b.bookingId}, ${b.user.email}, ${b.user.name}, ${b.user.rollNo || ''}, ${b.auditorium || 'AB02 — Audi 1'}, ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${b.utrNumber}, ${b.paymentScreenshot || null}, ${b.status || 'PENDING_VERIFICATION'}, ${b.checkedIn || false}, ${b.timestamp})
+        VALUES (${b.bookingId}, ${b.user.email}, ${b.user.name}, ${b.user.rollNo || ''}, ${b.auditorium || 'AB02 — Audi 1'}, ${JSON.stringify(b.seats)}, ${b.totalAmount}, ${cleanUtr || b.utrNumber}, ${b.paymentScreenshot || null}, ${b.status || 'PENDING_VERIFICATION'}, ${b.checkedIn || false}, ${b.timestamp})
         ON CONFLICT (booking_id) DO UPDATE SET status = EXCLUDED.status, payment_screenshot = COALESCE(EXCLUDED.payment_screenshot, bookings.payment_screenshot), checked_in = EXCLUDED.checked_in, check_in_time = EXCLUDED.check_in_time;
       `;
     }
     return true;
   } catch (err) {
     console.error("Save Booking Error:", err);
-    return false;
+    throw err;
   }
 };
 
