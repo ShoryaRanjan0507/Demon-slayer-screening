@@ -3,7 +3,7 @@ import { ShieldCheck, User, Mail, AlertTriangle, CheckCircle2, ArrowRight, Phone
 import { addRegisteredViewer } from '../utils/storage';
 
 export default function VerificationStep({ onVerifySuccess, registeredViewers, onRegisterNewViewer }) {
-  const [activeTab, setActiveTab] = useState('register'); // 'register' or 'login'
+  const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
 
   // Registration Form state
   const [regName, setRegName] = useState('');
@@ -20,45 +20,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
   // Handle New Viewer Registration
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg('');
-
-    const cleanName = regName.trim();
-    const cleanEmail = regEmail.trim().toLowerCase();
-    const cleanRollNo = regRollNo.trim().toUpperCase();
-
-    if (!cleanName || !cleanEmail) {
-      setErrorMsg('Please fill in your Full Name and University Email.');
-      return;
-    }
-
-    if (cleanName.length < 3) {
-      setErrorMsg('Please enter your complete Full Name.');
-      return;
-    }
-
-    if (!cleanEmail.endsWith('@vitbhopal.ac.in')) {
-      setErrorMsg('Please enter your official VIT Bhopal student email (@vitbhopal.ac.in).');
-      return;
-    }
-
-    if (!cleanRollNo || cleanRollNo.length < 5) {
-      setErrorMsg('Please enter your valid college Registration / Roll Number (e.g., 25BCE10001).');
-      return;
-    }
-
-    const newViewer = await addRegisteredViewer({
-      name: cleanName,
-      email: cleanEmail,
-      rollNo: cleanRollNo,
-      phone: regPhone.trim() || 'N/A'
-    });
-
-    if (onRegisterNewViewer) await onRegisterNewViewer();
-
-    setSuccessUser(newViewer);
-    setTimeout(() => {
-      onVerifySuccess(newViewer);
-    }, 900);
+    setErrorMsg('⚠️ Registrations are currently paused as the event has been postponed. Please wait for further instructions.');
   };
 
   // Handle Existing Viewer Login
@@ -85,7 +47,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
         onVerifySuccess(found);
       }, 900);
     } else {
-      setErrorMsg(`No registration found for "${loginQuery}". Please switch to the "Register New Viewer" tab to create your account.`);
+      setErrorMsg(`No registration record found for "${loginQuery}". New registrations are currently paused due to event postponement.`);
     }
   };
 
@@ -100,8 +62,8 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
           <ShieldCheck className="h-6 w-6 text-white" />
         </div>
         <div>
-          <span className="text-xs font-bold text-red-500 uppercase tracking-widest">STEP 1 OF 2</span>
-          <h2 className="text-xl font-black text-white sm:text-2xl">Viewer Registration & Login</h2>
+          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">EVENT POSTPONED • AUTHENTICATION</span>
+          <h2 className="text-xl font-black text-white sm:text-2xl">Viewer Login & Credentials</h2>
         </div>
       </div>
 
@@ -110,17 +72,17 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
         <div className="mt-5 flex rounded-xl border border-red-950/80 bg-black/50 p-1">
           <button
             type="button"
-            onClick={() => { setActiveTab('register'); setErrorMsg(''); }}
-            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition ${activeTab === 'register' ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
-          >
-            <UserPlus className="h-4 w-4" /> Register New Viewer
-          </button>
-          <button
-            type="button"
             onClick={() => { setActiveTab('login'); setErrorMsg(''); }}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition ${activeTab === 'login' ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
           >
             <LogIn className="h-4 w-4" /> Log In Existing User
+          </button>
+          <button
+            type="button"
+            onClick={() => { setActiveTab('register'); setErrorMsg(''); }}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition ${activeTab === 'register' ? 'bg-gradient-to-r from-amber-600 to-red-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+          >
+            <UserPlus className="h-4 w-4" /> Register (Paused)
           </button>
         </div>
       )}
@@ -128,94 +90,32 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
       {/* Form Content */}
       {!successUser ? (
         activeTab === 'register' ? (
-          /* TAB 1: DIRECT REGISTRATION FORM */
-          <form onSubmit={handleRegisterSubmit} className="mt-5 space-y-3.5">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <User className="absolute left-3.5 top-3 h-4 w-4 text-gray-500" />
-                <input
-                  type="text"
-                  required
-                  value={regName}
-                  onChange={(e) => setRegName(e.target.value)}
-                  placeholder="Full Name"
-                  className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-                />
+          /* TAB 1: REGISTRATION PAUSED NOTICE */
+          <div className="mt-5 space-y-4 animate-fadeIn">
+            <div className="rounded-xl border border-amber-500/50 bg-amber-950/30 p-6 text-center space-y-3">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/20 border border-amber-500/40">
+                <AlertTriangle className="h-6 w-6 text-amber-400 animate-pulse" />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1 flex items-center justify-between">
-                <span>Email Address <span className="text-red-500">*</span></span>
-                <span className="text-[10px] font-semibold text-amber-400 font-mono">(Use University Email Only)</span>
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-gray-500" />
-                <input
-                  type="email"
-                  required
-                  value={regEmail}
-                  onChange={(e) => setRegEmail(e.target.value)}
-                  placeholder="University Email Address (e.g. name@vitbhopal.ac.in)"
-                  className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-                />
-              </div>
-              <p className="mt-1 text-[10px] text-amber-400/90 flex items-center gap-1 font-mono">
-                ⚠️ Please register using your official University Email ID.
+              <h3 className="text-base font-extrabold uppercase tracking-wide text-white">Registrations Temporarily Paused</h3>
+              <p className="text-xs text-amber-200/90 leading-relaxed max-w-md mx-auto">
+                The Demon Slayer Infinity Castle screening event is <strong>postponed for now</strong>. We have stopped taking new registrations until further notice.
               </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
-                  Registration No
-                </label>
-                <div className="relative">
-                  <IdCard className="absolute left-3.5 top-3 h-4 w-4 text-gray-500" />
-                  <input
-                    type="text"
-                    value={regRollNo}
-                    onChange={(e) => setRegRollNo(e.target.value)}
-                    placeholder="Registration No"
-                    className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-                  />
-                </div>
+              <div className="rounded-lg bg-black/50 border border-amber-500/30 p-3 text-xs text-gray-300 max-w-sm mx-auto">
+                <p className="font-semibold text-amber-300">📢 Please wait for further instructions & announcements.</p>
+                <p className="text-[11px] text-gray-400 mt-1">Already registered? You can switch to Log In to view your pass or seat details.</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 h-4 w-4 text-gray-500" />
-                  <input
-                    type="tel"
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                    placeholder="Phone Number"
-                    className="w-full rounded-xl border border-red-900/60 bg-black/60 py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-                  />
-                </div>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('login')}
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/80 transition hover:brightness-110 active:scale-98 hover-zoom"
+                >
+                  <LogIn className="h-4 w-4" /> Switch to Existing User Log In
+                </button>
               </div>
             </div>
-
-            {errorMsg && (
-              <div className="rounded-xl border border-red-500/50 bg-red-950/40 p-3 text-xs text-red-200 flex items-center gap-2 animate-popup">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
-                {errorMsg}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/80 transition hover:brightness-110 active:scale-98 hover-zoom mt-4"
-            >
-              Complete Registration & Select Seats <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
+          </div>
         ) : (
           /* TAB 2: EXISTING USER LOGIN FORM */
           <form onSubmit={handleLoginSubmit} className="mt-5 space-y-4">
@@ -229,7 +129,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
                   type="text"
                   value={loginQuery}
                   onChange={(e) => setLoginQuery(e.target.value)}
-                  placeholder="Email / Registration No / Phone"
+                  placeholder="e.g. name@vitbhopal.ac.in or 25BCE10001"
                   className="w-full rounded-xl border border-red-900/60 bg-black/60 py-3.5 pl-11 pr-4 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
                 />
               </div>
@@ -246,7 +146,7 @@ export default function VerificationStep({ onVerifySuccess, registeredViewers, o
               type="submit"
               className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/80 transition hover:brightness-110 active:scale-98 hover-zoom"
             >
-              Log In & Unlock Seat Map <ArrowRight className="h-4 w-4" />
+              Log In & View Status <ArrowRight className="h-4 w-4" />
             </button>
           </form>
         )

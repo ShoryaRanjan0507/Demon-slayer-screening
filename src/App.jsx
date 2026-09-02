@@ -327,10 +327,10 @@ export default function App() {
                 /* Unverified User - Direct Registration */
                 <div className="px-4">
                   <div className="text-center mb-8">
-                    <span className="text-xs font-bold text-red-500 uppercase tracking-widest font-mono">ON-SITE REGISTRATION PORTAL</span>
-                    <h2 className="text-2xl font-black text-white sm:text-3xl mt-1">Register Or Log In To Choose Your Seats</h2>
-                    <p className="text-xs text-gray-400 mt-1 max-w-lg mx-auto">
-                      Fill in your details below to unlock the interactive seat map and book your screening ticket.
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">EVENT POSTPONED • REGISTRATIONS PAUSED</span>
+                    <h2 className="text-2xl font-black text-white sm:text-3xl mt-1">Existing Viewer Log In</h2>
+                    <p className="text-xs text-gray-300 mt-1 max-w-lg mx-auto">
+                      New registrations are paused for now due to event postponement. Please wait for further instructions. Existing registered viewers can log in below to check their passes.
                     </p>
                   </div>
                   <VerificationStep

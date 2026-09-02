@@ -61,7 +61,7 @@ export default function Header({
               className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-700 to-orange-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/60 transition hover:brightness-110 active:scale-95"
             >
               <Flame className="h-4 w-4 fill-white text-orange-400 animate-bounce" />
-              Register / Log In
+              Log In / Verify
             </button>
           )}
 

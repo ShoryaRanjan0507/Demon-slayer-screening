@@ -1,31 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Sparkles, Flame, CheckCircle, ChevronDown, Tag } from 'lucide-react';
+import React from 'react';
+import { MapPin, Flame, CheckCircle, Tag, AlertTriangle, LogIn } from 'lucide-react';
 import { EVENT_DETAILS } from '../data/initialData';
 
 export default function Hero({ verifiedUser, onStartBooking }) {
-  const calculateTimeLeft = () => {
-    const target = new Date(EVENT_DETAILS.targetIso).getTime();
-    const now = new Date().getTime();
-    const diff = target - now;
-    if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0 };
-    return {
-      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-      mins: Math.floor((diff / (1000 * 60)) % 60),
-      secs: Math.floor((diff / 1000) % 60)
-    };
-  };
-
-  // Countdown timer logic targeting 3rd Sept 2026
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section className="relative overflow-hidden border-b border-red-900/60 bg-[#100a1c]">
       {/* Background Graphic Poster focused on Middle Part (Balanced Goldilocks Visibility) */}
@@ -71,20 +48,15 @@ export default function Hero({ verifiedUser, onStartBooking }) {
             Step into Muzan Kibutsuji's dimensional fortress. Join fellow anime enthusiasts for the ultimate cinematic experience on the massive auditorium screen with spatial surround sound.
           </p>
 
-          {/* Event Quick Details Cards with Hover Zoom */}
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 max-w-2xl animate-popup">
-            <div className="rounded-xl border border-red-900/50 bg-black/60 p-3 backdrop-blur-sm hover-zoom">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400">
-                <Calendar className="h-3.5 w-3.5 text-red-500" /> Screening Date
+          {/* Event Quick Details & Postponed Status Banner */}
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl animate-popup">
+            {/* Prominent Postponement Card in place of Screening Date & Lights Out */}
+            <div className="sm:col-span-2 rounded-xl border border-amber-500/60 bg-gradient-to-r from-amber-950/70 via-red-950/60 to-black/80 p-3.5 backdrop-blur-md shadow-lg shadow-amber-950/40 hover-zoom">
+              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-400">
+                <AlertTriangle className="h-4 w-4 text-amber-400 animate-pulse" /> Event Status
               </div>
-              <p className="mt-1 text-sm font-bold text-white">{EVENT_DETAILS.heroDate}</p>
-            </div>
-
-            <div className="rounded-xl border border-red-900/50 bg-black/60 p-3 backdrop-blur-sm hover-zoom">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400">
-                <Clock className="h-3.5 w-3.5 text-orange-400" /> Lights Out
-              </div>
-              <p className="mt-1 text-sm font-bold text-white">{EVENT_DETAILS.time}</p>
+              <p className="mt-1 text-base font-black text-white">Event Postponed For Now</p>
+              <p className="mt-0.5 text-xs text-amber-200/90 font-medium">Please wait for further instructions & announcements.</p>
             </div>
 
             <div className="rounded-xl border border-red-900/50 bg-black/60 p-3 backdrop-blur-sm hover-zoom">
@@ -104,14 +76,24 @@ export default function Hero({ verifiedUser, onStartBooking }) {
 
           {/* Primary Call to Action Button */}
           <div className="mt-8 flex flex-wrap items-center gap-4 animate-zoomin">
-            <button
-              onClick={onStartBooking}
-              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-red-950/80 transition-all hover:scale-110 active:scale-95 hover-zoom"
-            >
-              <span className="absolute inset-0 bg-white/20 opacity-0 transition group-hover:opacity-100"></span>
-              <Flame className="h-5 w-5 text-amber-200" />
-              {verifiedUser ? "SELECT YOUR SEAT NOW" : "REGISTER & BOOK SEATS NOW"}
-            </button>
+            {verifiedUser ? (
+              <button
+                onClick={onStartBooking}
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-red-950/80 transition-all hover:scale-105 active:scale-95 hover-zoom"
+              >
+                <span className="absolute inset-0 bg-white/20 opacity-0 transition group-hover:opacity-100"></span>
+                <Flame className="h-5 w-5 text-amber-200" />
+                VIEW SEAT MAP & PASS
+              </button>
+            ) : (
+              <button
+                onClick={onStartBooking}
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-amber-600 via-red-600 to-orange-600 px-7 py-4 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-red-950/80 transition-all hover:scale-105 active:scale-95 hover-zoom"
+              >
+                <AlertTriangle className="h-4 w-4 text-amber-200 animate-pulse" />
+                <span>Registrations Paused • Log In</span>
+              </button>
+            )}
 
             {verifiedUser && (
               <div className="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-950/30 px-4 py-3 text-xs font-semibold text-emerald-300 animate-popup">
@@ -120,53 +102,6 @@ export default function Hero({ verifiedUser, onStartBooking }) {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Formation Countdown Timer Container with Pop Up Entrance */}
-        <div className="mt-12 rounded-2xl border border-red-950/80 bg-black/70 p-6 backdrop-blur-md max-w-4xl shadow-2xl animate-popup">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-red-900/40 pb-4">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-red-500">INFINITY CASTLE OPENS IN</span>
-              <h3 className="text-lg font-bold text-white">Live Event Countdown</h3>
-            </div>
-            <div className="flex gap-2 sm:gap-4">
-              <div className="min-w-16 rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-center hover-zoom">
-                <span className="block text-2xl font-black text-white tabular-nums">{String(timeLeft.days).padStart(2, '0')}</span>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">DAYS</span>
-              </div>
-              <div className="min-w-16 rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-center hover-zoom">
-                <span className="block text-2xl font-black text-white tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</span>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">HRS</span>
-              </div>
-              <div className="min-w-16 rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-center hover-zoom">
-                <span className="block text-2xl font-black text-white tabular-nums">{String(timeLeft.mins).padStart(2, '0')}</span>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">MIN</span>
-              </div>
-              <div className="min-w-16 rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-center hover-zoom">
-                <span className="block text-2xl font-black text-orange-400 tabular-nums">{String(timeLeft.secs).padStart(2, '0')}</span>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">SEC</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Seat Pricing Overview */}
-          <div className="mt-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Seat Pricing</h4>
-            <div
-              className="rounded-xl border p-3.5 hover-zoom cursor-pointer"
-              style={{
-                borderColor: '#ff8c42',
-                backgroundColor: 'rgba(255, 107, 26, 0.22)'
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase" style={{ color: '#ff6b1a' }}>Standard — All Seats</span>
-                <span className="text-base font-black text-white">₹67</span>
-              </div>
-              <p className="mt-1 text-[11px] text-gray-300 line-clamp-2">Rows A to P — 288 seats across 16 rows with full Infinity Castle surround experience.</p>
-            </div>
-          </div>
-
         </div>
 
       </div>
