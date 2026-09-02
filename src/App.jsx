@@ -311,46 +311,45 @@ export default function App() {
             {/* Cinematic Hero Section */}
             <Hero
               verifiedUser={verifiedUser}
-              onStartBooking={() => {
-                if (verifiedUser) {
-                  const seatSection = document.getElementById('seat-selection-section');
-                  if (seatSection) seatSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  setShowVerifyModal(true);
-                }
-              }}
+              onOpenMyTickets={() => setShowMyTicketsModal(true)}
             />
 
-            {/* Seat Selection / Verification Section */}
-            <section id="seat-selection-section" className="py-12">
-              {!verifiedUser ? (
-                /* Unverified User - Direct Registration */
-                <div className="px-4">
-                  <div className="text-center mb-8">
-                    <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">EVENT POSTPONED • REGISTRATIONS PAUSED</span>
-                    <h2 className="text-2xl font-black text-white sm:text-3xl mt-1">Existing Viewer Log In</h2>
-                    <p className="text-xs text-gray-300 mt-1 max-w-lg mx-auto">
-                      New registrations are paused for now due to event postponement. Please wait for further instructions. Existing registered viewers can log in below to check their passes.
-                    </p>
-                  </div>
-                  <VerificationStep
-                    registeredViewers={registeredViewers}
-                    onVerifySuccess={handleVerifySuccess}
-                    onRegisterNewViewer={handleUpdateViewers}
-                  />
+            {/* Postponement & Ticket Verification Notice Section */}
+            <section className="py-12 px-4 max-w-4xl mx-auto">
+              <div className="rounded-3xl border-2 border-amber-500/50 bg-gradient-to-b from-[#160c26] via-[#0d0918] to-black/80 p-6 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6 animate-popup">
+                
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 shadow-inner animate-pulse">
+                  <span className="text-3xl">📢</span>
                 </div>
-              ) : (
-                /* Verified User - Interactive Seat Map */
-                <SeatMap
-                  seatMap={seatMap}
-                  selectedSeats={selectedSeats}
-                  onToggleSeat={handleToggleSeat}
-                  verifiedUser={verifiedUser}
-                  onProceedToCheckout={() => setShowCheckoutModal(true)}
-                  selectedAudiKey={selectedAudiKey}
-                  onSelectAudiKey={handleSelectAudiKey}
-                />
-              )}
+
+                <div className="space-y-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 px-3.5 py-1 text-xs font-black tracking-widest text-amber-300 uppercase font-mono">
+                    EVENT POSTPONED • REGISTRATIONS CLOSED
+                  </span>
+                  <h2 className="text-2xl font-black text-white sm:text-4xl">
+                    Demon Slayer Screening Postponed
+                  </h2>
+                  <p className="text-sm text-gray-300 max-w-xl mx-auto leading-relaxed">
+                    The movie screening is postponed for now. We have stopped taking any more viewer registrations or seat bookings. Please wait for further instructions & announcements from the Anime Club organizers.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-red-900/50 bg-black/60 p-5 max-w-lg mx-auto text-left space-y-3 shadow-inner">
+                  <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center gap-2">
+                    🎟️ Already Booked a Ticket?
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    All existing bookings and confirmed seats are preserved safely in the database. You can search by your email, roll number, or booking ID to view and download your pass.
+                  </p>
+                  <button
+                    onClick={() => setShowMyTicketsModal(true)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/80 transition hover:brightness-110 active:scale-98 hover-zoom"
+                  >
+                    🔍 Find & View My Ticket Pass
+                  </button>
+                </div>
+
+              </div>
             </section>
           </>
         )}

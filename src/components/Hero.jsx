@@ -1,8 +1,8 @@
 import React from 'react';
-import { MapPin, Flame, CheckCircle, Tag, AlertTriangle, LogIn } from 'lucide-react';
+import { MapPin, Flame, CheckCircle, Tag, AlertTriangle, Ticket, Ban } from 'lucide-react';
 import { EVENT_DETAILS } from '../data/initialData';
 
-export default function Hero({ verifiedUser, onStartBooking }) {
+export default function Hero({ verifiedUser, onOpenMyTickets }) {
   return (
     <section className="relative overflow-hidden border-b border-red-900/60 bg-[#100a1c]">
       {/* Background Graphic Poster focused on Middle Part (Balanced Goldilocks Visibility) */}
@@ -74,31 +74,25 @@ export default function Hero({ verifiedUser, onStartBooking }) {
             </div>
           </div>
 
-          {/* Primary Call to Action Button */}
+          {/* Registrations Closed Announcement & Ticket Lookup */}
           <div className="mt-8 flex flex-wrap items-center gap-4 animate-zoomin">
-            {verifiedUser ? (
-              <button
-                onClick={onStartBooking}
-                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-red-950/80 transition-all hover:scale-105 active:scale-95 hover-zoom"
-              >
-                <span className="absolute inset-0 bg-white/20 opacity-0 transition group-hover:opacity-100"></span>
-                <Flame className="h-5 w-5 text-amber-200" />
-                VIEW SEAT MAP & PASS
-              </button>
-            ) : (
-              <button
-                onClick={onStartBooking}
-                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-amber-600 via-red-600 to-orange-600 px-7 py-4 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-red-950/80 transition-all hover:scale-105 active:scale-95 hover-zoom"
-              >
-                <AlertTriangle className="h-4 w-4 text-amber-200 animate-pulse" />
-                <span>Registrations Paused • Log In</span>
-              </button>
-            )}
+            <div className="inline-flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-950/60 px-5 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-red-300 backdrop-blur-md shadow-xl">
+              <Ban className="h-4 w-4 text-red-400" />
+              <span>Registrations & Bookings Closed</span>
+            </div>
+
+            <button
+              onClick={onOpenMyTickets}
+              className="inline-flex items-center gap-2 rounded-xl border border-orange-500/40 bg-orange-950/30 px-5 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-orange-200 backdrop-blur-md transition hover:bg-orange-900/50 hover:text-white hover-zoom"
+            >
+              <Ticket className="h-4 w-4 text-orange-400" />
+              <span>View / Search My Ticket Pass</span>
+            </button>
 
             {verifiedUser && (
               <div className="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-950/30 px-4 py-3 text-xs font-semibold text-emerald-300 animate-popup">
                 <CheckCircle className="h-4 w-4 text-emerald-400" />
-                Registered as <span className="text-white font-bold">{verifiedUser.name}</span>
+                Logged in as <span className="text-white font-bold">{verifiedUser.name}</span>
               </div>
             )}
           </div>

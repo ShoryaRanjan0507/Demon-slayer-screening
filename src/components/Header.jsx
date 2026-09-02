@@ -43,7 +43,7 @@ export default function Header({
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-3 md:flex">
-          {verifiedUser ? (
+          {verifiedUser && (
             <div className="flex items-center gap-3 rounded-full border border-red-500/30 bg-red-950/20 px-3 py-1.5 text-xs text-red-200">
               <UserCheck className="h-4 w-4 text-emerald-400" />
               <span>Viewer: <strong className="text-white">{verifiedUser.name}</strong></span>
@@ -55,21 +55,13 @@ export default function Header({
                 <LogOut className="h-3.5 w-3.5" />
               </button>
             </div>
-          ) : (
-            <button
-              onClick={onOpenVerify}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-700 to-orange-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-red-950/60 transition hover:brightness-110 active:scale-95"
-            >
-              <Flame className="h-4 w-4 fill-white text-orange-400 animate-bounce" />
-              Log In / Verify
-            </button>
           )}
 
           <button
             onClick={onOpenMyTickets}
-            className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-black/40 px-3.5 py-2 text-xs font-bold text-gray-200 transition hover:border-red-500 hover:bg-red-950/30 hover:text-white"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-red-950/60 transition hover:brightness-110 active:scale-95"
           >
-            <Ticket className="h-4 w-4 text-orange-400" />
+            <Ticket className="h-4 w-4 text-white" />
             My Tickets
           </button>
 
@@ -101,10 +93,10 @@ export default function Header({
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="border-t border-red-900/50 bg-[#0a0814] px-4 py-4 md:hidden space-y-3">
-          {verifiedUser ? (
+          {verifiedUser && (
             <div className="flex items-center justify-between rounded-lg bg-red-950/30 border border-red-900/50 p-3">
               <div>
-                <p className="text-xs text-gray-400">Verified Viewer</p>
+                <p className="text-xs text-gray-400">Logged-in Viewer</p>
                 <p className="text-sm font-bold text-white">{verifiedUser.name}</p>
                 <p className="text-xs text-red-300 font-mono">{verifiedUser.email}</p>
               </div>
@@ -112,28 +104,21 @@ export default function Header({
                 onClick={() => { onLogout(); setMobileMenuOpen(false); }}
                 className="flex items-center gap-1 text-xs text-red-400 border border-red-500/40 px-2.5 py-1.5 rounded"
               >
-                <LogOut className="h-3.5 w-3.5" /> Switch
+                <LogOut className="h-3.5 w-3.5" /> Logout
               </button>
             </div>
-          ) : (
-            <button
-              onClick={() => { onOpenVerify(); setMobileMenuOpen(false); }}
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-700 to-orange-600 py-2.5 text-xs font-bold uppercase text-white shadow-md"
-            >
-              <Flame className="h-4 w-4" /> Verify Credentials
-            </button>
           )}
 
           <div className="grid grid-cols-2 gap-2 pt-1">
             <button
               onClick={() => { onOpenMyTickets(); setMobileMenuOpen(false); }}
-              className="flex items-center justify-center gap-2 rounded-lg border border-red-900/60 bg-black/40 py-2 text-xs font-semibold text-gray-200"
+              className="flex items-center justify-center gap-2 rounded-lg bg-orange-600/30 border border-orange-500/50 py-2.5 text-xs font-bold text-orange-200"
             >
               <Ticket className="h-4 w-4 text-orange-400" /> My Tickets
             </button>
             <button
               onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
-              className="flex items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-amber-950/20 py-2 text-xs font-semibold text-amber-300"
+              className="flex items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-amber-950/20 py-2.5 text-xs font-semibold text-amber-300"
             >
               <Shield className="h-4 w-4 text-amber-400" /> Organisers
             </button>
