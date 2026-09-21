@@ -1,4 +1,5 @@
 import { INITIAL_REGISTERED_VIEWERS, generateInitialSeatMap } from '../data/initialData';
+import backupSeed from '../data/backupSeed.json';
 import { 
   initNeonDatabase, 
   saveNeonViewer, 
@@ -35,13 +36,21 @@ const MOCK_EMAILS = [
 export const getRegisteredViewers = () => {
   try {
     const data = localStorage.getItem(KEYS.VIEWERS);
-    if (!data) return [];
+    if (!data) {
+      return backupSeed?.viewers || [];
+    }
     const parsed = JSON.parse(data);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(v => v && v.email && !MOCK_EMAILS.includes(v.email.toLowerCase()));
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return backupSeed?.viewers || [];
+    }
+    const filtered = parsed.filter(v => v && v.email && !MOCK_EMAILS.includes(v.email.toLowerCase()));
+    if (filtered.length === 0 && backupSeed?.viewers?.length > 0) {
+      return backupSeed.viewers;
+    }
+    return filtered;
   } catch (e) {
     console.error("Storage error:", e);
-    return [];
+    return backupSeed?.viewers || [];
   }
 };
 
@@ -171,12 +180,16 @@ export const syncSeatMapWithBookings = (seatMap, bookings) => {
       b.seats.forEach(seat => {
         const sId = typeof seat === 'string' ? seat : seat?.id;
         if (sId) {
+          const bookedByUser = {
+            name: b.user?.name || b.userName || 'Anonymous',
+            email: b.user?.email || b.userEmail || ''
+          };
           if (updatedMap[audiKey] && updatedMap[audiKey][sId]) {
             updatedMap[audiKey][sId].status = 'occupied';
-            updatedMap[audiKey][sId].bookedBy = { name: b.user?.name, email: b.user?.email };
+            updatedMap[audiKey][sId].bookedBy = bookedByUser;
           } else if (updatedMap[sId]) {
             updatedMap[sId].status = 'occupied';
-            updatedMap[sId].bookedBy = { name: b.user?.name, email: b.user?.email };
+            updatedMap[sId].bookedBy = bookedByUser;
           }
         }
       });
@@ -230,9 +243,16 @@ export const saveSeatMap = (seatMap) => {
 export const getUserBookings = () => {
   try {
     const data = localStorage.getItem(KEYS.BOOKINGS);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+    if (backupSeed?.bookings?.length > 0) {
+      return backupSeed.bookings;
+    }
     return [];
+  } catch (e) {
+    return backupSeed?.bookings || [];
   }
 };
 

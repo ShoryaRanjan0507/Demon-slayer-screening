@@ -140,15 +140,29 @@ export default function App() {
     console.log("🔄 handleUpdateViewers: starting sync...");
     const neonViewers = await fetchNeonViewers();
     console.log("🔄 handleUpdateViewers: got viewers:", neonViewers?.length, neonViewers);
-    if (neonViewers && Array.isArray(neonViewers)) {
+    if (neonViewers && Array.isArray(neonViewers) && neonViewers.length > 0) {
       saveRegisteredViewers(neonViewers);
       setRegisteredViewers([...neonViewers]);
+    } else {
+      setRegisteredViewers(getRegisteredViewers());
     }
 
     const neonBookings = await fetchNeonBookings();
-    if (neonBookings && Array.isArray(neonBookings)) {
+    if (neonBookings && Array.isArray(neonBookings) && neonBookings.length > 0) {
       localStorage.setItem('ds_infinity_castle_user_bookings', JSON.stringify(neonBookings));
       setUserBookingsState([...neonBookings]);
+
+      const currentMap = getSeatMap();
+      const syncedMap = syncSeatMapWithBookings(currentMap, neonBookings);
+      saveSeatMap(syncedMap);
+      setSeatMapState({ ...syncedMap });
+    } else {
+      const currentBookings = getUserBookings();
+      setUserBookingsState(currentBookings);
+      const currentMap = getSeatMap();
+      const syncedMap = syncSeatMapWithBookings(currentMap, currentBookings);
+      saveSeatMap(syncedMap);
+      setSeatMapState({ ...syncedMap });
     }
   };
 

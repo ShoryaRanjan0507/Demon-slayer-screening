@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check, XCircle, Clock3, Image as ImageIcon, Camera, CameraOff, Trash2, Search, AlertTriangle } from 'lucide-react';
+import { X, Shield, Plus, CheckCircle2, Download, RefreshCw, Key, QrCode, Check, XCircle, Clock3, Image as ImageIcon, Camera, CameraOff, Trash2, Search, AlertTriangle, LayoutGrid, Building2, Eye, User, Info } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { addRegisteredViewer, updateBookingStatus, markTicketCheckedIn, cancelAndRemoveBooking } from '../utils/storage';
 import { fetchNeonBookingsFull } from '../utils/db';
@@ -23,7 +23,7 @@ export default function AdminPortal({
 
   const isAuthenticated = isOrganiserAuthenticated || isLocalAuth;
   
-  const [activeTab, setActiveTab] = useState('approvals'); // 'approvals', 'viewers', 'bookings', 'scanner'
+  const [activeTab, setActiveTab] = useState('approvals'); // 'approvals', 'viewers', 'bookings', 'scanner', 'seatstructure'
 
   // Screenshot preview modal state
   const [previewScreenshot, setPreviewScreenshot] = useState(null);
@@ -45,6 +45,11 @@ export default function AdminPortal({
   const [syncSuccessMsg, setSyncSuccessMsg] = useState('');
   // Auditorium filter for bookings list
   const [audiFilter, setAudiFilter] = useState('ALL'); // 'ALL', 'AUDI_1', 'AUDI_2'
+
+  // Audi Seat Structure Tab state
+  const [seatStructureAudi, setSeatStructureAudi] = useState('AUDI_1');
+  const [selectedSeatDetail, setSelectedSeatDetail] = useState(null);
+  const [seatStructureSearch, setSeatStructureSearch] = useState('');
 
   // Cancel & Remove Booking State
   const [bookingToRemove, setBookingToRemove] = useState(null);
@@ -568,6 +573,16 @@ export default function AdminPortal({
                 >
                   All Bookings ({displayBookings.length})
                 </button>
+
+                <button
+                  onClick={() => setActiveTab('seatstructure')}
+                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition hover-zoom flex items-center gap-1.5 ${
+                    activeTab === 'seatstructure' ? 'bg-amber-500 text-black shadow-md' : 'bg-black/40 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                  Audi Seat Structure ({audi1BookedSeatsCount + audi2BookedSeatsCount}/576)
+                </button>
               </div>
 
               {/* Tab Contents */}
@@ -984,6 +999,275 @@ export default function AdminPortal({
                     </div>
                   );
                 })()}
+
+                {/* TAB 5: AUDITORIUM SEAT STRUCTURE / LIVE SEAT MAP */}
+                {activeTab === 'seatstructure' && (
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-black/40 p-3.5 rounded-xl border border-amber-950/60">
+                      <div>
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                          <LayoutGrid className="h-4 w-4 text-amber-400" /> Interactive Auditorium Seat Layout
+                        </h3>
+                        <p className="text-[11px] text-gray-400">Click on any occupied seat to view student details, UTR & booking info.</p>
+                      </div>
+
+                      {/* Hall Selector Switcher */}
+                      <div className="flex rounded-xl border border-amber-950/80 bg-black/60 p-1 gap-1.5 w-full sm:w-auto">
+                        <button
+                          onClick={() => {
+                            setSeatStructureAudi('AUDI_1');
+                            setSelectedSeatDetail(null);
+                          }}
+                          className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                            seatStructureAudi === 'AUDI_1'
+                              ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow'
+                              : 'text-gray-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <span>🏛️ Audi 1</span>
+                          <span className="rounded-full bg-black/50 px-1.5 py-0.2 text-[10px] font-mono font-bold text-orange-300">
+                            {audi1BookedSeatsCount}/288
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setSeatStructureAudi('AUDI_2');
+                            setSelectedSeatDetail(null);
+                          }}
+                          className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                            seatStructureAudi === 'AUDI_2'
+                              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow'
+                              : 'text-gray-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <span>🏛️ Audi 2</span>
+                          <span className="rounded-full bg-black/50 px-1.5 py-0.2 text-[10px] font-mono font-bold text-purple-300">
+                            {audi2BookedSeatsCount}/288
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Search / Filter in Seat Layout */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                      <div className="relative w-full sm:max-w-xs">
+                        <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-amber-400" />
+                        <input
+                          type="text"
+                          value={seatStructureSearch}
+                          onChange={(e) => setSeatStructureSearch(e.target.value)}
+                          placeholder="Search seat (e.g. H5) or name..."
+                          className="w-full rounded-xl border border-amber-950/80 bg-black/60 py-2 pl-9 pr-3 text-xs text-white placeholder-gray-500 focus:border-amber-500 focus:outline-none font-mono"
+                        />
+                      </div>
+
+                      {/* Legend Bar */}
+                      <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono">
+                        <div className="flex items-center gap-1.5 text-orange-400 font-bold">
+                          <span className="h-3.5 w-3.5 rounded bg-gradient-to-r from-orange-500 to-red-600 shadow-sm"></span>
+                          Occupied / Booked ({seatStructureAudi === 'AUDI_1' ? audi1BookedSeatsCount : audi2BookedSeatsCount})
+                        </div>
+                        <div className="flex items-center gap-1.5 text-gray-400">
+                          <span className="h-3.5 w-3.5 rounded border border-gray-700 bg-gray-900/60"></span>
+                          Available ({seatStructureAudi === 'AUDI_1' ? audi1Available : audi2Available})
+                        </div>
+                        {seatStructureSearch && (
+                          <div className="flex items-center gap-1.5 text-yellow-300 font-bold">
+                            <span className="h-3.5 w-3.5 rounded border-2 border-yellow-400 bg-yellow-500/30 animate-pulse"></span>
+                            Search Match
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Screen Arc Indicator */}
+                    <div className="relative pt-2 pb-1 text-center">
+                      <div className="mx-auto max-w-lg overflow-hidden py-1">
+                        <div className={`h-4 w-full rounded-t-[100%] border-t-2 bg-gradient-to-b to-transparent ${
+                          seatStructureAudi === 'AUDI_1'
+                            ? 'border-red-500 bg-red-600/20 shadow-[0_-4px_15px_rgba(230,32,53,0.5)]'
+                            : 'border-purple-500 bg-purple-600/20 shadow-[0_-4px_15px_rgba(168,85,247,0.5)]'
+                        }`}></div>
+                        <p className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-gray-400">
+                          ▲ STAGE / INFINITY CASTLE SCREEN — {seatStructureAudi === 'AUDI_1' ? 'AB02 AUDI 1' : 'AB02 AUDI 2'} ▲
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Seat Grid Layout Container */}
+                    <div className="overflow-x-auto rounded-2xl border border-amber-950/60 bg-black/70 p-4 shadow-inner">
+                      <div className="min-w-[700px] space-y-1.5">
+                        {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'].map((rowName) => {
+                          const currentSeatDict = (seatMap && seatMap[seatStructureAudi]) ? seatMap[seatStructureAudi] : {};
+                          const rowSeats = Object.values(currentSeatDict).filter(s => s.row === rowName);
+                          const leftBlock = rowSeats.slice(0, 4);
+                          const centerBlock = rowSeats.slice(4, 14);
+                          const rightBlock = rowSeats.slice(14, 18);
+
+                          const renderAdminSeat = (seat) => {
+                            if (!seat) return null;
+                            const isOccupied = seat.status === 'occupied';
+                            const bookedInfo = isOccupied ? (seat.bookedBy || {}) : null;
+                            
+                            // Find matching full booking record
+                            const matchingBooking = isOccupied 
+                              ? displayBookings.find(b => 
+                                  b.status !== 'REJECTED' && 
+                                  (b.audiKey === seatStructureAudi || (b.auditorium && b.auditorium.includes(seatStructureAudi === 'AUDI_2' ? 'Audi 2' : 'Audi 1'))) &&
+                                  (b.seats || []).some(s => (typeof s === 'string' ? s : s.id) === seat.id)
+                                ) 
+                              : null;
+
+                            const searchClean = seatStructureSearch.trim().toLowerCase();
+                            const isMatch = searchClean && (
+                              seat.id.toLowerCase().includes(searchClean) ||
+                              (bookedInfo?.name && bookedInfo.name.toLowerCase().includes(searchClean)) ||
+                              (bookedInfo?.email && bookedInfo.email.toLowerCase().includes(searchClean)) ||
+                              (matchingBooking?.user?.name && matchingBooking.user.name.toLowerCase().includes(searchClean)) ||
+                              (matchingBooking?.utrNumber && matchingBooking.utrNumber.toLowerCase().includes(searchClean))
+                            );
+
+                            const isSelected = selectedSeatDetail?.seat?.id === seat.id;
+
+                            return (
+                              <button
+                                key={seat.id}
+                                onClick={() => setSelectedSeatDetail({
+                                  seat,
+                                  isOccupied,
+                                  bookedBy: bookedInfo,
+                                  booking: matchingBooking,
+                                  audiKey: seatStructureAudi
+                                })}
+                                className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded text-[10px] font-mono font-bold transition hover:scale-125 hover:z-20 active:scale-95 shadow-sm relative ${
+                                  isSelected
+                                    ? 'ring-2 ring-white scale-115 z-30 bg-amber-400 text-black font-black'
+                                    : isMatch 
+                                      ? 'ring-2 ring-yellow-400 scale-110 z-10 bg-yellow-500 text-black font-black animate-pulse'
+                                      : isOccupied
+                                        ? seatStructureAudi === 'AUDI_1'
+                                          ? 'bg-gradient-to-br from-orange-600 to-red-600 text-white border border-red-400 shadow-[0_0_8px_rgba(255,107,26,0.5)]'
+                                          : 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border border-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.5)]'
+                                        : 'border border-gray-800 bg-gray-950/70 text-gray-500 hover:border-gray-500 hover:text-gray-300'
+                                }`}
+                                title={isOccupied 
+                                  ? `Seat ${seat.id} (Occupied by: ${matchingBooking?.user?.name || bookedInfo?.name || 'Student'})` 
+                                  : `Seat ${seat.id} (Available)`
+                                }
+                              >
+                                {seat.number}
+                              </button>
+                            );
+                          };
+
+                          return (
+                            <div key={rowName} className="flex items-center gap-2 justify-center">
+                              <div className="w-5 shrink-0 text-center font-mono text-xs font-black text-gray-500">
+                                {rowName}
+                              </div>
+                              <div className="flex gap-1">
+                                {leftBlock.map(seat => renderAdminSeat(seat))}
+                              </div>
+                              <div className="w-4 shrink-0 text-center text-[8px] font-mono text-gray-700">
+                                ┆
+                              </div>
+                              <div className="flex gap-1">
+                                {centerBlock.map(seat => renderAdminSeat(seat))}
+                              </div>
+                              <div className="w-4 shrink-0 text-center text-[8px] font-mono text-gray-700">
+                                ┆
+                              </div>
+                              <div className="flex gap-1">
+                                {rightBlock.map(seat => renderAdminSeat(seat))}
+                              </div>
+                              <div className="w-5 shrink-0 text-center font-mono text-xs font-black text-gray-500">
+                                {rowName}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Selected Seat Inspector Modal / Card */}
+                    {selectedSeatDetail && (
+                      <div className="p-4 rounded-xl border border-amber-500/50 bg-black/80 shadow-2xl space-y-3 animate-popup">
+                        <div className="flex items-center justify-between border-b border-amber-950/80 pb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">💺</span>
+                            <div>
+                              <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                Seat <span className="font-mono font-black text-amber-400 text-sm">{selectedSeatDetail.seat.id}</span>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                  selectedSeatDetail.isOccupied 
+                                    ? 'bg-red-950 text-red-300 border border-red-500/40' 
+                                    : 'bg-emerald-950 text-emerald-300 border border-emerald-500/40'
+                                }`}>
+                                  {selectedSeatDetail.isOccupied ? '🔴 OCCUPIED' : '🟢 AVAILABLE'}
+                                </span>
+                              </h4>
+                              <span className="text-[10px] text-gray-400 font-mono">
+                                Venue: {selectedSeatDetail.audiKey === 'AUDI_1' ? 'AB02 — Audi 1' : 'AB02 — Audi 2'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => setSelectedSeatDetail(null)}
+                            className="rounded-lg p-1 text-gray-400 hover:text-white hover:bg-white/10"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        {selectedSeatDetail.isOccupied ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                            <div className="space-y-1 bg-black/50 p-2.5 rounded-lg border border-gray-800">
+                              <p><span className="text-gray-400">Student Name:</span> <strong className="text-white">{selectedSeatDetail.booking?.user?.name || selectedSeatDetail.bookedBy?.name || 'N/A'}</strong></p>
+                              <p><span className="text-gray-400">Email:</span> <strong className="text-emerald-300">{selectedSeatDetail.booking?.user?.email || selectedSeatDetail.bookedBy?.email || 'N/A'}</strong></p>
+                              <p><span className="text-gray-400">Roll No:</span> <strong className="text-gray-200">{selectedSeatDetail.booking?.user?.rollNo || 'N/A'}</strong></p>
+                            </div>
+
+                            <div className="space-y-1 bg-black/50 p-2.5 rounded-lg border border-gray-800">
+                              <p><span className="text-gray-400">Booking ID:</span> <strong className="text-amber-400">{selectedSeatDetail.booking?.bookingId || 'N/A'}</strong></p>
+                              <p><span className="text-gray-400">Payment UTR:</span> <strong className="text-white">{selectedSeatDetail.booking?.utrNumber || 'N/A'}</strong></p>
+                              <p><span className="text-gray-400">Checked In:</span> <strong className={selectedSeatDetail.booking?.checkedIn ? 'text-emerald-400' : 'text-amber-400'}>{selectedSeatDetail.booking?.checkedIn ? `YES (${selectedSeatDetail.booking?.checkInTime || 'Checked'})` : 'NO'}</strong></p>
+                            </div>
+
+                            {selectedSeatDetail.booking && (
+                              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-2 pt-1">
+                                {selectedSeatDetail.booking.paymentScreenshot && (
+                                  <button
+                                    onClick={() => setPreviewScreenshot(selectedSeatDetail.booking.paymentScreenshot)}
+                                    className="rounded-lg bg-indigo-950 px-3 py-1.5 text-xs font-bold text-indigo-300 border border-indigo-500/40 hover:bg-indigo-900/80 flex items-center gap-1.5 hover-zoom"
+                                  >
+                                    <ImageIcon className="h-3.5 w-3.5" /> View Payment Receipt Screenshot
+                                  </button>
+                                )}
+
+                                <button
+                                  onClick={() => {
+                                    setBookingToRemove(selectedSeatDetail.booking);
+                                    setSelectedSeatDetail(null);
+                                  }}
+                                  className="rounded-lg bg-red-950/80 border border-red-500/60 px-3 py-1.5 text-xs font-bold text-red-200 hover:bg-red-900 flex items-center gap-1.5 hover-zoom"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5 text-red-400" /> Cancel & Release Seat
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-400 font-mono py-2">
+                            This seat is currently unreserved and available for standard price (₹67).
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                  </div>
+                )}
               </div>
             </div>
           )}
