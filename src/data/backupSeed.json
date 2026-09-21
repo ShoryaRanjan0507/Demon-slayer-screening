@@ -1,6 +1,50 @@
 {
   "bookings": [
     {
+      "bookingId": "DS-250059",
+      "user": {
+        "email": "ayush.25bai10059@vitbhopal.ac.in",
+        "name": "Ayush Arora",
+        "rollNo": "25BAI10059"
+      },
+      "auditorium": "AB02 — Audi 2",
+      "seats": [
+        {
+          "id": "J11",
+          "row": "J",
+          "number": 11,
+          "tierKey": "STANDARD",
+          "price": 67,
+          "status": "occupied",
+          "bookedBy": {
+            "name": "Ayush Arora",
+            "email": "ayush.25bai10059@vitbhopal.ac.in"
+          },
+          "auditorium": "AB02 — Audi 2"
+        },
+        {
+          "id": "J12",
+          "row": "J",
+          "number": 12,
+          "tierKey": "STANDARD",
+          "price": 67,
+          "status": "occupied",
+          "bookedBy": {
+            "name": "Ayush Arora",
+            "email": "ayush.25bai10059@vitbhopal.ac.in"
+          },
+          "auditorium": "AB02 — Audi 2"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "PENDING_UTR_AYUSH",
+      "paymentScreenshot": null,
+      "status": "CONFIRMED",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "9/21/2026, 6:11:09 PM"
+    },
+    {
       "bookingId": "DS-567986",
       "user": {
         "email": "peehu.25bai10783@vitbhopal.ac.in",
@@ -8703,6 +8747,12 @@
     }
   ],
   "viewers": [
+    {
+      "id": "reg-ayush.25bai10059@vitbhopal.ac.in",
+      "email": "ayush.25bai10059@vitbhopal.ac.in",
+      "name": "Ayush Arora",
+      "rollNo": "25BAI10059"
+    },
     {
       "id": "reg-isha.25bce11037@vitbhopal.ac.in",
       "email": "isha.25bce11037@vitbhopal.ac.in",

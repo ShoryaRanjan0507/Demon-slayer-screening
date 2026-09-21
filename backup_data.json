@@ -1,14 +1,20 @@
 {
-  "exportedAt": "2026-09-21T12:21:17.426Z",
+  "exportedAt": "2026-09-21T12:42:23.996Z",
   "stats": {
-    "totalBookings": 105,
-    "totalViewers": 245,
-    "confirmedBookings": 95,
+    "totalBookings": 106,
+    "totalViewers": 246,
+    "confirmedBookings": 96,
     "pendingBookings": 0,
     "rejectedBookings": 10,
-    "totalRevenue": 10988
+    "totalRevenue": 11122
   },
   "viewers": [
+    {
+      "email": "ayush.25bai10059@vitbhopal.ac.in",
+      "name": "Ayush Arora",
+      "rollNo": "25BAI10059",
+      "registeredAt": "2026-09-21T07:11:11.433Z"
+    },
     {
       "email": "isha.25bce11037@vitbhopal.ac.in",
       "name": "Isha Ojha",
@@ -1481,6 +1487,48 @@
     }
   ],
   "bookings": [
+    {
+      "bookingId": "DS-250059",
+      "userEmail": "ayush.25bai10059@vitbhopal.ac.in",
+      "userName": "Ayush Arora",
+      "userRollNo": "25BAI10059",
+      "auditorium": "AB02 — Audi 2",
+      "seats": [
+        {
+          "id": "J11",
+          "row": "J",
+          "price": 67,
+          "number": 11,
+          "status": "occupied",
+          "tierKey": "STANDARD",
+          "bookedBy": {
+            "name": "Ayush Arora",
+            "email": "ayush.25bai10059@vitbhopal.ac.in"
+          },
+          "auditorium": "AB02 — Audi 2"
+        },
+        {
+          "id": "J12",
+          "row": "J",
+          "price": 67,
+          "number": 12,
+          "status": "occupied",
+          "tierKey": "STANDARD",
+          "bookedBy": {
+            "name": "Ayush Arora",
+            "email": "ayush.25bai10059@vitbhopal.ac.in"
+          },
+          "auditorium": "AB02 — Audi 2"
+        }
+      ],
+      "totalAmount": 134,
+      "utrNumber": "PENDING_UTR_AYUSH",
+      "paymentScreenshot": null,
+      "status": "CONFIRMED",
+      "checkedIn": false,
+      "checkInTime": null,
+      "timestamp": "9/21/2026, 6:11:09 PM"
+    },
     {
       "bookingId": "DS-567986",
       "userEmail": "peehu.25bai10783@vitbhopal.ac.in",
@@ -10125,9 +10173,12 @@
             "row": "B",
             "price": 67,
             "number": 5,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Manisha Karmakar",
+              "email": "manisha.24bai10737@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B6": {
@@ -10135,9 +10186,12 @@
             "row": "B",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Manisha Karmakar",
+              "email": "manisha.24bai10737@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B7": {
@@ -10145,9 +10199,12 @@
             "row": "B",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Manisha Karmakar",
+              "email": "manisha.24bai10737@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B8": {
@@ -10155,9 +10212,12 @@
             "row": "B",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kushagra Joshi",
+              "email": "kushagra.25bce10929@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B9": {
@@ -10165,9 +10225,12 @@
             "row": "B",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kushagra Joshi",
+              "email": "kushagra.25bce10929@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C1": {
@@ -10215,9 +10278,12 @@
             "row": "C",
             "price": 67,
             "number": 5,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Abhinav",
+              "email": "dehamala.24mei10068@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C6": {
@@ -10225,9 +10291,12 @@
             "row": "C",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Banuka Sharan Teja",
+              "email": "banuka.24mip10065@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C7": {
@@ -10235,9 +10304,12 @@
             "row": "C",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Yashwanth",
+              "email": "goppa.24mei10112@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C8": {
@@ -10291,9 +10363,12 @@
             "row": "D",
             "price": 67,
             "number": 3,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Dhawal Malaviya",
+              "email": "dhawal.24bsa10305@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D4": {
@@ -10301,9 +10376,12 @@
             "row": "D",
             "price": 67,
             "number": 4,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Palak Srivastava",
+              "email": "palak.24bsa10271@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D5": {
@@ -10311,9 +10389,12 @@
             "row": "D",
             "price": 67,
             "number": 5,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harman singh",
+              "email": "harman.25bce10077@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D6": {
@@ -10321,9 +10402,12 @@
             "row": "D",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harman singh",
+              "email": "harman.25bce10077@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D7": {
@@ -10331,9 +10415,12 @@
             "row": "D",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D8": {
@@ -10341,9 +10428,12 @@
             "row": "D",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D9": {
@@ -10351,9 +10441,12 @@
             "row": "D",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E1": {
@@ -10401,9 +10494,12 @@
             "row": "E",
             "price": 67,
             "number": 5,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kishan Bishwakarma",
+              "email": "kishan.24bai10352@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E6": {
@@ -10411,9 +10507,12 @@
             "row": "E",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kishan Bishwakarma",
+              "email": "kishan.24bai10352@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E7": {
@@ -10434,9 +10533,12 @@
             "row": "E",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Vaibhav Tiwari",
+              "email": "vaibhav.25bce10251@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E9": {
@@ -10444,9 +10546,12 @@
             "row": "E",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Shaurya Thapa",
+              "email": "shaurya.25bce10200@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F1": {
@@ -10506,8 +10611,8 @@
             "status": "occupied",
             "tierKey": "STANDARD",
             "bookedBy": {
-              "name": "Aditri Sharma",
-              "email": "aditri.24bce10919@vitbhopal.ac.in"
+              "name": "Tejashri Bhandari",
+              "email": "tejashri.25bhi10113@vitbhopal.ac.in"
             },
             "auditorium": "AB02 — Audi 1"
           },
@@ -10519,8 +10624,8 @@
             "status": "occupied",
             "tierKey": "STANDARD",
             "bookedBy": {
-              "name": "Aditri Sharma",
-              "email": "aditri.24bce10919@vitbhopal.ac.in"
+              "name": "Projukta Chatterjee",
+              "email": "projukta.24mip10085@vitbhopal.ac.in"
             },
             "auditorium": "AB02 — Audi 1"
           },
@@ -10529,9 +10634,12 @@
             "row": "F",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Projukta Chatterjee",
+              "email": "projukta.24mip10085@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F8": {
@@ -10539,9 +10647,12 @@
             "row": "F",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Projukta Chatterjee",
+              "email": "projukta.24mip10085@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F9": {
@@ -10549,9 +10660,12 @@
             "row": "F",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aryan Chaudhary",
+              "email": "aryan.26bai10837@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "G1": {
@@ -10599,9 +10713,12 @@
             "row": "G",
             "price": 67,
             "number": 5,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Abhisar porwal",
+              "email": "abhisar.25bhi10115@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "G6": {
@@ -10609,9 +10726,12 @@
             "row": "G",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Abhisar porwal",
+              "email": "abhisar.25bhi10115@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "G7": {
@@ -10619,9 +10739,12 @@
             "row": "G",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Dayanita Shree",
+              "email": "dayanita.26mim10123@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "G8": {
@@ -10629,9 +10752,12 @@
             "row": "G",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Dayanita Shree",
+              "email": "dayanita.26mim10123@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "G9": {
@@ -10642,8 +10768,8 @@
             "status": "occupied",
             "tierKey": "STANDARD",
             "bookedBy": {
-              "name": "Shivang kumar",
-              "email": "shivang.25bec10017@vitbhopal.ac.in"
+              "name": "Aastha Srivastava",
+              "email": "aastha18p@gmail.com"
             },
             "auditorium": "AB02 — Audi 1"
           },
@@ -10672,9 +10798,12 @@
             "row": "H",
             "price": 67,
             "number": 3,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aryan Kumar",
+              "email": "aryan.25bce11350@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H4": {
@@ -10718,9 +10847,12 @@
             "row": "H",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Maan",
+              "email": "maan.25bce10315@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H8": {
@@ -10728,9 +10860,12 @@
             "row": "H",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Maan",
+              "email": "maan.25bce10315@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H9": {
@@ -10738,9 +10873,12 @@
             "row": "H",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Daksh Chauhan",
+              "email": "daksh.25bai10747@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "I1": {
@@ -10811,9 +10949,12 @@
             "row": "I",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Avyanjali Kumar",
+              "email": "avyanjali.25bai10775@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "I8": {
@@ -10834,9 +10975,12 @@
             "row": "I",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Suvradeep Datta",
+              "email": "suvradeep.25bai10328@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J1": {
@@ -10904,9 +11048,12 @@
             "row": "J",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Samridh Mishra",
+              "email": "samridh.25bce10848@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J8": {
@@ -10914,9 +11061,12 @@
             "row": "J",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Samridh Mishra",
+              "email": "samridh.25bce10848@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J9": {
@@ -10924,9 +11074,12 @@
             "row": "J",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "shreya baghel",
+              "email": "shreya.25bai11008@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "K1": {
@@ -10934,9 +11087,12 @@
             "row": "K",
             "price": 67,
             "number": 1,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Pari Porwal",
+              "email": "pari.25bai10001@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "K2": {
@@ -10944,9 +11100,12 @@
             "row": "K",
             "price": 67,
             "number": 2,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Pari Porwal",
+              "email": "pari.25bai10001@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "K3": {
@@ -11036,9 +11195,12 @@
             "row": "L",
             "price": 67,
             "number": 1,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harman singh",
+              "email": "harman.25bce10077@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "L2": {
@@ -11046,9 +11208,12 @@
             "row": "L",
             "price": 67,
             "number": 2,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harman singh",
+              "email": "harman.25bce10077@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "L3": {
@@ -11089,9 +11254,12 @@
             "row": "L",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Katyayani Roy",
+              "email": "katyayani.25bhi10102@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "L7": {
@@ -11099,9 +11267,12 @@
             "row": "L",
             "price": 67,
             "number": 7,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Yuvraj Mall",
+              "email": "yuvraj.25bce10988@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "L8": {
@@ -11109,9 +11280,12 @@
             "row": "L",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Sahil chouksey",
+              "email": "sahil.25bai11467@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "L9": {
@@ -11119,9 +11293,12 @@
             "row": "L",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Saurav Kumar",
+              "email": "saurav.25bcy10158@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "M1": {
@@ -11199,9 +11376,12 @@
             "row": "M",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Akshat Singh",
+              "email": "akshat.25bce10857@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "M9": {
@@ -11209,9 +11389,12 @@
             "row": "M",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Akshat Singh",
+              "email": "akshat.25bce10857@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "N1": {
@@ -11491,9 +11674,12 @@
             "row": "P",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Koppolu pardhu",
+              "email": "koppolu.24bac10055@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "A10": {
@@ -11591,9 +11777,12 @@
             "row": "B",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kushagra Joshi",
+              "email": "kushagra.25bce10929@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B11": {
@@ -11601,9 +11790,12 @@
             "row": "B",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kushagra Joshi",
+              "email": "kushagra.25bce10929@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B12": {
@@ -11611,9 +11803,12 @@
             "row": "B",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "PRINCE RAJ",
+              "email": "prince.25bce11293@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B13": {
@@ -11634,9 +11829,12 @@
             "row": "B",
             "price": 67,
             "number": 14,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "PRINCE RAJ",
+              "email": "prince.25bce11293@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B15": {
@@ -11654,9 +11852,12 @@
             "row": "B",
             "price": 67,
             "number": 16,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "PRINCE RAJ",
+              "email": "prince.25bce11293@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "B17": {
@@ -11684,9 +11885,12 @@
             "row": "C",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Akshit U Paniker",
+              "email": "akshit.26bce10774@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C11": {
@@ -11694,9 +11898,12 @@
             "row": "C",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harshvardhan Singh Rathore",
+              "email": "harshvardhan.25bcy10085@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C12": {
@@ -11704,9 +11911,12 @@
             "row": "C",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Mourya Varanasi",
+              "email": "varanasi.25bai10386@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C13": {
@@ -11714,9 +11924,12 @@
             "row": "C",
             "price": 67,
             "number": 13,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aditya Raj Sharma",
+              "email": "aditya.25mkc00000@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C14": {
@@ -11724,9 +11937,12 @@
             "row": "C",
             "price": 67,
             "number": 14,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aditya Raj Sharma",
+              "email": "aditya.25mkc00000@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "C15": {
@@ -11774,9 +11990,12 @@
             "row": "D",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D11": {
@@ -11784,9 +12003,12 @@
             "row": "D",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D12": {
@@ -11794,9 +12016,12 @@
             "row": "D",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D13": {
@@ -11804,9 +12029,12 @@
             "row": "D",
             "price": 67,
             "number": 13,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D14": {
@@ -11814,9 +12042,12 @@
             "row": "D",
             "price": 67,
             "number": 14,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "SIDDHARTH SHUKLA 25MIM10211",
+              "email": "siddharth.25mim10211@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D15": {
@@ -11824,9 +12055,12 @@
             "row": "D",
             "price": 67,
             "number": 15,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Jhanvi Nag",
+              "email": "jhanvi.25mei10012@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "D16": {
@@ -11873,9 +12107,12 @@
             "row": "E",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "VEDANT TOMAR",
+              "email": "vedant.25bai10063@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E11": {
@@ -11883,9 +12120,12 @@
             "row": "E",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Siddhesh Wagh",
+              "email": "siddhesh.25bce10169@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E12": {
@@ -11893,9 +12133,12 @@
             "row": "E",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aditya Dev",
+              "email": "aditya.25bce10863@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "E13": {
@@ -11978,9 +12221,12 @@
             "row": "F",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Daksh Gandhi",
+              "email": "daksh.25bce10294@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F11": {
@@ -11988,9 +12234,12 @@
             "row": "F",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Daksh Gandhi",
+              "email": "daksh.25bce10294@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F12": {
@@ -11998,9 +12247,12 @@
             "row": "F",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Jenith Sharma",
+              "email": "jenith.25bcy10184@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "F13": {
@@ -12077,8 +12329,8 @@
             "status": "occupied",
             "tierKey": "STANDARD",
             "bookedBy": {
-              "name": "Shivang kumar",
-              "email": "shivang.25bec10017@vitbhopal.ac.in"
+              "name": "Aastha Srivastava",
+              "email": "aastha18p@gmail.com"
             },
             "auditorium": "AB02 — Audi 1"
           },
@@ -12192,9 +12444,12 @@
             "row": "H",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "yashwardhan Kachhwaha",
+              "email": "yashwardhan.26bas10065@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H12": {
@@ -12202,9 +12457,12 @@
             "row": "H",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "yashwardhan Kachhwaha",
+              "email": "yashwardhan.26bas10065@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H13": {
@@ -12264,9 +12522,12 @@
             "row": "H",
             "price": 67,
             "number": 17,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Harsh Pachori",
+              "email": "harsh.26mip10039@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "H18": {
@@ -12287,9 +12548,12 @@
             "row": "I",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Zeion Jain",
+              "email": "jai.26bai10975@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "I11": {
@@ -12297,9 +12561,12 @@
             "row": "I",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Rahul Kumar Pathak",
+              "email": "rahul.25bcy10247@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "I12": {
@@ -12389,9 +12656,12 @@
             "row": "J",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Shashwat srivastava",
+              "email": "shashwat.25bai10958@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J11": {
@@ -12399,9 +12669,12 @@
             "row": "J",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Manthan Awaya",
+              "email": "manthan.25bai11050@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J12": {
@@ -12409,9 +12682,12 @@
             "row": "J",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Manthan Awaya",
+              "email": "manthan.25bai11050@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J13": {
@@ -12459,9 +12735,12 @@
             "row": "J",
             "price": 67,
             "number": 17,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kirtika Singh",
+              "email": "kirtika.25bce10533@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "J18": {
@@ -12469,9 +12748,12 @@
             "row": "J",
             "price": 67,
             "number": 18,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kirtika Singh",
+              "email": "kirtika.25bce10533@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "K10": {
@@ -12680,9 +12962,12 @@
             "row": "M",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Akshat Singh",
+              "email": "akshat.25bce10857@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 1"
           },
           "M11": {
@@ -13211,9 +13496,12 @@
             "row": "B",
             "price": 67,
             "number": 8,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Deeksha Kaushal",
+              "email": "deeksha.25bhi10019@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "B9": {
@@ -13221,9 +13509,12 @@
             "row": "B",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Deeksha Kaushal",
+              "email": "deeksha.25bhi10019@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "C1": {
@@ -13404,9 +13695,12 @@
             "row": "D",
             "price": 67,
             "number": 9,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kunjan Khore",
+              "email": "kunjan.25bai10594@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "E1": {
@@ -13504,9 +13798,12 @@
             "row": "F",
             "price": 67,
             "number": 1,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Paras",
+              "email": "paras.24bsa10213@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "F2": {
@@ -13640,8 +13937,8 @@
             "status": "occupied",
             "tierKey": "STANDARD",
             "bookedBy": {
-              "name": "Geet Tiwari",
-              "email": "geet.25bai10389@vitbhopal.ac.in"
+              "name": "Kanishk Sinha",
+              "email": "kanishk.25bce10302@vitbhopal.ac.in"
             },
             "auditorium": "AB02 — Audi 2"
           },
@@ -13650,9 +13947,12 @@
             "row": "G",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Shreya Singh",
+              "email": "shreya.25bcy10083@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "G7": {
@@ -14109,9 +14409,12 @@
             "row": "L",
             "price": 67,
             "number": 6,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Aviral Verma",
+              "email": "aviral.25bce10954@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "L7": {
@@ -14779,9 +15082,12 @@
             "row": "D",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kunjan Khore",
+              "email": "kunjan.25bai10594@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "D11": {
@@ -14789,9 +15095,12 @@
             "row": "D",
             "price": 67,
             "number": 11,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kunjan Khore",
+              "email": "kunjan.25bai10594@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "D12": {
@@ -14799,9 +15108,12 @@
             "row": "D",
             "price": 67,
             "number": 12,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Kunjan Khore",
+              "email": "kunjan.25bai10594@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "D13": {
@@ -14899,9 +15211,12 @@
             "row": "E",
             "price": 67,
             "number": 13,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Makarand Buddhe",
+              "email": "makarand.24bac10053@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "E14": {
@@ -15049,9 +15364,12 @@
             "row": "G",
             "price": 67,
             "number": 10,
-            "status": "available",
+            "status": "occupied",
             "tierKey": "STANDARD",
-            "bookedBy": null,
+            "bookedBy": {
+              "name": "Adarsh Mishra",
+              "email": "adarsh.25bce10947@vitbhopal.ac.in"
+            },
             "auditorium": "AB02 — Audi 2"
           },
           "G11": {
@@ -15946,7 +16264,7 @@
           }
         }
       },
-      "updated_at": "2026-09-21T06:51:16.146Z"
+      "updated_at": "2026-09-21T07:12:22.153Z"
     }
   ]
 }
